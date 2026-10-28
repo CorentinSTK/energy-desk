@@ -1,0 +1,35 @@
+name: Keep-alive
+
+# GitHub disables scheduled workflows in public repositories after 60 days without activity
+# (ADR 0001). Once a month this commits a small heartbeat file to the `ops/heartbeat` branch,
+# which leaves `main` and its protection untouched.
+on:
+  schedule:
+    - cron: "0 6 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Commit heartbeat to ops/heartbeat
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git ls-remote --exit-code --heads origin ops/heartbeat > /dev/null; then
+            git fetch --depth 1 origin ops/heartbeat:refs/remotes/origin/ops/heartbeat
+            git switch -c ops/heartbeat origin/ops/heartbeat
+          else
+            git switch --orphan ops/heartbeat
+          fi
+          mkdir -p ops
+          printf '{\n  "last_heartbeat": "%s",\n  "run_id": "%s"\n}\n' \
+            "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$GITHUB_RUN_ID" > ops/heartbeat.json
+          git add ops/heartbeat.json
+          git commit -m "chore: monthly heartbeat"
+          git push origin ops/heartbeat

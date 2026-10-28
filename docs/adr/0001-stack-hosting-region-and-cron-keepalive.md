@@ -42,11 +42,14 @@ Vercel's default function region is `iad1` (US East). It must be set to `fra1` w
 GitHub disables scheduled workflows in public repositories after 60 days without repository activity.
 Ingestion would then stop silently.
 
-- A monthly workflow (in M1) writes `ops/heartbeat.json` (date, last status per source) and commits it to
+- A monthly workflow (in M1) writes `ops/heartbeat.json` (date and workflow run ID) and commits it to
   a dedicated `ops/heartbeat` branch. A separate branch keeps `main` history clean and avoids conflicts
   with branch protection, which requires CI checks on `main`.
-- In M1 we verify that a commit by `GITHUB_TOKEN` resets the inactivity timer. If it does not, the
-  fallback is a monthly call to the GitHub API endpoint that re-enables each scheduled workflow.
+- Implemented in M1 (`.github/workflows/keepalive.yml`). The job logic was tested on a local repository:
+  the first run creates the orphan branch, later runs add a commit, and `main` is untouched. That a
+  bot commit resets GitHub's 60-day timer cannot be observed without waiting 60 days. If it turns out
+  not to, the fallback is a monthly call to the GitHub API endpoint that re-enables each scheduled
+  workflow.
 - Defence in depth: `/data` flags stale sources, so a stopped cron is visible on the site.
 
 ## Consequences

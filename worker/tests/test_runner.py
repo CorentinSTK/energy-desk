@@ -16,9 +16,12 @@ class FakeSource(Source):
     name = "ecb"
     request_interval = 0
 
-    def __init__(self, failing: set[str] | None = None, bad_value: bool = False) -> None:
+    def __init__(
+        self, failing: set[str] | None = None, bad_value: bool = False, empty: bool = False
+    ) -> None:
         self.failing = failing or set()
         self.bad_value = bad_value
+        self.empty = empty
         self.starts: dict[str, date | None] = {}
 
     def fetch(
@@ -27,6 +30,8 @@ class FakeSource(Source):
         self.starts[spec.code] = since
         if spec.code in self.failing:
             raise RuntimeError("provider down")
+        if self.empty:
+            return []
         value = 99.0 if self.bad_value else 1.1
         return [Observation(spec.code, NOW - timedelta(days=1), value)]
 
@@ -67,3 +72,9 @@ def test_start_date_rules() -> None:
     assert runner.start_date(None, week, backfill=False, since=None) is None  # first run: history
     assert runner.start_date(last, week, backfill=True, since=None) is None
     assert runner.start_date(last, week, backfill=False, since=date(2020, 1, 1)) == date(2020, 1, 1)
+
+
+def test_empty_answer_is_reported_not_treated_as_ok() -> None:
+    summary = runner.run(FakeSource(empty=True), dry_run=True, now=NOW)
+    assert summary.status == "partial"
+    assert "no observations returned" in (summary.error_text() or "")

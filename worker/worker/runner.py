@@ -2,7 +2,7 @@
 
 Status of a run:
 - ok       every series fetched, no row rejected
-- partial  some series failed or some rows were rejected, but at least one series was fetched
+- partial  some series failed, returned nothing or had rows rejected; others were fetched
 - failed   no series could be fetched, or the database write failed
 A failing series never stops the others.
 """
@@ -79,9 +79,15 @@ def fetch_all(
             if index:
                 time.sleep(source.request_interval)
             try:
-                summary.fetched[spec.code] = source.fetch(client, spec, starts[spec.code])
+                observations = source.fetch(client, spec, starts[spec.code])
             except Exception as error:  # one failing series must not stop the others
                 summary.errors[spec.code] = f"{type(error).__name__}: {error}"
+                continue
+            summary.fetched[spec.code] = observations
+            if not observations:
+                # The window always reaches back before the last stored observation (lookback), so
+                # an empty answer means the request or the provider is wrong, not "no news".
+                summary.errors[spec.code] = "no observations returned for the requested period"
 
 
 def run(

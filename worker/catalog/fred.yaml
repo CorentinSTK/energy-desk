@@ -1,0 +1,26 @@
+# FRED (Federal Reserve Bank of St. Louis). Licences differ per series; read each series' notes.
+# PNGASEUUSDM notes (read 2026-10-28): "Copyright © 2016, International Monetary Fund. Reprinted with
+# permission." IMF data terms (https://www.imf.org/en/About/copyright-and-terms): data may be
+# distributed and published with attribution to the IMF and without alteration.
+source: fred
+licence:
+  name: Per series — see the series licence
+  url: https://fred.stlouisfed.org/legal/
+licence_checked: 2026-10-28
+series:
+  - code: fred.eu_gas_imf_monthly
+    name: Natural gas price, Europe (IMF benchmark, monthly)
+    commodity: natgas
+    region: Europe
+    unit: $/MMBtu
+    frequency: monthly
+    source_ref: PNGASEUUSDM
+    description: IMF primary commodity price for natural gas in Europe, monthly average, nominal US dollars.
+    price_kind: index
+    publication_lag_days: 55  # the month's average is published around the 20th of the next month
+    plausible_min: 0
+    plausible_max: 200
+    licence:
+      name: IMF data — free reuse with attribution, without alteration
+      url: https://www.imf.org/en/About/copyright-and-terms
+      attribution: "Source: International Monetary Fund, Primary Commodity Prices, via FRED (PNGASEUUSDM)."

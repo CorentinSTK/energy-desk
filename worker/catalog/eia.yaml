@@ -1,0 +1,83 @@
+# U.S. Energy Information Administration, API v2.
+# Terms (read 2026-10-28, https://www.eia.gov/about/copyrights_reuse.php): EIA content is public domain;
+# acknowledge EIA as the source. Daily spot prices are sourced by EIA from Refinitiv (LSEG), as stated on
+# EIA's definitions pages; EIA publishes them openly and FRED republishes them without restriction notes.
+source: eia
+licence:
+  name: U.S. EIA — public domain
+  url: https://www.eia.gov/about/copyrights_reuse.php
+  attribution: "Source: U.S. Energy Information Administration."
+licence_checked: 2026-10-28
+series:
+  - code: eia.wti_spot
+    name: WTI spot price, Cushing
+    commodity: crude
+    region: US
+    unit: $/bbl
+    source_unit: $/BBL
+    frequency: daily
+    source_ref: petroleum/pri/spt|RWTC
+    description: Cushing, OK WTI spot price FOB.
+    price_kind: spot
+    publication_lag_days: 9  # EIA updates spot prices weekly
+    plausible_min: -50  # WTI settled below zero in April 2020
+    plausible_max: 300
+    licence: &spot_licence
+      name: U.S. EIA — public domain; daily spot prices sourced by EIA from Refinitiv (LSEG)
+      url: https://www.eia.gov/dnav/pet/TblDefs/pet_pri_spt_tbldef2.asp
+      attribution: "Source: U.S. Energy Information Administration (spot prices from Refinitiv, an LSEG business)."
+  - code: eia.brent_spot
+    name: Brent spot price
+    commodity: crude
+    region: Europe
+    unit: $/bbl
+    source_unit: $/BBL
+    frequency: daily
+    source_ref: petroleum/pri/spt|RBRTE
+    description: Europe Brent spot price FOB.
+    price_kind: spot
+    publication_lag_days: 9
+    plausible_min: 0
+    plausible_max: 300
+    licence: *spot_licence
+  - code: eia.henry_hub_spot
+    name: Henry Hub natural gas spot price
+    commodity: natgas
+    region: US
+    unit: $/MMBtu
+    source_unit: $/MMBTU
+    frequency: daily
+    source_ref: natural-gas/pri/fut|RNGWHHD
+    description: Henry Hub spot price, shown as context for European gas.
+    price_kind: spot
+    publication_lag_days: 9
+    plausible_min: 0
+    plausible_max: 50
+    licence:
+      name: U.S. EIA — public domain; daily spot prices sourced by EIA from Refinitiv (LSEG)
+      url: https://www.eia.gov/dnav/ng/TblDefs/ng_pri_fut_tbldef2.asp
+      attribution: "Source: U.S. Energy Information Administration (spot prices from Refinitiv, an LSEG business)."
+  - code: eia.us_crude_stocks
+    name: US commercial crude oil stocks (excl. SPR)
+    commodity: crude
+    region: US
+    unit: mb
+    source_unit: MBBL
+    frequency: weekly
+    source_ref: petroleum/stoc/wstk|WCESTUS1
+    description: U.S. ending stocks of crude oil excluding the Strategic Petroleum Reserve, thousand barrels.
+    publication_lag_days: 5  # week ending Friday, published the next Wednesday
+    plausible_min: 200000
+    plausible_max: 700000
+  - code: eia.cushing_crude_stocks
+    name: Cushing crude oil stocks
+    commodity: crude
+    region: US
+    unit: mb
+    source_unit: MBBL
+    frequency: weekly
+    source_ref: petroleum/stoc/wstk|W_EPC0_SAX_YCUOK_MBBL
+    description: Cushing, OK ending stocks of crude oil excluding SPR, thousand barrels.
+    publication_lag_days: 5
+    plausible_min: 0
+    plausible_max: 120000
