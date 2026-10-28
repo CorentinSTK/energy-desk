@@ -5,16 +5,21 @@ description = "Ingestion, transforms, forecasts and backtests for Energy Desk."
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+    "httpx>=0.28.1",
     "psycopg[binary]>=3.3.6",
     "pydantic>=2.14.1",
     "pydantic-settings>=2.16.1",
+    "pyyaml>=6.0.3",
+    "tenacity>=9.2.1",
 ]
 
 [dependency-groups]
 dev = [
     "mypy>=1.13",
     "pytest>=8.3",
+    "respx>=0.23.1",
     "ruff>=0.8",
+    "types-pyyaml>=6.0.12.20260906",
 ]
 
 [tool.uv]
