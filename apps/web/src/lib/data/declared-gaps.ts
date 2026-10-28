@@ -15,8 +15,18 @@ export const DECLARED_GAPS: DeclaredGap[] = [
       "Exchange prices (ICE Endex, EEX) are licensed and not redistributed. Europe is covered by the IMF monthly benchmark; daily TTF indicators from unofficial futures data come in a later milestone.",
   },
   {
-    title: "UK gas storage",
-    reason: "GIE AGSI+ has published no UK data since Brexit.",
+    title: "UK gas storage and UK LNG terminals",
+    reason: "GIE AGSI+ and ALSI have published no UK data since Brexit.",
+  },
+  {
+    title: "Norwegian pipeline flows into Germany (Emden, Dornum)",
+    reason:
+      "ENTSOG reports these points under several operators with overlapping values. Adding them up would double count, so they are not shown until a reliable reconciliation exists. Norwegian flows into France and Belgium are shown.",
+  },
+  {
+    title: "European gas positioning (TTF Commitments of Traders)",
+    reason:
+      "ICE publishes it, but its terms forbid republication without written permission. The CFTC does not cover TTF.",
   },
   {
     title: "ICE Brent and ICE gasoil prices",
