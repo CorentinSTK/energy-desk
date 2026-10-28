@@ -15,3 +15,8 @@ official data. Every number is sourced, labelled with its unit and licence, and 
 
 Builds on ideas and code from the author's earlier project,
 [oil-tracker](https://github.com/CorentinSTK/oil-tracker).
+
+## Licence
+
+Code: [MIT](LICENSE). Data shown on the site belongs to its sources and is used under each source's own
+licence, listed on the `/data` page; no exchange or licensed data is redistributed.
