@@ -46,7 +46,7 @@
   /* Charts */
   --chart-grid: #e4e8ec;
   --chart-axis: #59636e;
-  --chart-band: rgb(89 99 110 / 0.16);
+  --chart-band: rgba(89, 99, 110, 0.16);
   --chart-avg: #424a53;
 }
 
@@ -79,7 +79,7 @@
 
   --chart-grid: #1c2530;
   --chart-axis: #8592a3;
-  --chart-band: rgb(133 146 163 / 0.18);
+  --chart-band: rgba(133, 146, 163, 0.18);
   --chart-avg: #a9b4c2;
 }
 
