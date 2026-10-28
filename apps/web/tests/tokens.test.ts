@@ -52,6 +52,9 @@ const FOREGROUNDS = [
   "c-power",
 ];
 const AA_TEXT = 4.5;
+/** Chart lines are graphical objects: WCAG 1.4.11 asks 3:1 against adjacent colours. */
+const AA_GRAPHICS = 3;
+const SERIES = Array.from({ length: 9 }, (_, i) => `chart-series-${i + 1}`);
 
 describe.each(Object.entries(THEMES))("%s theme", (_name, t) => {
   it("defines every token checked here", () => {
@@ -64,6 +67,14 @@ describe.each(Object.entries(THEMES))("%s theme", (_name, t) => {
     for (const bg of BACKGROUNDS) {
       it(`${fg} on ${bg} ≥ ${AA_TEXT}:1`, () => {
         expect(contrast(t[fg], t[bg])).toBeGreaterThanOrEqual(AA_TEXT);
+      });
+    }
+  }
+
+  for (const line of SERIES) {
+    for (const bg of ["background", "surface"]) {
+      it(`${line} on ${bg} ≥ ${AA_GRAPHICS}:1`, () => {
+        expect(contrast(t[line], t[bg])).toBeGreaterThanOrEqual(AA_GRAPHICS);
       });
     }
   }

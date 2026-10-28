@@ -13,6 +13,7 @@ export const SOURCE_LABELS: Record<string, string> = {
   fred: "FRED",
   gie_agsi: "GIE AGSI+",
   gie_alsi: "GIE ALSI",
+  yahoo: "Yahoo Finance",
 };
 
 export interface CatalogFilters {

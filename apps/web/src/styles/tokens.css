@@ -48,6 +48,17 @@
   --chart-axis: #59636e;
   --chart-band: rgba(89, 99, 110, 0.16);
   --chart-avg: #424a53;
+
+  /* Categorical palette for several lines in one chart (e.g. flows by entry point). */
+  --chart-series-1: #1f5fc4;
+  --chart-series-2: #b54a00;
+  --chart-series-3: #086f78;
+  --chart-series-4: #b4246f;
+  --chart-series-5: #7340c4;
+  --chart-series-6: #6b6f00;
+  --chart-series-7: #424a53;
+  --chart-series-8: #8b5a24;
+  --chart-series-9: #17732f;
 }
 
 .dark {
@@ -81,6 +92,16 @@
   --chart-axis: #8592a3;
   --chart-band: rgba(133, 146, 163, 0.18);
   --chart-avg: #a9b4c2;
+
+  --chart-series-1: #5b9cf5;
+  --chart-series-2: #f0883e;
+  --chart-series-3: #39c5cf;
+  --chart-series-4: #ef7fc0;
+  --chart-series-5: #b392f0;
+  --chart-series-6: #c9c84a;
+  --chart-series-7: #a9b4c2;
+  --chart-series-8: #d6a56b;
+  --chart-series-9: #3fb950;
 }
 
 /* Theme-independent tokens */

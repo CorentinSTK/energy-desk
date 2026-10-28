@@ -15,11 +15,24 @@ interface SeasonalChartProps extends Omit<SeasonalInput, "color"> {
 }
 
 export function SeasonalChart({ commodity, height, ariaLabel, ...input }: SeasonalChartProps) {
-  const { periods, min, max, average, current, currentLabel, rangeLabel, unit, decimals } = input;
+  const {
+    periods,
+    dailyAxis,
+    min,
+    max,
+    average,
+    current,
+    currentLabel,
+    rangeLabel,
+    unit,
+    decimals,
+    yMax,
+  } = input;
   const build = useCallback(
     (t: ChartTokens) =>
       seasonalOption(t, {
         periods,
+        dailyAxis,
         min,
         max,
         average,
@@ -28,9 +41,23 @@ export function SeasonalChart({ commodity, height, ariaLabel, ...input }: Season
         rangeLabel,
         unit,
         decimals,
+        yMax,
         color: t.commodity[commodity],
       }),
-    [periods, min, max, average, current, currentLabel, rangeLabel, unit, decimals, commodity],
+    [
+      periods,
+      dailyAxis,
+      min,
+      max,
+      average,
+      current,
+      currentLabel,
+      rangeLabel,
+      unit,
+      decimals,
+      yMax,
+      commodity,
+    ],
   );
   return <EChart build={build} height={height} ariaLabel={ariaLabel} />;
 }

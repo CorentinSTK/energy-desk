@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 
-import { ThemeToggle } from "@/components/theme-toggle";
-
 import { Showcase } from "./showcase";
 
 // Not linked from the site and not indexed (BUILD_SPEC §8). Synthetic data only.
@@ -23,7 +21,6 @@ export default function StyleguidePage() {
             synthetic.
           </p>
         </div>
-        <ThemeToggle />
       </header>
 
       <div className="grid gap-6 xl:grid-cols-2">

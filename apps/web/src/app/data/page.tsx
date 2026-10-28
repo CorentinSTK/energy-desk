@@ -8,7 +8,6 @@ import { SeriesTable } from "@/components/data/series-table";
 import { DataGapNotice } from "@/components/data-gap-notice";
 import { EmptyState } from "@/components/empty-state";
 import { ErrorState } from "@/components/error-state";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { extractionDates } from "@/lib/data/attribution";
@@ -36,7 +35,6 @@ export default function DataPage({ searchParams }: PageProps<"/data">) {
             and where it has gaps. Missing data is shown as missing, never estimated.
           </p>
         </div>
-        <ThemeToggle />
       </header>
 
       <Suspense fallback={<CatalogSkeleton />}>
