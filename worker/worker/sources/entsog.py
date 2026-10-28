@@ -8,6 +8,8 @@ Checked live on 2026-10-28:
 - Several major points (Emden, Dornum: Norway → Germany) are reported by several operators under
   several keys with overlapping values. Adding them up would double count, so they are not used and
   are a declared gap. Only points reported by a single operator with a value are in the catalogue.
+- The API only serves the last five years ("Data on the TP is archived on a rolling basis"): older
+  requests get HTTP 404. Without a start date, history starts five years back, minus a margin.
 - Values are in kWh/d, per gas day (06:00 to 06:00 CET); the gas day's date is stored at 00:00 UTC,
   like GIE. Empty values are missing observations and are skipped.
 - Terms (ENTSOG TP Terms and Conditions of Use, art. 5): data may be downloaded, stored and used in
@@ -26,8 +28,12 @@ from worker.sources.base import Source
 from worker.validate import Observation
 
 URL = "https://transparency.entsog.eu/api/v1/operationalData"
-# ENTSOG history used when no start date is given (full history of these points is not needed).
-DEFAULT_START = date(2015, 1, 1)
+# The API serves five years of history; stay a month inside that limit.
+HISTORY_DAYS = 5 * 365 - 30
+
+
+def default_start(today: date) -> date:
+    return today - timedelta(days=HISTORY_DAYS)
 
 
 def parse_rows(rows: list[dict[str, Any]], spec: SeriesSpec) -> list[Observation]:
@@ -69,7 +75,7 @@ class EntsogSource(Source):
                 "pointKey": point,
                 "operatorKey": operator,
                 "directionKey": direction,
-                "from": (since or DEFAULT_START).isoformat(),
+                "from": max(since or date.min, default_start(date.today())).isoformat(),
                 "to": (date.today() + timedelta(days=1)).isoformat(),
                 "limit": -1,
             },

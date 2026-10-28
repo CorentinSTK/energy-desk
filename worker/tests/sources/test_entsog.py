@@ -1,10 +1,10 @@
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from typing import Any
 
 import pytest
 
 from worker.catalog import load_catalog
-from worker.sources.entsog import parse_rows
+from worker.sources.entsog import default_start, parse_rows
 
 SPEC = next(s for s in load_catalog("entsog").series if s.code == "entsog.dunkerque")
 
@@ -40,3 +40,8 @@ def test_empty_values_are_missing() -> None:
 def test_unit_change_fails_loudly() -> None:
     with pytest.raises(ValueError, match="expected 'kWh/d'"):
         parse_rows([row(unit="MWh/d")], SPEC)
+
+
+def test_history_stays_inside_the_five_year_window() -> None:
+    start = default_start(date(2026, 10, 28))
+    assert date(2021, 10, 28) < start < date(2021, 12, 31)
