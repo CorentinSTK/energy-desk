@@ -82,8 +82,9 @@ Incident: stacked PRs — deleting a merged base branch closed PR #3 instead of 
 restoring the branch, reopening and retargeting all PRs to `main` first. Lesson: retarget stacked PRs to
 `main` before merging the first one.
 
-Not verified yet: function region `fra1` (the response header only shows the edge location; check in
-Vercel → Settings → Functions); keep-alive effect on GitHub's 60-day timer (only observable over time).
+Function region: Frankfurt (`fra1`), confirmed by the owner in Vercel → Settings → Functions (the response
+header only shows the edge location). Not verified yet: keep-alive effect on GitHub's 60-day timer (only
+observable over time).
 
 Open decisions: EIA spot prices sourced from Refinitiv (kept, attributed; BUILD_SPEC §11); three AGSI values
 rejected as implausible (AT 2011-06-16, IT 2012-04-01), kept out and visible on /data.
