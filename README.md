@@ -3,7 +3,8 @@
 A public research platform for European energy markets (gas, LNG, power) and global oil, built on free,
 official data. Every number is sourced, labelled with its unit and licence, and traceable to its origin.
 
-> Status: early development (milestone M0: scaffold, design system, CI, deploy).
+> Status: early development. Milestone M0 (scaffold, design system, CI, deploy) is done; live at
+> https://energy-desk-two.vercel.app.
 
 ## Documentation
 

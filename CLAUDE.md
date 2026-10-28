@@ -58,6 +58,7 @@ npm run dev          # http://localhost:3000 — style guide at /styleguide
 npm run lint && npm run typecheck && npm run format:check && npm run test
 npm run build
 npm run test:e2e     # Playwright smoke tests (dev server locally; CI=1 uses the production build)
+PLAYWRIGHT_BASE_URL=https://energy-desk-two.vercel.app npm run test:e2e   # against the live site
 npm run format       # apply Prettier
 
 # worker (Python 3.12, pinned by uv)
@@ -67,6 +68,11 @@ uv run pytest
 uv run ruff check . && uv run ruff format --check . && uv run mypy
 uv run python -m worker.ingest --source eia --dry-run
 ```
+
+## Git workflow
+
+`main` is protected (required checks: `web`, `worker`). Work on a branch, open a PR, merge when CI
+is green. Vercel deploys `main` to production and every PR to a preview URL.
 
 ## Definition of done (every feature)
 
