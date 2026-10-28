@@ -14,8 +14,10 @@ if one changes. Changes go in a new migration.
 
 Layout (ADR 0005):
 
-- `market`: tables (`series`, `observations`, `ingest_runs`), written only by the worker.
-- `web`: views the site reads through the `web_reader` role (`series_catalog`, `ingest_runs_recent`).
+- `market`: tables (`series`, `observations`, `ingest_runs`, `futures_contracts`), written only by the
+  worker. `futures_contracts` holds unofficial raw settlements and is never readable by the site.
+- `web`: what the site reads through the `web_reader` role: `series_catalog`, `ingest_runs_recent`,
+  `observations`, and the function `seasonal_daily(code, year)` (5-year min, max and mean by calendar day).
 - `ops`: migration bookkeeping.
 
 None of these schemas is exposed by the Supabase API, and Row Level Security is enabled on every table.

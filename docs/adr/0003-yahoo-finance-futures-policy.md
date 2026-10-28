@@ -42,3 +42,14 @@ We use Yahoo only for futures, under these rules:
 - Curves may be partial or missing on some days. That is acceptable and shown as such.
 - If Yahoo becomes unusable, futures indicators disappear and nothing else is affected.
 - Revisit this decision if a free official or properly licensed source appears.
+
+## Amendment — 2026-10-28 (M2)
+
+- **Display.** A front-month level may appear as a single KPI value with the unofficial label. Charts
+  show derived indicators only: calendar spread (M1–M2), percentile and z-score of the front month.
+  No chart or table of raw settlements.
+- **Where derived values are computed.** In the worker, from `market.futures_contracts`, stored as
+  series with `is_unofficial = true` and `price_kind = 'futures'`. The site reads them like any other
+  series, and `web_reader` cannot read the raw table at all.
+- **Coverage.** For TTF only the first two monthly contracts are listed on Yahoo, so there is no full
+  curve. Spread history starts at the first ingestion and is labelled as such.
