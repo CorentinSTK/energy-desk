@@ -11,12 +11,16 @@ test.describe("gas market page", () => {
     await expect(
       page.getByRole("heading", { level: 1, name: "European natural gas" }),
     ).toBeVisible();
-    await expect(page.getByText("EU storage, % full")).toBeVisible();
-    await expect(page.getByText("Are EU gas stocks tight for the season?")).toBeVisible();
-    // Unofficial values always carry the mandatory label.
+    await expect(page.getByText("EU storage, % full").filter({ visible: true })).toBeVisible();
     await expect(
-      page.getByText("Yahoo Finance — unofficial, delayed, research only").first(),
+      page.getByRole("heading", { name: "Are EU gas stocks tight for the season?" }),
     ).toBeVisible();
+    // Unofficial values always carry the mandatory label: one per TTF KPI.
+    await expect(
+      page
+        .getByText("Yahoo Finance — unofficial, delayed, research only")
+        .filter({ visible: true }),
+    ).toHaveCount(2);
     await expect(page.getByRole("navigation", { name: "Sections" })).toBeVisible();
     expect(errors).toEqual([]);
   });
@@ -29,7 +33,9 @@ test.describe("gas market page", () => {
       .click();
     await expect(page).toHaveURL(/\/markets\/gas\?tab=positioning$/);
     await expect(
-      page.getByText("TTF positioning (Commitments of Traders) is not shown"),
+      page
+        .getByText("TTF positioning (Commitments of Traders) is not shown")
+        .filter({ visible: true }),
     ).toBeVisible();
   });
 
@@ -40,9 +46,12 @@ test.describe("gas market page", () => {
 
   test("unknown parameters fall back to defaults", async ({ page }) => {
     await page.goto("/markets/gas?tab=%3Cscript%3E&area=zz");
-    await expect(
-      page.getByText("Is the TTF prompt curve in backwardation or contango?"),
-    ).toBeVisible();
+    // Role queries ignore hidden nodes (streamed content is inserted hidden before it is swapped in).
+    const title = page.getByRole("heading", {
+      name: "Is the TTF prompt curve in backwardation or contango?",
+    });
+    await expect(title).toBeVisible();
+    await expect(title).toHaveCount(1);
   });
 
   test("has no horizontal page scroll", async ({ page }) => {

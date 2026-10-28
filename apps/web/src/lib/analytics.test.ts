@@ -8,6 +8,7 @@ import {
   compareWithSeason,
   latest,
   percentileRank,
+  sharePercent,
   valueDaysBefore,
 } from "./analytics";
 
@@ -61,5 +62,13 @@ describe("changeFromPrevious", () => {
   it("uses the previous observation, whatever its date", () => {
     expect(changeFromPrevious(points)).toBe(4);
     expect(changeFromPrevious(points.slice(0, 1))).toBeNull();
+  });
+});
+
+describe("sharePercent", () => {
+  it("divides values of the same date and unit", () => {
+    expect(sharePercent(33702.63, 62749.73)).toBeCloseTo(53.71, 2);
+    expect(sharePercent(null, 100)).toBeNull();
+    expect(sharePercent(1, 0)).toBeNull();
   });
 });

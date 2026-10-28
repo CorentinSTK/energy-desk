@@ -42,6 +42,15 @@ export function changeFromPrevious(points: Points): number | null {
   return points[points.length - 1][1] - points[points.length - 2][1];
 }
 
+/**
+ * `part` as a percentage of `whole`, both for the same date and in the same unit (e.g. LNG inventory
+ * and declared maximum inventory, both GWh). Null when either is missing or `whole` is not positive.
+ */
+export function sharePercent(part: number | null, whole: number | null): number | null {
+  if (part === null || whole === null || whole <= 0) return null;
+  return (part / whole) * 100;
+}
+
 /** Share of `history` at or below `value`, in percent (0–100). Null for an empty history. */
 export function percentileRank(value: number, history: number[]): number | null {
   if (history.length === 0) return null;

@@ -9,14 +9,18 @@ import { freshnessStatus } from "@/lib/freshness";
 /**
  * Footer of a ChartCard from the series catalogue: source, unit as displayed, last observation,
  * freshness (net of publication lag), attribution (with the extraction date filled in) and the
- * unofficial flag. Several series from the same source share one footer.
+ * unofficial flag. Several series from the same source share one footer. Never throws: with no
+ * catalogue entry it returns the fallback, and the card shows its empty state.
  */
 export function chartInfo(
   series: CatalogSeries[],
   extractionDates: Record<string, string>,
   now: Date,
+  /** Shown when the series is not (yet) in the catalogue, e.g. a source not ingested yet. */
+  fallback: { source: string; unit: string },
 ): ChartSourceInfo {
-  const first = series[0];
+  const first = series.at(0);
+  if (!first) return fallback;
   const last = series
     .map((s) => s.lastObservation)
     .filter((ts): ts is string => ts !== null)

@@ -4,6 +4,7 @@ import {
   largestFlowTakeaway,
   monthlyBenchmarkTakeaway,
   promptSpreadTakeaway,
+  seasonalLevelTakeaway,
   storageTakeaway,
 } from "./takeaways";
 
@@ -87,5 +88,36 @@ describe("largestFlowTakeaway", () => {
     expect(
       largestFlowTakeaway("2026-10-27T00:00:00Z", [{ name: "A", value: null }], "GWh/d"),
     ).toBeNull();
+  });
+});
+
+describe("seasonalLevelTakeaway", () => {
+  const c = {
+    current: 4099.7,
+    mean: 3200,
+    min: 2500,
+    max: 3900,
+    yearsCount: 5,
+    deviation: 899.7,
+    position: "above" as const,
+  };
+  it("states the relative distance and the range position", () => {
+    expect(
+      seasonalLevelTakeaway("EU LNG send-out", "2026-10-26T00:00:00Z", c, "GWh/d", 0, "2021–2025"),
+    ).toBe(
+      "EU LNG send-out was 4,100 GWh/d on 26 Oct 2026, 28% above the 2021–2025 average for this date, above the 2021–2025 range.",
+    );
+  });
+  it("says close to average within the threshold", () => {
+    expect(
+      seasonalLevelTakeaway(
+        "X",
+        "2026-10-26T00:00:00Z",
+        { ...c, current: 3300, deviation: 100, position: "within" },
+        "GWh/d",
+        0,
+        "2021–2025",
+      ),
+    ).toBe("X was 3,300 GWh/d on 26 Oct 2026, close to the 2021–2025 average for this date.");
   });
 });

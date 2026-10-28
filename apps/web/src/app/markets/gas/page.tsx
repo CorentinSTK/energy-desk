@@ -7,11 +7,12 @@ import { ErrorState } from "@/components/error-state";
 import { ChartCardSkeleton, KpiCardSkeleton } from "@/components/loading-skeletons";
 import { MarketHeader } from "@/components/market-header";
 import { TabNav } from "@/components/markets/tab-nav";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { Card, CardContent } from "@/components/ui/card";
 import { isDatabaseConfigured } from "@/lib/data/db";
 
-import { type GasTab, gasHref, loadContext, parseGasParams, type StorageArea, TABS } from "./data";
+import { loadContext, type PageContext } from "@/lib/data/page-context";
+
+import { type GasTab, gasHref, parseGasParams, type StorageArea, TABS } from "./data";
 import {
   FlowsTab,
   GapsTab,
@@ -33,9 +34,6 @@ const KPI_COUNT = 4;
 export default function GasPage({ searchParams }: PageProps<"/markets/gas">) {
   return (
     <main className="mx-auto w-full max-w-7xl space-y-6 px-4 py-8">
-      <div className="flex justify-end">
-        <ThemeToggle />
-      </div>
       <Suspense fallback={<GasSkeleton />}>
         <GasContent searchParams={searchParams} />
       </Suspense>
@@ -52,7 +50,7 @@ async function GasContent({
   // Request time: freshness and "current year" depend on today, never on the build date.
   await connection();
   const now = new Date();
-  const ctx = isDatabaseConfigured() ? await loadContext(now) : null;
+  const ctx = isDatabaseConfigured() ? await loadContext(now, "gas") : null;
 
   if (!ctx) {
     return (
@@ -112,15 +110,7 @@ async function GasContent({
   );
 }
 
-function TabContent({
-  tab,
-  area,
-  ctx,
-}: {
-  tab: GasTab;
-  area: StorageArea;
-  ctx: NonNullable<Awaited<ReturnType<typeof loadContext>>>;
-}) {
+function TabContent({ tab, area, ctx }: { tab: GasTab; area: StorageArea; ctx: PageContext }) {
   switch (tab) {
     case "prices":
       return <PricesTab ctx={ctx} />;

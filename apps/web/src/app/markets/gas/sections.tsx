@@ -28,15 +28,9 @@ import {
 } from "@/lib/takeaways";
 import { cn } from "@/lib/utils";
 
-import {
-  attempt,
-  daysAgo,
-  ENTRY_POINTS,
-  gasHref,
-  type PageContext,
-  STORAGE_AREAS,
-  type StorageArea,
-} from "./data";
+import { attempt, daysAgo, type PageContext, seriesOf } from "@/lib/data/page-context";
+
+import { ENTRY_POINTS, gasHref, STORAGE_AREAS, type StorageArea } from "./data";
 
 const MAIN_HEIGHT = 320;
 const CHART_HEIGHT = 280;
@@ -57,10 +51,6 @@ function seasonalChartProps(rows: SeasonalRow[]) {
     average: rows.map((r) => r.mean),
     current: rows.map((r) => r.current),
   };
-}
-
-function seriesOf(ctx: PageContext, ...codes: string[]) {
-  return codes.map((c) => ctx.series.get(c)).filter((s) => s !== undefined);
 }
 
 const SEASONAL_METHOD = (rangeLabel: string) => (
@@ -182,11 +172,7 @@ export async function MainStorageChart({ ctx }: { ctx: PageContext }) {
         comparison && day ? storageTakeaway("EU", day, comparison, ctx.rangeLabel) : undefined
       }
       method={SEASONAL_METHOD(ctx.rangeLabel)}
-      info={
-        meta.length
-          ? chartInfo(meta, ctx.extractionDates, ctx.now)
-          : { source: "GIE AGSI+", unit: "%" }
-      }
+      info={chartInfo(meta, ctx.extractionDates, ctx.now, { source: "GIE AGSI+", unit: "%" })}
       status={status}
       height={MAIN_HEIGHT}
     >
@@ -247,7 +233,10 @@ export async function PricesTab({ ctx }: { ctx: PageContext }) {
             </p>
           </>
         }
-        info={chartInfo(seriesOf(ctx, "yahoo.ttf.m1_m2_spread"), ctx.extractionDates, ctx.now)}
+        info={chartInfo(seriesOf(ctx, "yahoo.ttf.m1_m2_spread"), ctx.extractionDates, ctx.now, {
+          source: "Yahoo Finance",
+          unit: "€/MWh",
+        })}
         status={spread === null ? "error" : spread.length === 0 ? "empty" : "ready"}
         height={CHART_HEIGHT}
       >
@@ -280,7 +269,10 @@ export async function PricesTab({ ctx }: { ctx: PageContext }) {
               </p>
             </>
           }
-          info={chartInfo(seriesOf(ctx, "fred.eu_gas_imf_monthly"), ctx.extractionDates, ctx.now)}
+          info={chartInfo(seriesOf(ctx, "fred.eu_gas_imf_monthly"), ctx.extractionDates, ctx.now, {
+            source: "FRED",
+            unit: "$/MMBtu",
+          })}
           status={imf === null ? "error" : imf.length === 0 ? "empty" : "ready"}
           height={CHART_HEIGHT}
         >
@@ -313,7 +305,10 @@ export async function PricesTab({ ctx }: { ctx: PageContext }) {
               </p>
             </>
           }
-          info={chartInfo(seriesOf(ctx, "eia.henry_hub_spot"), ctx.extractionDates, ctx.now)}
+          info={chartInfo(seriesOf(ctx, "eia.henry_hub_spot"), ctx.extractionDates, ctx.now, {
+            source: "EIA",
+            unit: "$/MMBtu",
+          })}
           status={henryHub === null ? "error" : henryHub.length === 0 ? "empty" : "ready"}
           height={CHART_HEIGHT}
         >
@@ -378,7 +373,10 @@ export async function StorageTab({ ctx, area }: { ctx: PageContext; area: Storag
             : undefined
         }
         method={SEASONAL_METHOD(ctx.rangeLabel)}
-        info={chartInfo(seriesOf(ctx, `agsi.${area}.full`), ctx.extractionDates, ctx.now)}
+        info={chartInfo(seriesOf(ctx, `agsi.${area}.full`), ctx.extractionDates, ctx.now, {
+          source: "GIE AGSI+",
+          unit: "%",
+        })}
         status={rows === null ? "error" : rows.every((r) => r.current === null) ? "empty" : "ready"}
         height={CHART_HEIGHT}
       >
@@ -489,9 +487,7 @@ export async function FlowsTab({ ctx }: { ctx: PageContext }) {
             </p>
           </>
         }
-        info={
-          metas.length ? chartInfo(metas, ctx.extractionDates, ctx.now) : { source: "ENTSOG", unit }
-        }
+        info={chartInfo(metas, ctx.extractionDates, ctx.now, { source: "ENTSOG", unit })}
         status={
           lines.length > 0 ? "ready" : flows.some((f) => f.points === null) ? "error" : "empty"
         }

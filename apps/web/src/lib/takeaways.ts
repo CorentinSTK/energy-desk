@@ -93,3 +93,29 @@ export function largestFlowTakeaway(
     missing > 0 ? ` ${missing} point${missing > 1 ? "s" : ""} had no value that day.` : "";
   return `On ${formatDate(date)} the largest of these entry points was ${top.name}, ${formatNumber(top.value, 0)} ${unit} (${formatNumber(share, 0)}% of the points shown).${note}`;
 }
+
+/** Within this relative distance (%) from the five-year mean, a level is "close to the average". */
+export const NEAR_AVERAGE_PCT = 5;
+
+/**
+ * Rule: level and date, then the relative distance from the five-year mean of the same calendar day
+ * ("close to" within NEAR_AVERAGE_PCT), and the range position when outside it.
+ */
+export function seasonalLevelTakeaway(
+  subject: string,
+  date: string,
+  c: SeasonalComparison,
+  unit: string,
+  decimals: number,
+  rangeLabel: string,
+): string {
+  const level = `${subject} was ${formatNumber(c.current, decimals)} ${unit} on ${formatDate(date)}`;
+  if (c.mean === 0) return `${level}.`;
+  const pct = (c.deviation / c.mean) * 100;
+  const vsMean =
+    Math.abs(pct) < NEAR_AVERAGE_PCT
+      ? `close to the ${rangeLabel} average for this date`
+      : `${formatNumber(Math.abs(pct), 0)}% ${pct < 0 ? "below" : "above"} the ${rangeLabel} average for this date`;
+  const range = c.position === "within" ? "" : `, ${c.position} the ${rangeLabel} range`;
+  return `${level}, ${vsMean}${range}.`;
+}

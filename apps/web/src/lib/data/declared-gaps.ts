@@ -42,6 +42,17 @@ export const DECLARED_GAPS: DeclaredGap[] = [
     markets: ["crude"],
   },
   {
+    title: "LNG prices (JKM, delivered North-West Europe)",
+    reason: "Delivered LNG prices are licensed assessments; no free redistributable source exists.",
+    markets: ["lng"],
+  },
+  {
+    title: "LNG cargoes by origin",
+    reason:
+      "Cargo-level data comes from licensed ship-tracking services. Terminal send-out into the grid is shown instead.",
+    markets: ["lng"],
+  },
+  {
     title: "EUA carbon price",
     reason: "No free, redistributable daily source confirmed yet.",
     markets: ["power"],
