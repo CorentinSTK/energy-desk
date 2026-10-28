@@ -6,7 +6,8 @@ import respx
 
 from worker.catalog import load_catalog
 from worker.http_client import make_client
-from worker.sources.gie_agsi import URL, GieAgsiSource, parse_rows
+from worker.sources.gie import AGSI_URL as URL
+from worker.sources.gie import ALSI_URL, GieAgsiSource, GieAlsiSource, field_value, parse_rows
 
 CATALOG = {s.code: s for s in load_catalog("gie_agsi").series}
 
@@ -56,3 +57,28 @@ def test_country_request_and_pagination() -> None:
         observations = source.fetch(client, CATALOG["agsi.de.storage"], None)
     assert sorted(o.value for o in observations) == [151.0, 152.0]
     assert route.calls[0].request.url.params["country"] == "DE"
+
+
+def test_nested_fields_are_read() -> None:
+    row = {
+        "gasDayStart": "2026-10-26",
+        "inventory": {"lng": "767.85", "gwh": "5141.57"},
+        "status": "C",
+    }
+    assert field_value(row, "inventory.gwh") == "5141.57"
+    assert field_value(row, "inventory.missing") is None
+    assert [o.value for o in parse_rows([row], "inventory.gwh", "alsi.fr.inventory")] == [5141.57]
+
+
+@respx.mock
+def test_alsi_uses_its_own_endpoint() -> None:
+    route = respx.get(ALSI_URL).mock(
+        return_value=httpx.Response(
+            200, json={"last_page": 1, "data": [{"gasDayStart": "2026-10-26", "sendOut": "967.3"}]}
+        )
+    )
+    spec = next(s for s in load_catalog("gie_alsi").series if s.code == "alsi.fr.send_out")
+    with make_client() as client:
+        observations = GieAlsiSource(api_key="test").fetch(client, spec, date(2026, 10, 1))
+    assert [o.value for o in observations] == [967.3]
+    assert route.call_count == 1

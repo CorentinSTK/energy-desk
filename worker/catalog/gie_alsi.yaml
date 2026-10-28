@@ -1,0 +1,243 @@
+# GIE ALSI — EU LNG terminals, daily per gas day. Same API and terms as AGSI+ (see gie_agsi.yaml):
+# free reuse, GIE / ALSI credit mandatory underneath the data (https://agsi.gie.eu/data-usage, read
+# 2026-10-28; the rules cover AGSI and ALSI). The United Kingdom has no data since Brexit (declared gap).
+# Units checked live: inventory and DTMI in GWh (`inventory.gwh`, `dtmi.gwh`), send-out in GWh/d.
+# Plausible ranges are generous physical bounds: they catch unit errors, not records.
+source: gie_alsi
+licence:
+  name: GIE Transparency Platform — free reuse, source referral mandatory
+  url: https://agsi.gie.eu/data-usage
+  attribution: "Source: GIE ALSI (Gas Infrastructure Europe)."
+licence_checked: 2026-10-28
+series:
+  - code: alsi.eu.inventory
+    name: EU LNG terminal inventory
+    commodity: lng
+    region: EU
+    unit: "GWh"
+    frequency: daily
+    source_ref: "EU|inventory.gwh"
+    description: LNG in storage at the terminals at the end of the gas day, in energy terms.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 80000
+  - code: alsi.eu.send_out
+    name: EU LNG send-out
+    commodity: lng
+    region: EU
+    unit: "GWh/d"
+    frequency: daily
+    source_ref: "EU|sendOut"
+    description: Regasified LNG sent into the grid during the gas day.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 15000
+  - code: alsi.eu.dtmi
+    name: EU LNG declared total maximum inventory
+    commodity: lng
+    region: EU
+    unit: "GWh"
+    frequency: daily
+    source_ref: "EU|dtmi.gwh"
+    description: Declared maximum LNG inventory (storage capacity) of the terminals.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 160000
+  - code: alsi.es.inventory
+    name: Spain LNG terminal inventory
+    commodity: lng
+    region: Spain
+    unit: "GWh"
+    frequency: daily
+    source_ref: "ES|inventory.gwh"
+    description: LNG in storage at the terminals at the end of the gas day, in energy terms.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 30000
+  - code: alsi.es.send_out
+    name: Spain LNG send-out
+    commodity: lng
+    region: Spain
+    unit: "GWh/d"
+    frequency: daily
+    source_ref: "ES|sendOut"
+    description: Regasified LNG sent into the grid during the gas day.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 5000
+  - code: alsi.es.dtmi
+    name: Spain LNG declared total maximum inventory
+    commodity: lng
+    region: Spain
+    unit: "GWh"
+    frequency: daily
+    source_ref: "ES|dtmi.gwh"
+    description: Declared maximum LNG inventory (storage capacity) of the terminals.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 60000
+  - code: alsi.fr.inventory
+    name: France LNG terminal inventory
+    commodity: lng
+    region: France
+    unit: "GWh"
+    frequency: daily
+    source_ref: "FR|inventory.gwh"
+    description: LNG in storage at the terminals at the end of the gas day, in energy terms.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 20000
+  - code: alsi.fr.send_out
+    name: France LNG send-out
+    commodity: lng
+    region: France
+    unit: "GWh/d"
+    frequency: daily
+    source_ref: "FR|sendOut"
+    description: Regasified LNG sent into the grid during the gas day.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 5000
+  - code: alsi.fr.dtmi
+    name: France LNG declared total maximum inventory
+    commodity: lng
+    region: France
+    unit: "GWh"
+    frequency: daily
+    source_ref: "FR|dtmi.gwh"
+    description: Declared maximum LNG inventory (storage capacity) of the terminals.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 40000
+  - code: alsi.it.inventory
+    name: Italy LNG terminal inventory
+    commodity: lng
+    region: Italy
+    unit: "GWh"
+    frequency: daily
+    source_ref: "IT|inventory.gwh"
+    description: LNG in storage at the terminals at the end of the gas day, in energy terms.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 10000
+  - code: alsi.it.send_out
+    name: Italy LNG send-out
+    commodity: lng
+    region: Italy
+    unit: "GWh/d"
+    frequency: daily
+    source_ref: "IT|sendOut"
+    description: Regasified LNG sent into the grid during the gas day.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 3000
+  - code: alsi.it.dtmi
+    name: Italy LNG declared total maximum inventory
+    commodity: lng
+    region: Italy
+    unit: "GWh"
+    frequency: daily
+    source_ref: "IT|dtmi.gwh"
+    description: Declared maximum LNG inventory (storage capacity) of the terminals.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 20000
+  - code: alsi.nl.inventory
+    name: Netherlands LNG terminal inventory
+    commodity: lng
+    region: Netherlands
+    unit: "GWh"
+    frequency: daily
+    source_ref: "NL|inventory.gwh"
+    description: LNG in storage at the terminals at the end of the gas day, in energy terms.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 10000
+  - code: alsi.nl.send_out
+    name: Netherlands LNG send-out
+    commodity: lng
+    region: Netherlands
+    unit: "GWh/d"
+    frequency: daily
+    source_ref: "NL|sendOut"
+    description: Regasified LNG sent into the grid during the gas day.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 3000
+  - code: alsi.nl.dtmi
+    name: Netherlands LNG declared total maximum inventory
+    commodity: lng
+    region: Netherlands
+    unit: "GWh"
+    frequency: daily
+    source_ref: "NL|dtmi.gwh"
+    description: Declared maximum LNG inventory (storage capacity) of the terminals.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 20000
+  - code: alsi.be.inventory
+    name: Belgium LNG terminal inventory
+    commodity: lng
+    region: Belgium
+    unit: "GWh"
+    frequency: daily
+    source_ref: "BE|inventory.gwh"
+    description: LNG in storage at the terminals at the end of the gas day, in energy terms.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 10000
+  - code: alsi.be.send_out
+    name: Belgium LNG send-out
+    commodity: lng
+    region: Belgium
+    unit: "GWh/d"
+    frequency: daily
+    source_ref: "BE|sendOut"
+    description: Regasified LNG sent into the grid during the gas day.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 3000
+  - code: alsi.be.dtmi
+    name: Belgium LNG declared total maximum inventory
+    commodity: lng
+    region: Belgium
+    unit: "GWh"
+    frequency: daily
+    source_ref: "BE|dtmi.gwh"
+    description: Declared maximum LNG inventory (storage capacity) of the terminals.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 20000
+  - code: alsi.de.inventory
+    name: Germany LNG terminal inventory
+    commodity: lng
+    region: Germany
+    unit: "GWh"
+    frequency: daily
+    source_ref: "DE|inventory.gwh"
+    description: LNG in storage at the terminals at the end of the gas day, in energy terms.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 10000
+  - code: alsi.de.send_out
+    name: Germany LNG send-out
+    commodity: lng
+    region: Germany
+    unit: "GWh/d"
+    frequency: daily
+    source_ref: "DE|sendOut"
+    description: Regasified LNG sent into the grid during the gas day.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 3000
+  - code: alsi.de.dtmi
+    name: Germany LNG declared total maximum inventory
+    commodity: lng
+    region: Germany
+    unit: "GWh"
+    frequency: daily
+    source_ref: "DE|dtmi.gwh"
+    description: Declared maximum LNG inventory (storage capacity) of the terminals.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 20000
