@@ -30,3 +30,4 @@ __pycache__/
 # Logs and build output
 build/
 npm-debug.log*
+blob-report/
