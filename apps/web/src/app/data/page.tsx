@@ -12,7 +12,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getRecentRuns, getSeriesCatalog } from "@/lib/data/catalog";
-import { DatabaseNotConfiguredError } from "@/lib/data/db";
+import { isDatabaseConfigured } from "@/lib/data/db";
 import { DECLARED_GAPS } from "@/lib/data/declared-gaps";
 import { parseFilters } from "@/lib/data/filters";
 import { formatNumber } from "@/lib/format";
@@ -57,18 +57,21 @@ async function Catalog({ searchParams }: { searchParams: PageProps<"/data">["sea
   const filters = parseFilters(await searchParams);
   // Render at request time: freshness depends on the current time, never the build time.
   await connection();
+  const configured = isDatabaseConfigured();
   let data;
   try {
-    data = await Promise.all([getSeriesCatalog(), getRecentRuns()]);
-  } catch (error) {
-    const notConfigured = error instanceof DatabaseNotConfiguredError;
+    data = configured ? await Promise.all([getSeriesCatalog(), getRecentRuns()]) : undefined;
+  } catch {
+    data = undefined;
+  }
+  if (data === undefined) {
     return (
       <Card>
         <CardContent>
           <ErrorState
             title="The data catalogue is unavailable"
             description={
-              notConfigured
+              !configured
                 ? "The database connection is not configured for this deployment."
                 : "Our database did not respond. Try again in a few minutes."
             }
