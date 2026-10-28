@@ -1,0 +1,380 @@
+# BUILD_SPEC — Energy Desk (working name)
+
+This file is the single source of truth for what we are building, why, and in what order.
+Read it fully before planning any work. When a decision changes, update this file in the same commit.
+
+---
+
+## 1. Vision
+
+A web platform that tracks the world's main energy markets — crude oil, refined products, natural gas,
+LNG, LPG and power — using free public data, and lets the user:
+
+1. **See** where each market stands today, in under a minute, from a single home page.
+2. **Understand** why: stocks against seasonal norms, curve structure, flows, positioning.
+3. **Test** ideas on history: rule backtests and Monte-Carlo trade simulations.
+4. **Forecast** a small set of variables, and **score every forecast against what actually happened**,
+   publicly and permanently.
+
+### Audience
+
+- **Primary:** an energy trader or analyst (e.g. a crude oil desk) opening the site between two calls.
+  They know the market better than we do. Every number must be correct, sourced, and in the unit they expect.
+- **Secondary:** a recruiter or hiring manager judging the author's skills. They will spend 2–5 minutes.
+  The home page and one market page must impress in that time.
+
+### What "good" looks like
+
+- Simpler to read than a typical data dashboard, not more complex. Less information on screen, better chosen.
+- Every chart answers one question, stated in its title, with a one-sentence plain-English takeaway.
+- Honest about data gaps: a missing market is shown as missing, never estimated silently.
+- Fast: pages load in under 2 seconds; charts stay smooth with 10+ years of daily data.
+- The author can explain every screen, model and number. Favour clarity over cleverness.
+
+### Non-goals
+
+- No paid or licensed data (Bloomberg, Platts, Argus, ICE settlements, broker sheets). Never commit such data.
+- No trading recommendations or "signals" presented as advice. The Lab is a research tool.
+- No user accounts in phase 1. The site is public and read-only.
+
+---
+
+## 2. Product principles (UX)
+
+1. **One question per screen.** Each page and each card has a single job, stated in its title
+   (e.g. "Are US crude stocks tight for the season?").
+2. **Headline first, detail on demand.** Top of page: 3–5 KPI cards and one main chart.
+   Everything else sits below, in tabs, accordions or drawers. Never show 12 charts at once.
+3. **A takeaway under every chart.** One generated sentence in plain English, e.g.
+   "Cushing stocks are 18% below their 5-year average for this week, the lowest since 2022."
+   Takeaways are computed from data with explicit rules, never free-form text.
+4. **Context on every number.** A value is always shown with its change and its comparison
+   (vs last week, vs 5-year seasonal average, percentile in history).
+5. **Source and freshness everywhere.** Under every chart: source, unit, last observation date,
+   and a freshness badge (fresh / delayed / stale).
+6. **Consistent visual language.** One colour per commodity across the whole site; one chart grammar;
+   identical layout for every market page.
+7. **Shareable state.** Filters, date ranges and Lab parameters live in the URL.
+8. **Graceful states.** Every component has loading (skeleton), empty, error and stale states.
+9. **Mobile works.** Read-only views must be usable on a phone; the Lab can be desktop-first.
+10. **Explain the method.** Each chart has an "i" popover: what it shows, how it is computed, caveats.
+
+---
+
+## 3. Information architecture
+
+**Focus: Europe.** Gas, LNG and power are covered for Europe; crude oil and products are covered as
+global markets (they are priced globally). Non-European gas and power markets are phase 2.
+
+```
+/                         Home — Europe map (with a world view for oil) + "today in energy" summary
+/markets/gas              European natural gas (storage by country, flows, hubs)
+/markets/lng              European LNG (terminal inventory and send-out)
+/markets/power            Power — DE, FR, GB (zone selector in the URL: ?zone=de|fr|gb)
+/markets/crude            Crude oil (global view)
+/markets/products         Refined products (gasoline, diesel/gasoil, jet, cracks)
+/markets/lpg              LPG (propane)                       [phase 2]
+/forecasts                Forecast registry and live scoreboard
+/forecasts/[id]           One forecast model: method, history, accuracy vs realised
+/lab                      Research lab: rule backtests and trade simulator
+/data                     Data catalogue: every series, source, unit, frequency, licence, freshness, gaps
+/methodology              How everything is computed; known limitations; data licensing
+/about                    About the project and the author
+```
+
+### Home page
+
+- A map (no tile provider needed: TopoJSON + d3-geo or react-simple-maps) with two views:
+  - **Europe (default):** gas hubs (TTF, NBP, THE, PEG, …), power zones (DE-LU, FR, GB),
+    LNG terminals (from GIE ALSI) and major gas entry points (from ENTSOG: Norwegian landfalls,
+    LNG and pipeline entries).
+  - **World:** oil benchmarks (Brent/North Sea, Cushing, …) and chokepoints (Hormuz, Bab el-Mandeb,
+    Suez, Malacca, Panama).
+  - A colour scale chosen by the user: today's move, percentile vs history, or stocks vs seasonal.
+    A metric that has no free official data for a point (e.g. daily NBP/THE/PEG prices) shows that
+    point as "no data", never estimated. Storage vs seasonal (AGSI+, by country) is the default metric.
+- Click a hub, zone or terminal → side drawer with its key numbers and a link to the market page.
+- "Today in energy": 4–6 auto-generated one-line takeaways across markets (biggest moves, extremes).
+- A compact strip of benchmark prices with daily change, each labelled with its price type and source.
+
+### Market page template (identical structure for every market)
+
+1. **Header:** market name, 3–5 KPI cards (price, change, curve structure, stocks vs seasonal, …).
+2. **Main chart:** the one chart that best summarises the market now.
+3. **Tabs:**
+   - *Prices & curve* — benchmarks, forward curve today vs 1 week / 1 month ago, time spreads.
+   - *Balance & stocks* — stocks vs 5-year seasonal range, supply/demand components where available.
+   - *Flows* — imports, exports, pipeline or terminal flows where available.
+   - *Positioning* — ICE Futures Europe Commitments of Traders first (Brent, gasoil, TTF if covered);
+     CFTC COT for WTI and Henry Hub.
+   - *Data gaps* — what is not covered and why (including licensing reasons).
+4. **Related:** links to relevant forecasts and Lab presets.
+
+A tab with no data for a market (e.g. a forward curve for power: exchange futures are licensed) is kept
+and shows a `DataGapNotice` explaining why, so every market page keeps the same structure.
+
+### Methodology page
+
+Includes a **Data licensing** section: exchange prices (CME, ICE, EEX, EPEX) are licensed and are not
+redistributed here; what we show instead (official spot and fundamentals, derived indicators from
+unofficial futures data); and the licence and attribution of every source.
+
+---
+
+## 4. Data sources (free)
+
+Always verify an endpoint live before building on it; APIs change. Record every series in the
+`series` catalogue table with its source, unit, frequency, **licence and required attribution**.
+Respect each provider's terms of use.
+
+The "Licence" column is what we expect. **It is confirmed from the provider's own terms when the source is
+integrated**, and recorded in `series.license` / `series.attribution` (see §5). Items marked "verify" are
+not yet confirmed. EIA v2 series are addressed by route + facets (e.g. `petroleum/pri/spt`, `series=RWTC`);
+the v1-style IDs below are kept as human-readable references.
+
+**Phase 1**
+
+| Market | Data | Source | Access | Frequency | Licence (expected) |
+|---|---|---|---|---|---|
+| Gas | EU gas storage by country and facility | GIE AGSI+ (`agsi.gie.eu/api`) | free key (`x-key` header) | daily | GIE terms — verify |
+| Gas | EU pipeline flows at interconnection and entry points | ENTSOG Transparency (`transparency.entsog.eu/api/v1`) | none | daily | ENTSOG terms — verify |
+| Gas | Official monthly benchmark (TTF / Europe gas) | World Bank Pink Sheet; FRED (IMF series) | none / free key | monthly | CC BY 4.0 (World Bank); per series (FRED) — verify |
+| Gas | Henry Hub spot (context only) | EIA | free key | daily | US public domain |
+| LNG | EU LNG terminal inventory and send-out | GIE ALSI (`alsi.gie.eu/api`) | free key | daily | GIE terms — verify |
+| Power | DE-LU, FR day-ahead prices (A44), load (A65), generation by type (A75) | ENTSO-E Transparency (`web-api.tp.entsoe.eu/api`) | free token by email request | hourly | ENTSO-E terms — verify |
+| Power | DE prices, consumption, generation | SMARD (Bundesnetzagentur) | none | hourly | CC BY 4.0 (confirmed via Energy-Charts metadata) |
+| Power | FR consumption, generation by fuel, exchanges | ODRÉ / éCO2mix (RTE, Opendatasoft API) | none | 15-min / hourly | Licence Ouverte v2.0 (confirmed) |
+| Power | Cross-check and fallback for DE/FR | Energy-Charts (Fraunhofer ISE, `api.energy-charts.info`) | none | hourly | per dataset, returned in `license_info` (DE price: CC BY 4.0 from SMARD) |
+| Power | GB market index price (MID), system prices, generation by fuel (FUELHH), demand | Elexon Insights (`data.elexon.co.uk/bmrs/api/v1`) | none | half-hourly | BSC Open Data Licence — verify |
+| Crude | WTI, Brent spot (`RWTC`, `RBRTE`) | EIA API v2 | free key | daily | US public domain — verify notes on third-party prices |
+| Crude | US stocks: commercial (`WCESTUS1`), Cushing (`W_EPC0_SAX_YCUOK_MBBL`), SPR (`WCSSTUS1`) | EIA WPSR | free key | weekly | US public domain |
+| Crude | US production (`WCRFPUS2`), imports/exports, refinery utilisation (`WPULEUS3`) | EIA WPSR | free key | weekly | US public domain |
+| Crude | World balance, OPEC production and spare capacity | EIA STEO | free key | monthly | US public domain |
+| Products | Gasoline, ULSD, jet spot (NYH, USGC) | EIA | free key | daily | US public domain |
+| Products | US gasoline (`WGTSTUS1`) and distillate (`WDISTUS1`) stocks, product supplied | EIA WPSR | free key | weekly | US public domain |
+| Products | EU consumer fuel prices by member state (with and without taxes) | European Commission Weekly Oil Bulletin | none | weekly | Commission reuse policy (CC BY 4.0) — verify |
+| All | Positioning: ICE Futures Europe COT (Brent, gasoil, TTF if covered) — **priority** | ICE public COT reports | none | weekly | ICE terms — verify redistribution |
+| All | Positioning: CFTC COT disaggregated (WTI, Henry Hub) | CFTC Public Reporting API (Socrata) | none | weekly | US public domain |
+| All | FX for unit conversion (EUR/USD, GBP/USD, GBP/EUR) | ECB reference rates; FRED | none / free key | daily | ECB reuse policy — verify |
+| All | Macro and volatility: USD index, rates, OVX | FRED | free key | daily | per series; some are copyrighted (e.g. CBOE OVX) — verify each |
+| All | Weather for demand models (HDD/CDD) | Open-Meteo (archive + forecast) | none | daily | CC BY 4.0 |
+| Futures | Front month and individual contracts where available (see note) | Yahoo Finance via `yfinance` | unofficial | daily, delayed | **not licensed for redistribution** — see ADR 0003 |
+
+Futures note (checked 2026-10-28): on Yahoo, `BZ=F` and `TTF=F` are **NYMEX** contracts (a financially
+settled Brent look-alike and the NYMEX Dutch TTF contract), not ICE Brent or ICE Endex TTF; `CL`, `HO`, `RB`,
+`NG` are NYMEX. ICE gasoil and NBP are not available on Yahoo. Labels must name the actual contract.
+
+**Phase 2:** LPG (Mont Belvieu propane spot, US propane stocks `WPRSTUS1`, EIA); other European power zones
+(ENTSO-E); non-European markets: US gas storage and US LNG exports (EIA), US power (EIA-930), Japan power
+(JEPX); EEX MiFID position reports for German power futures (verify terms); EUA carbon price source (EEX
+auction results — verify terms).
+
+Rules:
+- **Yahoo Finance is unofficial and optional** (ADR 0003). Use it only for futures where no free official
+  source exists. Show derived indicators (calendar spreads, curve structure, percentiles, z-scores) in
+  preference to raw price tables. Label every affected chart "Yahoo Finance — unofficial, delayed,
+  research only". If a fetch fails or is blocked, the UI shows the gap; nothing breaks.
+- **Spot, stocks and fundamentals come only from official sources.**
+- **Never mix price types in one spread** (spot vs futures, physical vs paper, auction vs index).
+  Every price series records its `price_kind`; spreads are only computed between series of the same kind.
+  Consequence: no clean spark/dark spreads in phase 1 (day-ahead power is spot; the only daily gas
+  price is a futures contract). GB "day-ahead" is the Elexon market index price (MID), labelled as such,
+  not the N2EX/EPEX auction price.
+- **Licences:** confirm each source's licence when integrating it; store it in `series`; show the
+  attribution under every chart that uses the series (in the `ChartCard` footer). If a source's terms
+  forbid redistribution, the source is not used.
+- **Units:** store in the source unit, convert in one place (`units` module). Display conventions:
+  crude and products $/bbl (products also ¢/gal or $/t where the market quotes them), European gas €/MWh
+  (NBP in p/therm where shown), US gas $/MMBtu, power €/MWh (DE, FR) and £/MWh (GB), storage in TWh and
+  % full, flows in GWh/d, oil volumes in mb. Currency conversion uses the FX series of the same date only.
+- **Seasonal norms:** "vs 5Y" means same week (weekly data) or same month (monthly data) over the five
+  prior years, excluding the current year. Document any excluded years (e.g. 2020).
+- An existing Python project by the author contains working EIA/FRED clients, series IDs, seasonal-norm
+  logic and futures-curve reconstruction: https://github.com/CorentinSTK/oil-tracker. Reuse what is sound;
+  rewrite what is not. Credit it in the README.
+
+---
+
+## 5. Architecture
+
+```
+apps/web/      Next.js (App Router, TypeScript strict) — the site, deployed on Vercel
+worker/        Python 3.12 — ingestion, transforms, forecasts, backtests; run by GitHub Actions cron
+db/            SQL migrations for Supabase Postgres (versioned, applied in order)
+docs/          Methodology notes, ADRs (architecture decision records), session log
+.github/       CI (lint, typecheck, tests, build) and scheduled ingestion workflows
+```
+
+Monorepo with npm workspaces (one JS app; no Turborepo needed). Node 24 LTS, pinned in `.nvmrc` and CI.
+The GitHub repository is public. See ADR 0001.
+
+### Hosting and region (ADR 0001)
+
+- **Frankfurt** for both: Supabase `eu-central-1` and Vercel functions `fra1` (both on AWS eu-central-1),
+  so database round-trips stay inside one AWS region. Static pages are served from Vercel's global edge
+  network regardless of the function region.
+- Vercel's default function region is `iad1` (US East); it must be set to `fra1` in the project settings
+  or `vercel.json`. Check that it is set at deploy.
+
+### Front end (`apps/web`)
+
+- Next.js (latest stable, App Router), React Server Components for data fetching, TypeScript `strict`.
+- Tailwind CSS + shadcn/ui (Radix primitives) for accessible components; lucide-react icons.
+- Charts: Apache ECharts through a thin in-house wrapper over `echarts/core` (tree-shaken; ADR 0002)
+  for analytical charts — handles large time series, zoom, crosshair tooltips. One shared chart theme.
+- Map: `react-simple-maps` or `d3-geo` with a bundled world TopoJSON (no API keys).
+- State in the URL (`nuqs` or equivalent). Server-side caching with `revalidate` matched to data frequency.
+- Fonts: Inter (UI) with tabular numerals for all figures; JetBrains Mono only for code.
+- Dark and light themes; dark by default (trading-desk convention), both fully designed.
+
+### Data and compute (`worker/`, `db/`)
+
+- **Supabase Postgres** as the only datastore. Public read via a read-only role and Row Level Security;
+  writes only from the worker with the service key (GitHub Actions secret, never in the repo).
+- **Worker:** Python 3.12 (pinned with uv: `.python-version` + `requires-python`), `uv` for dependencies,
+  `httpx` + `tenacity` (retries, backoff), `pandas`, `pydantic` for config and validation,
+  `statsmodels` / `scikit-learn` / `lightgbm` for models. No deep learning in phase 1.
+- **Scheduling:** GitHub Actions cron jobs per source (e.g. daily prices, weekly EIA on Wednesdays after
+  release, daily power after the day-ahead auction). Each run writes an `ingest_runs` row
+  (status `ok` / `partial` / `failed` / `skipped`, rows, duration, error). Cron start times can drift by
+  several minutes; jobs must be idempotent (upserts on the primary key).
+- **Cron keep-alive (M1, ADR 0001):** GitHub disables scheduled workflows in a public repository after
+  60 days without repository activity. A monthly workflow commits a small state file
+  (`ops/heartbeat.json`: date and last status per source) to a dedicated `ops/heartbeat` branch, so `main`
+  history and branch protection are unaffected. `/data` shows stale sources, so a silent stop is visible.
+  The mechanism is verified in M1 (that a bot commit counts as activity); if not, fall back to a
+  re-enable call through the GitHub API.
+- **Heavy computation** (backtests, simulations) runs in the worker or in a Next.js route handler with
+  strict time limits; cache results keyed by parameters.
+
+### Core schema (first version)
+
+```
+series(id, code, name, commodity, region, unit, frequency, source, source_ref, description,
+       is_unofficial, price_kind,                                  -- spot | futures | index | assessment | null
+       license, license_url, attribution)                          -- attribution null = none required
+observations(series_id, ts, value, ingested_at)                  -- PK (series_id, ts)
+futures_contracts(root, contract, expiry, ts, settle, ingested_at)
+ingest_runs(id, source, started_at, finished_at, status, rows_written, error)
+forecast_models(id, name, target_series_id, horizon, method, description, version)
+forecasts(id, model_id, issued_at, target_ts, p05, p25, p50, p75, p95)   -- immutable once written
+forecast_scores(forecast_id, realised_value, abs_error, in_80, in_90, scored_at)
+```
+
+Volume budget: Supabase free tier is limited (~500 MB). Store power at hourly resolution, keep raw
+API payloads out of the database, and add indexes only where queries need them.
+
+`futures_contracts` (Yahoo data) is **not granted to the public read-only role**. The site reads only
+derived views (spreads, curve structure, percentiles, z-scores) built from it (ADR 0003).
+Supabase free projects pause after about a week without activity; the daily ingestion keeps them active.
+
+---
+
+## 6. Forecasts and scoring
+
+The point is not to beat the market; it is to be **honest and measurable**.
+
+- Every forecast is stored at issue time and **never edited**. It is scored automatically when the
+  realised value arrives.
+- Every model is compared with **simple baselines** (last value, seasonal naive, 5-year seasonal average).
+  A model is only shown as useful if it beats its baseline out of sample.
+- Report: MAE, RMSE, bias, skill vs baseline, and interval coverage (did 90% intervals contain 90%?).
+- Historical performance comes from **walk-forward backtests** (expanding window, no look-ahead);
+  live performance from the registry. Show both, clearly labelled.
+
+Initial models (phase 1), chosen because the target is published on a fixed schedule:
+1. **US weekly crude stock change** (EIA WPSR, Wednesday): seasonal baseline + regression on refinery
+   runs, imports/exports and production trends.
+2. **France daily power demand** (ODRÉ/éCO2mix, published daily): weather-driven regression on
+   population-weighted HDD/CDD from Open-Meteo, with day-of-week and holiday effects. France's electric
+   heating makes demand strongly temperature-sensitive, which keeps the model explainable.
+3. **EU gas storage fill level in 30 days** (GIE): seasonal trajectory + recent injection pace.
+
+Phase 2: day-ahead power price for 1–2 European zones (ENTSO-E) with load and renewables forecasts.
+
+---
+
+## 7. Lab
+
+Two tools, both with honest outputs (costs, drawdowns, sample size, caveats).
+
+1. **Rule backtester** on spreads and outright series. Presets: WTI M1–M2 spread vs Cushing stocks,
+   Brent–WTI, 3-2-1 crack, Henry Hub vs storage surprise, TTF vs EU storage. The user sets entry/exit
+   rules from a small, safe rule grammar (thresholds, z-scores, percentiles, crossovers) — never
+   arbitrary code. Output: equity curve, drawdown, trade list, hit rate, average win/loss, Sharpe,
+   turnover, cost sensitivity, and an explicit "in-sample" warning.
+2. **Trade simulator** (Monte-Carlo): pick a series, an entry level, a stop and a target; simulate paths by
+   block bootstrap of historical changes (regime selectable: full history, crisis periods, calm periods);
+   show fill probability, P&L distribution, probability of target vs stop, expected time in trade.
+
+---
+
+## 8. Design system
+
+- **Tokens** (CSS variables): background, surface, border, text primary/secondary/muted, accent,
+  positive/negative, warning; commodity colours (crude, products, natural gas, LNG, LPG, power) used
+  identically everywhere. Validate contrast (WCAG AA) in both themes.
+- **Charts:** one axis per chart (no dual axes); units in the title or axis; thin lines; recessive grid;
+  crosshair tooltip with exact values and dates; source + last date under each chart; seasonal charts
+  show the 5-year min–max band and average with the current year highlighted.
+- **Components to build once and reuse:** `KpiCard`, `ChartCard` (title, takeaway, chart, footer with
+  source/attribution/freshness/methodology, and the unofficial-data label where it applies), `FreshnessBadge`, `MethodPopover`, `MarketHeader`, `DataGapNotice`,
+  `Skeleton`, `ErrorState`, `EmptyState`.
+- **Numbers:** tabular numerals; consistent precision per unit; thousands separators; explicit signs on
+  changes; percentiles as "92nd pct".
+- **Motion:** subtle and fast (≤150 ms); no decorative animation.
+- Before building pages, produce a small style-guide page (`/styleguide`, not linked publicly) showing
+  every component in both themes.
+
+---
+
+## 9. Quality bar
+
+- TypeScript `strict`, ESLint, Prettier; Python `ruff` (lint + format), `mypy` on the worker core, `pytest`.
+- Data validation on every ingest: schema, units, plausible ranges, duplicates, gaps; failures are logged
+  in `ingest_runs` and surfaced on `/data`, never silently dropped.
+- Unit tests for every transform (seasonal norms, spreads, unit conversions, curve rebuild, scoring).
+- Playwright smoke tests for the main pages; Lighthouse ≥ 90 on performance and accessibility.
+- CI on every push: lint, typecheck, tests, build. Main branch always deployable.
+- No secrets in the repo: `.env.example` documents every variable; real values live in Vercel and
+  GitHub Actions secrets.
+- Readable code over clever code; short functions; docstrings on non-obvious logic; no dead code.
+
+---
+
+## 10. Milestones
+
+Work one milestone at a time. Each ends with a demo to the user and their approval before the next.
+
+| # | Milestone | Done when |
+|---|---|---|
+European markets come first: they are the focus and the most differentiating part for European desks.
+
+| # | Milestone | Done when |
+|---|---|---|
+| M0 | Scaffold, design system, CI, deploy | Monorepo builds; `/styleguide` (noindex, synthetic demo data with a "DEMO — synthetic data, not market data" banner on every card) shows all core components in both themes; CI green; site live on Vercel (`fra1`) |
+| M1 | Data platform | Schema migrated (with `price_kind`, `license`, `attribution`); read-only role and RLS; ingestion framework with retries, rate-limit handling, validation and `ingest_runs`; cron keep-alive verified; units and FX modules; GIE AGSI+, EIA and FRED live; `/data` shows catalogue, licence, freshness and gaps |
+| M2 | European gas & LNG | `/markets/gas` (storage by country vs seasonal, ENTSOG flows, official monthly benchmark, TTF derived indicators from Yahoo, labelled) and `/markets/lng` (GIE ALSI); ICE COT for TTF if covered and redistributable |
+| M3 | European power | `/markets/power` for DE, FR, GB: day-ahead prices, load, generation mix (ENTSO-E, SMARD, ODRÉ, Elexon; Energy-Charts as cross-check); GB labelled as Elexon MID |
+| M4 | Crude & products | Both pages per template (global view): EIA spot and stocks, EC Weekly Oil Bulletin, Yahoo curve indicators (labelled), ICE COT (Brent, gasoil) and CFTC COT (WTI) |
+| M5 | Home | Europe map (hubs, power zones, LNG terminals, entry points) + world view (oil, chokepoints), metric selector, drawers, "today in energy" |
+| M6 | Forecast registry | Three phase-1 models (§6, see §11), walk-forward backtests, live registry, scoreboard pages |
+| M7 | Lab v1 | Rule backtester with European presets and the trade simulator |
+| M8 | Polish & launch | Methodology (incl. Data licensing) and About pages, README with screenshots, Lighthouse ≥ 90, mobile pass, error monitoring |
+| P2 | Phase 2 | LPG; other European power zones; non-European markets (US gas and power, Asia); day-ahead power price forecast; carbon (EUA) if a redistributable source exists |
+
+---
+
+## 11. Open decisions (ask the user when relevant)
+
+- Final project name and domain. ("Energy Desk" is the working name.)
+- Which other European power zones in phase 2.
+- Whether to add a French/English language toggle.
+- **Lab presets (§7):** replace US-centric presets with European ones (TTF M1–M2 vs EU storage,
+  DE–FR day-ahead spread, Brent M1–M2) — to confirm at M7.
+- ICE COT: confirm that the reports may be redistributed, and whether TTF is covered (M2).
+- Carbon (EUA): no confirmed free, redistributable daily price yet (needed for clean spark/dark spreads).
+
+Decided on 2026-10-28 (see ADRs 0001–0004): Europe focus; public repository; Python 3.12; Frankfurt region;
+Yahoo Finance policy; licence tracking per series; milestones M0–M8; forecast model 2 is France daily
+power demand (replacing US gas storage).
