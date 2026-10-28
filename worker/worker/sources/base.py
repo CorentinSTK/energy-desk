@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from datetime import date, timedelta
 
 import httpx
+import psycopg
 
 from worker.catalog import SeriesSpec
 from worker.http_client import make_client
@@ -27,3 +28,8 @@ class Source(ABC):
         self, client: httpx.Client, spec: SeriesSpec, since: date | None
     ) -> list[Observation]:
         """Observations for one series from `since` (inclusive), or the full history if None."""
+
+    def persist(self, conn: psycopg.Connection) -> int:
+        """Store data that is not a series (e.g. raw futures settlements). Called after the series
+        are written, in non-dry runs only. Returns the number of rows written."""
+        return 0

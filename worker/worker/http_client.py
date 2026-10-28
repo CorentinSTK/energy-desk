@@ -97,3 +97,22 @@ def get(client: httpx.Client, url: str, params: dict[str, Any] | None = None) ->
 
 def get_json(client: httpx.Client, url: str, params: dict[str, Any] | None = None) -> Any:
     return get(client, url, params).json()
+
+
+def get_once(
+    client: httpx.Client, url: str, params: dict[str, Any] | None = None
+) -> httpx.Response:
+    """GET without retries, for unofficial sources that must not be hammered (ADR 0003).
+
+    Network errors and non-2xx answers (including 429) raise SourceHTTPError immediately.
+    """
+    try:
+        response = client.get(url, params=params)
+    except httpx.TransportError as error:
+        raise SourceHTTPError(f"{type(error).__name__} for {url}: {error}") from error
+    if response.is_success:
+        return response
+    raise SourceHTTPError(
+        f"HTTP {response.status_code} from {response.request.url}: {response.text[:300]}",
+        status_code=response.status_code,
+    )

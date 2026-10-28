@@ -20,12 +20,14 @@ from worker.sources.ecb import EcbSource
 from worker.sources.eia import EiaSource
 from worker.sources.fred import FredSource
 from worker.sources.gie_agsi import GieAgsiSource
+from worker.sources.yahoo import YahooSource
 
 SOURCES: dict[str, Callable[[], Source]] = {
     "ecb": EcbSource,
     "eia": EiaSource,
     "fred": FredSource,
     "gie_agsi": GieAgsiSource,
+    "yahoo": YahooSource,
 }
 
 EXIT_OK = 0
