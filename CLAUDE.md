@@ -67,6 +67,8 @@ uv sync
 uv run pytest
 uv run ruff check . && uv run ruff format --check . && uv run mypy
 uv run python -m worker.ingest --source eia --dry-run
+uv run python -m worker.migrate --status   # then without --status to apply
+# database tests need a disposable Postgres: TEST_DATABASE_URL=postgresql://postgres@localhost:54329/postgres
 ```
 
 ## Git workflow

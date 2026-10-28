@@ -4,7 +4,11 @@ version = "0.1.0"
 description = "Ingestion, transforms, forecasts and backtests for Energy Desk."
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
-dependencies = []
+dependencies = [
+    "psycopg[binary]>=3.3.6",
+    "pydantic>=2.14.1",
+    "pydantic-settings>=2.16.1",
+]
 
 [dependency-groups]
 dev = [
