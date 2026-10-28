@@ -136,9 +136,9 @@ the v1-style IDs below are kept as human-readable references.
 
 | Market | Data | Source | Access | Frequency | Licence (expected) |
 |---|---|---|---|---|---|
-| Gas | EU gas storage by country and facility | GIE AGSI+ (`agsi.gie.eu/api`) | free key (`x-key` header) | daily | GIE terms — verify |
+| Gas | EU gas storage by country and facility | GIE AGSI+ (`agsi.gie.eu/api`) | free key (`x-key` header) | daily | Free reuse, "GIE AGSI" credit mandatory (confirmed 2026-10-28). No GB data since Brexit. |
 | Gas | EU pipeline flows at interconnection and entry points | ENTSOG Transparency (`transparency.entsog.eu/api/v1`) | none | daily | ENTSOG terms — verify |
-| Gas | Official monthly benchmark (TTF / Europe gas) | World Bank Pink Sheet; FRED (IMF series) | none / free key | monthly | CC BY 4.0 (World Bank); per series (FRED) — verify |
+| Gas | Official monthly benchmark (Europe gas) | FRED `PNGASEUUSDM` (IMF); World Bank Pink Sheet later | free key | monthly | IMF data: free reuse with attribution, no alteration (confirmed 2026-10-28) |
 | Gas | Henry Hub spot (context only) | EIA | free key | daily | US public domain |
 | LNG | EU LNG terminal inventory and send-out | GIE ALSI (`alsi.gie.eu/api`) | free key | daily | GIE terms — verify |
 | Power | DE-LU, FR day-ahead prices (A44), load (A65), generation by type (A75) | ENTSO-E Transparency (`web-api.tp.entsoe.eu/api`) | free token by email request | hourly | ENTSO-E terms — verify |
@@ -146,7 +146,7 @@ the v1-style IDs below are kept as human-readable references.
 | Power | FR consumption, generation by fuel, exchanges | ODRÉ / éCO2mix (RTE, Opendatasoft API) | none | 15-min / hourly | Licence Ouverte v2.0 (confirmed) |
 | Power | Cross-check and fallback for DE/FR | Energy-Charts (Fraunhofer ISE, `api.energy-charts.info`) | none | hourly | per dataset, returned in `license_info` (DE price: CC BY 4.0 from SMARD) |
 | Power | GB market index price (MID), system prices, generation by fuel (FUELHH), demand | Elexon Insights (`data.elexon.co.uk/bmrs/api/v1`) | none | half-hourly | BSC Open Data Licence — verify |
-| Crude | WTI, Brent spot (`RWTC`, `RBRTE`) | EIA API v2 | free key | daily | US public domain — verify notes on third-party prices |
+| Crude | WTI, Brent spot (`RWTC`, `RBRTE`) | EIA API v2 | free key | daily (published weekly) | EIA public domain; EIA states the spot prices come from Refinitiv (LSEG) — see §11 |
 | Crude | US stocks: commercial (`WCESTUS1`), Cushing (`W_EPC0_SAX_YCUOK_MBBL`), SPR (`WCSSTUS1`) | EIA WPSR | free key | weekly | US public domain |
 | Crude | US production (`WCRFPUS2`), imports/exports, refinery utilisation (`WPULEUS3`) | EIA WPSR | free key | weekly | US public domain |
 | Crude | World balance, OPEC production and spare capacity | EIA STEO | free key | monthly | US public domain |
@@ -155,7 +155,7 @@ the v1-style IDs below are kept as human-readable references.
 | Products | EU consumer fuel prices by member state (with and without taxes) | European Commission Weekly Oil Bulletin | none | weekly | Commission reuse policy (CC BY 4.0) — verify |
 | All | Positioning: ICE Futures Europe COT (Brent, gasoil, TTF if covered) — **priority** | ICE public COT reports | none | weekly | ICE terms — verify redistribution |
 | All | Positioning: CFTC COT disaggregated (WTI, Henry Hub) | CFTC Public Reporting API (Socrata) | none | weekly | US public domain |
-| All | FX for unit conversion (EUR/USD, GBP/USD, GBP/EUR) | ECB reference rates; FRED | none / free key | daily | ECB reuse policy — verify |
+| All | FX for unit conversion (EUR/USD, EUR/GBP) | ECB Data Portal (`data-api.ecb.europa.eu`) | none | daily (TARGET days) | Free reuse, quote "Source: ECB statistics.", do not modify (confirmed 2026-10-28) |
 | All | Macro and volatility: USD index, rates, OVX | FRED | free key | daily | per series; some are copyrighted (e.g. CBOE OVX) — verify each |
 | All | Weather for demand models (HDD/CDD) | Open-Meteo (archive + forecast) | none | daily | CC BY 4.0 |
 | Futures | Front month and individual contracts where available (see note) | Yahoo Finance via `yfinance` | unofficial | daily, delayed | **not licensed for redistribution** — see ADR 0003 |
@@ -240,7 +240,7 @@ The GitHub repository is public. See ADR 0001.
   several minutes; jobs must be idempotent (upserts on the primary key).
 - **Cron keep-alive (M1, ADR 0001):** GitHub disables scheduled workflows in a public repository after
   60 days without repository activity. A monthly workflow commits a small state file
-  (`ops/heartbeat.json`: date and last status per source) to a dedicated `ops/heartbeat` branch, so `main`
+  (`ops/heartbeat.json`: date and workflow run ID) to a dedicated `ops/heartbeat` branch, so `main`
   history and branch protection are unaffected. `/data` shows stale sources, so a silent stop is visible.
   The mechanism is verified in M1 (that a bot commit counts as activity); if not, fall back to a
   re-enable call through the GitHub API.
@@ -378,6 +378,12 @@ European markets come first: they are the focus and the most differentiating par
   DE–FR day-ahead spread, Brent M1–M2) — to confirm at M7.
 - ICE COT: confirm that the reports may be redistributed, and whether TTF is covered (M2).
 - Carbon (EUA): no confirmed free, redistributable daily price yet (needed for clean spark/dark spreads).
+- **EIA spot prices (WTI, Brent, Henry Hub):** EIA's own data is public domain, and EIA publishes these
+  prices openly through its API ("you may use and/or distribute any of our data"); FRED republishes them
+  with no restriction notice. But EIA's definitions pages name Refinitiv (LSEG) as the source, and EIA
+  warns that third-party material may be protected. Current choice: ingest them, attribute EIA and
+  Refinitiv. Alternative if the owner prefers zero ambiguity: drop the daily spot series and keep EIA
+  stocks only.
 
 Decided on 2026-10-28 (see ADRs 0001–0004): Europe focus; public repository; Python 3.12; Frankfurt region;
 Yahoo Finance policy; licence tracking per series; milestones M0–M8; forecast model 2 is France daily

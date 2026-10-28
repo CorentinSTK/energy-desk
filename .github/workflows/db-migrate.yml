@@ -1,0 +1,25 @@
+name: DB migrate
+
+# Applies pending migrations to the production database. Manual on purpose: a schema change is
+# applied when the owner decides, after the PR that adds it is merged.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: worker
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.2 # no floating major tag is published
+      - run: uv sync --locked --no-dev
+      - run: uv run --no-dev python -m worker.migrate --status
+      - run: uv run --no-dev python -m worker.migrate

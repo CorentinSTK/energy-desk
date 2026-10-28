@@ -1,0 +1,73 @@
+name: Ingest
+
+# Scheduled ingestion, one cron per publication rhythm (times in UTC; GitHub may start them late).
+on:
+  schedule:
+    - cron: "15 16 * * 1-5" # ECB reference rates, published around 16:00 CET on TARGET days
+    - cron: "0 17 * * 1-5" # EIA (spot prices weekly, stocks Wednesday 10:30 ET) and FRED
+    - cron: "30 21 * * *" # GIE AGSI+: gas day D is published on the evening of D+1
+  workflow_dispatch:
+    inputs:
+      source:
+        description: Source to ingest
+        type: choice
+        options: [ecb, eia, fred, gie_agsi]
+      backfill:
+        description: Fetch the full history
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      sources: ${{ steps.pick.outputs.sources }}
+    steps:
+      - id: pick
+        env:
+          SCHEDULE: ${{ github.event.schedule }}
+          MANUAL_SOURCE: ${{ inputs.source }}
+        run: |
+          case "$SCHEDULE" in
+            "15 16 * * 1-5") sources='["ecb"]' ;;
+            "0 17 * * 1-5") sources='["eia","fred"]' ;;
+            "30 21 * * *") sources='["gie_agsi"]' ;;
+            *) sources="[\"$MANUAL_SOURCE\"]" ;;
+          esac
+          echo "sources=$sources" >> "$GITHUB_OUTPUT"
+
+  ingest:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        source: ${{ fromJSON(needs.plan.outputs.sources) }}
+    # Never run two jobs for the same source at once.
+    concurrency:
+      group: ingest-${{ matrix.source }}
+      cancel-in-progress: false
+    defaults:
+      run:
+        working-directory: worker
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+      FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+      GIE_API_KEY: ${{ secrets.GIE_API_KEY }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.2 # no floating major tag is published
+        with:
+          enable-cache: true
+          cache-dependency-glob: worker/uv.lock
+      - run: uv sync --locked --no-dev
+      - name: Ingest ${{ matrix.source }}
+        env:
+          SOURCE: ${{ matrix.source }}
+          BACKFILL: ${{ inputs.backfill && '--backfill' || '' }}
+        run: uv run --no-dev python -m worker.ingest --source "$SOURCE" $BACKFILL

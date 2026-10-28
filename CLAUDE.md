@@ -66,7 +66,8 @@ cd worker
 uv sync
 uv run pytest
 uv run ruff check . && uv run ruff format --check . && uv run mypy
-uv run python -m worker.ingest --source eia --dry-run
+uv run python -m worker.ingest --source eia --dry-run   # sources: ecb, eia, fred, gie_agsi
+uv run python -m worker.ingest --source gie_agsi --backfill   # full history (writes to DATABASE_URL)
 uv run python -m worker.migrate --status   # then without --status to apply
 # database tests need a disposable Postgres: TEST_DATABASE_URL=postgresql://postgres@localhost:54329/postgres
 ```

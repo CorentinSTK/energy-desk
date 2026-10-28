@@ -1,0 +1,278 @@
+# GIE AGSI+ — European gas storage, daily per gas day.
+# Terms (read 2026-10-28, https://agsi.gie.eu/data-usage): free use and redistribution "in any way, shape
+# or format", on the explicit condition that GIE / AGSI is clearly credited as the source underneath
+# the data. Without that credit GIE may withdraw the API key.
+# The United Kingdom has no data in AGSI since Brexit: GB storage is a declared data gap.
+# Plausible ranges are generous physical bounds: they catch unit errors (x1000), not records.
+# (A first backfill showed EU injection above 6,500 GWh/d in May 2022.)
+source: gie_agsi
+licence:
+  name: GIE Transparency Platform — free reuse, source referral mandatory
+  url: https://agsi.gie.eu/data-usage
+  attribution: "Source: GIE AGSI+ (Gas Infrastructure Europe)."
+licence_checked: 2026-10-28
+series:
+  - code: agsi.eu.storage
+    name: EU gas in storage
+    commodity: natgas
+    region: EU
+    unit: "TWh"
+    frequency: daily
+    source_ref: EU|gasInStorage
+    description: Gas in storage at the end of the gas day.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 1300
+  - code: agsi.eu.full
+    name: EU storage filling level
+    commodity: natgas
+    region: EU
+    unit: "%"
+    frequency: daily
+    source_ref: EU|full
+    description: Gas in storage as a share of working gas volume.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 105
+  - code: agsi.eu.injection
+    name: EU storage injection
+    commodity: natgas
+    region: EU
+    unit: "GWh/d"
+    frequency: daily
+    source_ref: EU|injection
+    description: Gas injected into storage during the gas day.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 25000
+  - code: agsi.eu.withdrawal
+    name: EU storage withdrawal
+    commodity: natgas
+    region: EU
+    unit: "GWh/d"
+    frequency: daily
+    source_ref: EU|withdrawal
+    description: Gas withdrawn from storage during the gas day.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 25000
+  - code: agsi.de.storage
+    name: Germany gas in storage
+    commodity: natgas
+    region: Germany
+    unit: "TWh"
+    frequency: daily
+    source_ref: DE|gasInStorage
+    description: Gas in storage at the end of the gas day.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 300
+  - code: agsi.de.full
+    name: Germany storage filling level
+    commodity: natgas
+    region: Germany
+    unit: "%"
+    frequency: daily
+    source_ref: DE|full
+    description: Gas in storage as a share of working gas volume.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 105
+  - code: agsi.de.injection
+    name: Germany storage injection
+    commodity: natgas
+    region: Germany
+    unit: "GWh/d"
+    frequency: daily
+    source_ref: DE|injection
+    description: Gas injected into storage during the gas day.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 8000
+  - code: agsi.de.withdrawal
+    name: Germany storage withdrawal
+    commodity: natgas
+    region: Germany
+    unit: "GWh/d"
+    frequency: daily
+    source_ref: DE|withdrawal
+    description: Gas withdrawn from storage during the gas day.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 8000
+  - code: agsi.fr.storage
+    name: France gas in storage
+    commodity: natgas
+    region: France
+    unit: "TWh"
+    frequency: daily
+    source_ref: FR|gasInStorage
+    description: Gas in storage at the end of the gas day.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 200
+  - code: agsi.fr.full
+    name: France storage filling level
+    commodity: natgas
+    region: France
+    unit: "%"
+    frequency: daily
+    source_ref: FR|full
+    description: Gas in storage as a share of working gas volume.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 105
+  - code: agsi.fr.injection
+    name: France storage injection
+    commodity: natgas
+    region: France
+    unit: "GWh/d"
+    frequency: daily
+    source_ref: FR|injection
+    description: Gas injected into storage during the gas day.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 5000
+  - code: agsi.fr.withdrawal
+    name: France storage withdrawal
+    commodity: natgas
+    region: France
+    unit: "GWh/d"
+    frequency: daily
+    source_ref: FR|withdrawal
+    description: Gas withdrawn from storage during the gas day.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 5000
+  - code: agsi.nl.storage
+    name: Netherlands gas in storage
+    commodity: natgas
+    region: Netherlands
+    unit: "TWh"
+    frequency: daily
+    source_ref: NL|gasInStorage
+    description: Gas in storage at the end of the gas day.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 200
+  - code: agsi.nl.full
+    name: Netherlands storage filling level
+    commodity: natgas
+    region: Netherlands
+    unit: "%"
+    frequency: daily
+    source_ref: NL|full
+    description: Gas in storage as a share of working gas volume.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 105
+  - code: agsi.nl.injection
+    name: Netherlands storage injection
+    commodity: natgas
+    region: Netherlands
+    unit: "GWh/d"
+    frequency: daily
+    source_ref: NL|injection
+    description: Gas injected into storage during the gas day.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 5000
+  - code: agsi.nl.withdrawal
+    name: Netherlands storage withdrawal
+    commodity: natgas
+    region: Netherlands
+    unit: "GWh/d"
+    frequency: daily
+    source_ref: NL|withdrawal
+    description: Gas withdrawn from storage during the gas day.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 5000
+  - code: agsi.it.storage
+    name: Italy gas in storage
+    commodity: natgas
+    region: Italy
+    unit: "TWh"
+    frequency: daily
+    source_ref: IT|gasInStorage
+    description: Gas in storage at the end of the gas day.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 250
+  - code: agsi.it.full
+    name: Italy storage filling level
+    commodity: natgas
+    region: Italy
+    unit: "%"
+    frequency: daily
+    source_ref: IT|full
+    description: Gas in storage as a share of working gas volume.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 105
+  - code: agsi.it.injection
+    name: Italy storage injection
+    commodity: natgas
+    region: Italy
+    unit: "GWh/d"
+    frequency: daily
+    source_ref: IT|injection
+    description: Gas injected into storage during the gas day.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 5000
+  - code: agsi.it.withdrawal
+    name: Italy storage withdrawal
+    commodity: natgas
+    region: Italy
+    unit: "GWh/d"
+    frequency: daily
+    source_ref: IT|withdrawal
+    description: Gas withdrawn from storage during the gas day.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 5000
+  - code: agsi.at.storage
+    name: Austria gas in storage
+    commodity: natgas
+    region: Austria
+    unit: "TWh"
+    frequency: daily
+    source_ref: AT|gasInStorage
+    description: Gas in storage at the end of the gas day.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 150
+  - code: agsi.at.full
+    name: Austria storage filling level
+    commodity: natgas
+    region: Austria
+    unit: "%"
+    frequency: daily
+    source_ref: AT|full
+    description: Gas in storage as a share of working gas volume.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 105
+  - code: agsi.at.injection
+    name: Austria storage injection
+    commodity: natgas
+    region: Austria
+    unit: "GWh/d"
+    frequency: daily
+    source_ref: AT|injection
+    description: Gas injected into storage during the gas day.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 3000
+  - code: agsi.at.withdrawal
+    name: Austria storage withdrawal
+    commodity: natgas
+    region: Austria
+    unit: "GWh/d"
+    frequency: daily
+    source_ref: AT|withdrawal
+    description: Gas withdrawn from storage during the gas day.
+    publication_lag_days: 1  # gas day D is published on the evening of D+1
+    plausible_min: 0
+    plausible_max: 3000

@@ -17,9 +17,15 @@ from datetime import date
 from worker import runner
 from worker.sources.base import Source
 from worker.sources.ecb import EcbSource
+from worker.sources.eia import EiaSource
+from worker.sources.fred import FredSource
+from worker.sources.gie_agsi import GieAgsiSource
 
 SOURCES: dict[str, Callable[[], Source]] = {
     "ecb": EcbSource,
+    "eia": EiaSource,
+    "fred": FredSource,
+    "gie_agsi": GieAgsiSource,
 }
 
 EXIT_OK = 0
