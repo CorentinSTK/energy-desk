@@ -38,3 +38,18 @@ Not done (needs the user): create the public GitHub repo and push; choose a code
 
 Known limitations: freshness thresholds are generic per frequency until M1 records real publication
 schedules; 3 low-severity npm audit findings in the shadcn CLI (dev only, via `deepmerge`).
+
+## 2026-10-28 — M0 closed
+
+- Public repo: https://github.com/CorentinSTK/energy-desk (MIT). First CI run: `web` green, `worker` failed
+  because `astral-sh/setup-uv` publishes no floating `v10` tag; pinned to `v10.3.2`, then all green.
+- `main` protected: required checks `web` and `worker`; no force-push or deletion. Work goes through PRs.
+- Vercel: https://energy-desk-two.vercel.app (root `apps/web`). Live checks: `/` and `/styleguide` 200,
+  404 for unknown paths, `/styleguide` noindex + disallowed in robots.txt; the 10 Playwright smoke tests
+  pass against the live site (`PLAYWRIGHT_BASE_URL`).
+- Not verified yet: function region `fra1`. All pages are static and served from the CDN, so no function
+  runs; to verify in M1 when pages query the database (and in Vercel → Settings → Functions).
+
+How to see it: open the live URL; the style guide is at `/styleguide` (not linked).
+
+Next: M1 (data platform), to be planned and approved first. Needs a Supabase project in Frankfurt.

@@ -2,6 +2,8 @@ import { defineConfig, devices } from "@playwright/test";
 
 const PORT = 3000;
 const isCI = Boolean(process.env.CI);
+/** Set to test a deployed site instead of a local server, e.g. PLAYWRIGHT_BASE_URL=https://… */
+const remoteBaseURL = process.env.PLAYWRIGHT_BASE_URL;
 
 /** Smoke tests on the main pages. In CI they run against the production build (`next start`). */
 export default defineConfig({
@@ -10,15 +12,17 @@ export default defineConfig({
   forbidOnly: isCI,
   retries: isCI ? 1 : 0,
   reporter: isCI ? [["github"], ["html", { open: "never" }]] : "list",
-  use: { baseURL: `http://localhost:${PORT}`, trace: "retain-on-failure" },
+  use: { baseURL: remoteBaseURL ?? `http://localhost:${PORT}`, trace: "retain-on-failure" },
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
     { name: "mobile", use: { ...devices["Pixel 7"] } },
   ],
-  webServer: {
-    command: isCI ? "npm run start" : "npm run dev",
-    port: PORT,
-    reuseExistingServer: !isCI,
-    timeout: 120_000,
-  },
+  webServer: remoteBaseURL
+    ? undefined
+    : {
+        command: isCI ? "npm run start" : "npm run dev",
+        port: PORT,
+        reuseExistingServer: !isCI,
+        timeout: 120_000,
+      },
 });
