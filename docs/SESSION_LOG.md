@@ -53,3 +53,42 @@ schedules; 3 low-severity npm audit findings in the shadcn CLI (dev only, via `d
 How to see it: open the live URL; the style guide is at `/styleguide` (not linked).
 
 Next: M1 (data platform), to be planned and approved first. Needs a Supabase project in Frankfurt.
+
+## 2026-10-28 — M1 data platform (live)
+
+Built (PRs #2–#7):
+- Schema (migration 001): `market` tables with licence, attribution, price kind and publication lag per
+  series; `web` views for the site; RLS on every table; `web_reader` role that can only read `web` views.
+  In-house migration runner that refuses edited or deleted migrations. ADR 0005.
+- Worker: shared HTTP client (timeouts, bounded retries, 429 handling, secrets redacted), catalogue as
+  YAML with licences read from each provider's terms, validation with logged rejections, COPY upserts,
+  runner with lookback for revisions and ok/partial/failed status, units module (same-date FX only).
+- Sources: ECB (EUR/USD, EUR/GBP), EIA (WTI, Brent, Henry Hub spot; US and Cushing crude stocks), FRED
+  (IMF monthly European gas), GIE AGSI+ (EU, DE, FR, NL, IT, AT storage, fill, injection, withdrawal).
+- Workflows: scheduled ingestion per publication rhythm, manual production migrations, monthly keep-alive.
+- `/data`: catalogue with licence, attribution, coverage, gaps and freshness; ingestion runs; declared gaps.
+
+Production: Supabase (Frankfurt, Postgres 17.11), 32 series, 184,573 observations, 30 MB. Live checks:
+`web_reader` reads views only (writes and raw tables denied); `/data` live with real data; 18 e2e tests pass
+against the live site; a manual ingest run from GitHub Actions reached Supabase (secrets work).
+
+Found by running against real data (all fixed): AGSI `country=EU` silently empty (needs `type=eu`), now any
+empty answer is a problem; ECB firewall HTML page must not read as "no data"; Easter counted as a gap;
+plausible ranges too tight (669 genuine values rejected); temp-table bug on multi-batch upserts; publication
+lags needed for freshness; error inside `use cache` loses its class (wrong message); errors on /data were not
+logged (now logged with credentials masked).
+
+Incident: stacked PRs — deleting a merged base branch closed PR #3 instead of retargeting it. Fixed by
+restoring the branch, reopening and retargeting all PRs to `main` first. Lesson: retarget stacked PRs to
+`main` before merging the first one.
+
+Not verified yet: function region `fra1` (the response header only shows the edge location; check in
+Vercel → Settings → Functions); keep-alive effect on GitHub's 60-day timer (only observable over time).
+
+Open decisions: EIA spot prices sourced from Refinitiv (kept, attributed; BUILD_SPEC §11); three AGSI values
+rejected as implausible (AT 2011-06-16, IT 2012-04-01), kept out and visible on /data.
+
+Known limitations: /data tables scroll horizontally on phones (cards later); AGSI backfill takes ~10–20 min
+because of the API's rate limit; freshness thresholds are per frequency plus each series' publication lag.
+
+Next: M2 (European gas & LNG), to be planned and approved first.
