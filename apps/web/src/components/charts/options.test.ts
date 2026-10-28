@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
 
 import type { ChartTokens } from "./chart-tokens";
-import { bandHeights, seasonalOption, timeSeriesOption } from "./options";
+import {
+  bandHeights,
+  dayLabel,
+  multiLineOption,
+  seasonalOption,
+  timeSeriesOption,
+} from "./options";
 
 const tokens: ChartTokens = {
   text: "#000000",
@@ -13,6 +19,7 @@ const tokens: ChartTokens = {
   surface: "#ffffff",
   border: "#555555",
   fontFamily: "Inter",
+  series: ["#010101", "#020202"],
   commodity: {
     crude: "#aa0000",
     products: "#bb0000",
@@ -86,5 +93,34 @@ describe("seasonalOption", () => {
 
   it("does not connect the current year across missing weeks", () => {
     expect(series[3].connectNulls).toBe(false);
+  });
+});
+
+describe("dayLabel", () => {
+  it("formats a calendar day", () => {
+    expect(dayLabel("2001-03-01")).toBe("1 Mar");
+  });
+});
+
+describe("multiLineOption", () => {
+  it("keeps one series per line, gaps included, with the categorical palette", () => {
+    const option = multiLineOption(tokens, {
+      series: [
+        {
+          name: "A",
+          data: [
+            ["2026-01-01", 1],
+            ["2026-01-02", null],
+          ],
+        },
+        { name: "B", data: [["2026-01-01", 2]] },
+      ],
+      unit: "GWh/d",
+      decimals: 0,
+    });
+    const series = option.series as Series[];
+    expect(series.map((x) => x.name)).toEqual(["A", "B"]);
+    expect(series[0].connectNulls).toBe(false);
+    expect(option.color).toEqual(["#010101", "#020202"]);
   });
 });

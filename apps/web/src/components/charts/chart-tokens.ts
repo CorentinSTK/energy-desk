@@ -17,7 +17,11 @@ export interface ChartTokens {
   border: string;
   fontFamily: string;
   commodity: Record<Commodity, string>;
+  /** Categorical palette for several series in one chart. */
+  series: string[];
 }
+
+const SERIES_PALETTE_SIZE = 9;
 
 export function readChartTokens(element: HTMLElement): ChartTokens {
   const style = getComputedStyle(element);
@@ -37,5 +41,6 @@ export function readChartTokens(element: HTMLElement): ChartTokens {
     border: v("--border"),
     fontFamily: style.fontFamily,
     commodity,
+    series: Array.from({ length: SERIES_PALETTE_SIZE }, (_, i) => v(`--chart-series-${i + 1}`)),
   };
 }

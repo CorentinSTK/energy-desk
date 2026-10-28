@@ -1,9 +1,15 @@
 import { ArrowDownRight, ArrowRight, ArrowUpRight } from "lucide-react";
 
-import { DemoBanner } from "@/components/data-labels";
+import { DemoBanner, UnofficialDataLabel } from "@/components/data-labels";
 import { Card, CardContent } from "@/components/ui/card";
 import { COMMODITIES, type Commodity } from "@/lib/commodities";
-import { decimalsFor, formatChange, formatNumber, formatPercentChange } from "@/lib/format";
+import {
+  decimalsFor,
+  formatChange,
+  formatDate,
+  formatNumber,
+  formatPercentChange,
+} from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 interface KpiChange {
@@ -30,6 +36,10 @@ interface KpiCardProps {
   context?: KpiContext[];
   commodity?: Commodity;
   demo?: boolean;
+  /** Value from an unofficial source: shows the mandatory label (ADR 0003). */
+  unofficial?: boolean;
+  /** Date of the value, shown under the label. */
+  asOf?: string;
   className?: string;
 }
 
@@ -42,6 +52,8 @@ export function KpiCard({
   context = [],
   commodity,
   demo = false,
+  unofficial = false,
+  asOf,
   className,
 }: KpiCardProps) {
   return (
@@ -55,6 +67,7 @@ export function KpiCard({
       <CardContent className="space-y-1.5">
         {demo && <DemoBanner className="mb-2 w-fit" />}
         <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{label}</p>
+        {asOf && <p className="text-xs text-muted-foreground">{formatDate(asOf)}</p>}
         <p className="flex items-baseline gap-1.5">
           <span className="text-2xl font-semibold">{formatNumber(value, decimals)}</span>
           <span className="text-sm text-muted-foreground">{unit}</span>
@@ -70,6 +83,7 @@ export function KpiCard({
             ))}
           </dl>
         )}
+        {unofficial && <UnofficialDataLabel className="pt-1" />}
       </CardContent>
     </Card>
   );
@@ -79,7 +93,13 @@ function ChangeLine({ change, decimals }: { change: KpiChange; decimals: number 
   const text = change.percent
     ? formatPercentChange(change.value)
     : formatChange(change.value, decimals);
-  const direction = change.value === null || change.value === 0 ? 0 : Math.sign(change.value);
+  // Direction of the value as displayed: a change that rounds to zero is neutral, not red or green.
+  const shownDecimals = change.percent ? 1 : decimals;
+  const rounded =
+    change.value === null
+      ? 0
+      : Math.round(change.value * 10 ** shownDecimals) / 10 ** shownDecimals;
+  const direction = Math.sign(rounded);
   const Icon = direction > 0 ? ArrowUpRight : direction < 0 ? ArrowDownRight : ArrowRight;
 
   return (
