@@ -236,6 +236,7 @@ export async function PricesTab({ ctx }: { ctx: PageContext }) {
         info={chartInfo(seriesOf(ctx, "yahoo.ttf.m1_m2_spread"), ctx.extractionDates, ctx.now, {
           source: "Yahoo Finance",
           unit: "€/MWh",
+          unofficial: true,
         })}
         status={spread === null ? "error" : spread.length === 0 ? "empty" : "ready"}
         height={CHART_HEIGHT}
