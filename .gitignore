@@ -26,3 +26,7 @@ __pycache__/
 # OS / editors
 .DS_Store
 .idea/
+
+# Logs and build output
+build/
+npm-debug.log*
