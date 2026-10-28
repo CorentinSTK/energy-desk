@@ -16,8 +16,11 @@ export function chartInfo(
   series: CatalogSeries[],
   extractionDates: Record<string, string>,
   now: Date,
-  /** Shown when the series is not (yet) in the catalogue, e.g. a source not ingested yet. */
-  fallback: { source: string; unit: string },
+  /**
+   * Shown when the series is not (yet) in the catalogue, e.g. a source not ingested yet. For an
+   * unofficial source, set `unofficial` so the mandatory label never depends on the catalogue.
+   */
+  fallback: { source: string; unit: string; unofficial?: boolean },
 ): ChartSourceInfo {
   const first = series.at(0);
   if (!first) return fallback;

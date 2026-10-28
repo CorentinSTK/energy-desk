@@ -93,3 +93,34 @@ Known limitations: /data tables scroll horizontally on phones (cards later); AGS
 because of the API's rate limit; freshness thresholds are per frequency plus each series' publication lag.
 
 Next: M2 (European gas & LNG), to be planned and approved first.
+
+## 2026-10-28 — M2 European gas & LNG (live)
+
+Built (PRs #9, #10, #11, #13, #14; #12 closed, superseded by #13):
+- Migration 002: `market.futures_contracts` (unofficial raw settlements, unreadable by the site),
+  `web.observations`, `web.seasonal_daily` (5 prior years per calendar day, leap years aligned, 29 Feb out).
+- Sources: GIE ALSI (7 areas, 21 series; AGSI+ and ALSI share `gie.py`), ENTSOG (9 single-operator entry
+  points), Yahoo TTF (front month as a single KPI, M1–M2 spread with a strict month rule; raw settlements
+  kept private). All scheduled in the evening run.
+- `/markets/gas` and `/markets/lng` on the market template; site header; takeaways from tested rules.
+
+Production: migration 002 applied; backfills ENTSOG 16,148, ALSI 101,649 (18 implausible values rejected),
+Yahoo 4,118 rows. Live: both pages load in ~2–3 s, no console errors, 34 e2e tests pass against the live site.
+Findings on 28 Oct: EU storage 74.9% full, 14.6 pts below the 2021–2025 average and below the range; EU LNG
+send-out 33% above its five-year average; TTF front month ~99.6 €/MWh with a slight prompt backwardation.
+
+Found and fixed: ENTSOG double reporting at Emden/Dornum (declared gap); ENTSOG five-year window; ENTSOG
+attribution needs the extraction date; Yahoo coarse data with range=max; M1–M2 mislabelling risk; stacked
+flows collapsing on unpublished days; 120% axis; duplicate unofficial label; red arrow on 0.00; chart titles
+not headings; chartInfo crash on a missing series (would have broken pages in production); unofficial label
+missing in that fallback; e2e flakiness from hidden streamed copies; overlapping month labels on phones.
+
+Decisions: EIA spot (Refinitiv) kept; ICE COT not usable (terms), positioning is a declared gap; Yahoo TTF
+level only as a KPI, charts derived only.
+
+Process note: stacked PRs now target `main` from the start (no PR closed by a deleted base branch).
+
+Known limitations: TTF spread history starts 1 Oct 2026; flows have five years of history only; market
+tables scroll horizontally on phones; the TTF spread axis shows day numbers only.
+
+Next: M3 (European power DE/FR/GB). Needs the ENTSO-E token.

@@ -15,12 +15,16 @@ test.describe("gas market page", () => {
     await expect(
       page.getByRole("heading", { name: "Are EU gas stocks tight for the season?" }),
     ).toBeVisible();
-    // Unofficial values always carry the mandatory label: one per TTF KPI.
-    await expect(
-      page
-        .getByText("Yahoo Finance — unofficial, delayed, research only")
-        .filter({ visible: true }),
-    ).toHaveCount(2);
+    // Every unofficial item carries the mandatory label, whatever data is loaded.
+    const label = "Yahoo Finance — unofficial, delayed, research only";
+    for (const name of [
+      "TTF front month (NYMEX)",
+      "TTF M1–M2 spread (NYMEX)",
+      "Is the TTF prompt curve",
+    ]) {
+      const card = page.locator('[data-slot="card"]', { hasText: name }).filter({ visible: true });
+      await expect(card.getByText(label).filter({ visible: true })).toBeVisible();
+    }
     await expect(page.getByRole("navigation", { name: "Sections" })).toBeVisible();
     expect(errors).toEqual([]);
   });

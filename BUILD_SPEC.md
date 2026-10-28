@@ -138,7 +138,7 @@ the v1-style IDs below are kept as human-readable references.
 | Market | Data | Source | Access | Frequency | Licence (expected) |
 |---|---|---|---|---|---|
 | Gas | EU gas storage by country and facility | GIE AGSI+ (`agsi.gie.eu/api`) | free key (`x-key` header) | daily | Free reuse, "GIE AGSI" credit mandatory (confirmed 2026-10-28). No GB data since Brexit. |
-| Gas | Pipeline flows at major entry points into the EU | ENTSOG Transparency (`transparency.entsog.eu/api/v1`, `operationalData` per point; country aggregation returns nothing) | none | daily | ENTSOG terms — verify at integration |
+| Gas | Pipeline flows at 9 EU entry points, one series per point and operator (never summed across operators) | ENTSOG Transparency (`transparency.entsog.eu/api/v1`, `operationalData` per point; country aggregation returns nothing; five years of history only) | none | daily | ENTSOG TP terms art. 5: use in good faith, quote "ENTSOG TP [DD-MM-YYYY] https://transparency.entsog.eu/" (confirmed 2026-10-28). Norway → Germany (Emden, Dornum) is reported by several operators with overlapping values: declared gap. |
 | Gas | Official monthly benchmark (Europe gas) | FRED `PNGASEUUSDM` (IMF); World Bank Pink Sheet later | free key | monthly | IMF data: free reuse with attribution, no alteration (confirmed 2026-10-28) |
 | Gas | Henry Hub spot (context only) | EIA | free key | daily | US public domain |
 | LNG | EU LNG terminal inventory and send-out | GIE ALSI (`alsi.gie.eu/api`, same key as AGSI+) | free key | daily | Same GIE terms as AGSI+: free reuse, credit mandatory. No GB data since Brexit. |
@@ -190,6 +190,8 @@ Rules:
   crude and products $/bbl (products also ¢/gal or $/t where the market quotes them), European gas €/MWh
   (NBP in p/therm where shown), US gas $/MMBtu, power €/MWh (DE, FR) and £/MWh (GB), storage in TWh and
   % full, flows in GWh/d, oil volumes in mb. Currency conversion uses the FX series of the same date only.
+  The site may rescale SI prefixes of the same unit for display (kWh/d → GWh/d, `lib/display-units.ts`);
+  that is not a unit conversion, which only the worker's `units` module does.
 - **Seasonal norms:** "vs 5Y" means same week (weekly data) or same month (monthly data) over the five
   prior years, excluding the current year. Document any excluded years (e.g. 2020).
 - An existing Python project by the author contains working EIA/FRED clients, series IDs, seasonal-norm

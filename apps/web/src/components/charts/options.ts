@@ -177,8 +177,10 @@ export function seasonalOption(t: ChartTokens, s: SeasonalInput): EChartsCoreOpt
       ...(s.dailyAxis && {
         axisLabel: {
           color: t.axis,
-          // One label per month, on its first day.
+          // One label per month, on its first day; on narrow screens labels that would overlap are
+          // hidden, so a phone shows every other month instead of a run-together row.
           interval: (_index: number, value: string) => value.endsWith("-01"),
+          hideOverlap: true,
           formatter: (value: string) => MONTHS[Number(value.slice(5, 7)) - 1],
         },
       }),
