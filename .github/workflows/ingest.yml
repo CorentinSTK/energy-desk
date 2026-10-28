@@ -5,13 +5,13 @@ on:
   schedule:
     - cron: "15 16 * * 1-5" # ECB reference rates, published around 16:00 CET on TARGET days
     - cron: "0 17 * * 1-5" # EIA (spot prices weekly, stocks Wednesday 10:30 ET) and FRED
-    - cron: "30 21 * * *" # GIE AGSI+: gas day D is published on the evening of D+1
+    - cron: "30 21 * * *" # GIE AGSI+ and ALSI, ENTSOG: gas day D is published by the evening of D+1
   workflow_dispatch:
     inputs:
       source:
         description: Source to ingest
         type: choice
-        options: [ecb, eia, fred, gie_agsi]
+        options: [ecb, eia, entsog, fred, gie_agsi, gie_alsi]
       backfill:
         description: Fetch the full history
         type: boolean
@@ -34,7 +34,7 @@ jobs:
           case "$SCHEDULE" in
             "15 16 * * 1-5") sources='["ecb"]' ;;
             "0 17 * * 1-5") sources='["eia","fred"]' ;;
-            "30 21 * * *") sources='["gie_agsi"]' ;;
+            "30 21 * * *") sources='["gie_agsi","gie_alsi","entsog"]' ;;
             *) sources="[\"$MANUAL_SOURCE\"]" ;;
           esac
           echo "sources=$sources" >> "$GITHUB_OUTPUT"

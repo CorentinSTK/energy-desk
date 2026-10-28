@@ -1,0 +1,122 @@
+# ENTSOG Transparency Platform — physical flows at entry points into the EU, per gas day.
+# Terms (ENTSOG TP Terms and Conditions of Use, Rev 3, art. 5, read 2026-10-28): download, store and use in
+# good faith; quote the source and extraction date as "ENTSOG TP [DD-MM-YYYY] https://transparency.entsog.eu/".
+# {extraction_date} is filled by the site from the last successful ingestion run.
+# Only points reported by a single operator are listed; Norway → Germany (Emden, Dornum) is reported by
+# several operators with overlapping values and is a declared gap (adding them up would double count).
+# Values in kWh/d (source unit). Plausible maximum: 3,000 GWh/d per point.
+source: entsog
+licence:
+  name: ENTSOG Transparency Platform — Terms and Conditions of Use (use in good faith, source and date quoted)
+  url: https://transparency.entsog.eu/pdf/TRA0394_20161115_ENTSOG_TP_Privacy_TC_of_Use_Rev_3.pdf
+  attribution: "Source: ENTSOG TP [{extraction_date}] https://transparency.entsog.eu/"
+licence_checked: 2026-10-28
+series:
+  - code: entsog.dunkerque
+    name: Dunkerque entry flow (Norway → France)
+    commodity: natgas
+    region: France
+    unit: kWh/d
+    source_unit: kWh/d
+    frequency: daily
+    source_ref: "ITP-00045|FR-TSO-0003|entry"
+    description: Franpipe landfall, Norway to France.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 3000000000
+  - code: entsog.zeebrugge_zpt
+    name: Zeebrugge ZPT entry flow (Norway → Belgium)
+    commodity: natgas
+    region: Belgium
+    unit: kWh/d
+    source_unit: kWh/d
+    frequency: daily
+    source_ref: "ITP-00106|BE-TSO-0001|entry"
+    description: Zeepipe landfall, Norway to Belgium.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 3000000000
+  - code: entsog.mazara
+    name: Mazara del Vallo entry flow (Algeria → Italy)
+    commodity: natgas
+    region: Italy
+    unit: kWh/d
+    source_unit: kWh/d
+    frequency: daily
+    source_ref: "ITP-00093|IT-TSO-0001|entry"
+    description: Transmed pipeline, Algeria to Italy via Tunisia.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 3000000000
+  - code: entsog.gela
+    name: Gela entry flow (Libya → Italy)
+    commodity: natgas
+    region: Italy
+    unit: kWh/d
+    source_unit: kWh/d
+    frequency: daily
+    source_ref: "ITP-00074|IT-TSO-0001|entry"
+    description: Greenstream pipeline, Libya to Italy.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 3000000000
+  - code: entsog.almeria
+    name: Almería entry flow (Algeria → Spain)
+    commodity: natgas
+    region: Spain
+    unit: kWh/d
+    source_unit: kWh/d
+    frequency: daily
+    source_ref: "ITP-00048|ES-TSO-0006|entry"
+    description: Medgaz pipeline, Algeria to Spain.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 3000000000
+  - code: entsog.melendugno
+    name: Melendugno (TAP) entry flow (Azerbaijan → Italy)
+    commodity: natgas
+    region: Italy
+    unit: kWh/d
+    source_unit: kWh/d
+    frequency: daily
+    source_ref: "ITP-00008|IT-TSO-0001|entry"
+    description: Trans Adriatic Pipeline landfall in Italy (Caspian gas).
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 3000000000
+  - code: entsog.strandzha2
+    name: Strandzha 2 entry flow (Türkiye → Bulgaria)
+    commodity: natgas
+    region: Bulgaria
+    unit: kWh/d
+    source_unit: kWh/d
+    frequency: daily
+    source_ref: "ITP-00549|BG-TSO-0001|entry"
+    description: TurkStream route into the EU, Türkiye to Bulgaria.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 3000000000
+  - code: entsog.zeebrugge_izt
+    name: Zeebrugge IZT entry flow (United Kingdom → Belgium)
+    commodity: natgas
+    region: Belgium
+    unit: kWh/d
+    source_unit: kWh/d
+    frequency: daily
+    source_ref: "ITP-00061|BE-TSO-0001|entry"
+    description: Interconnector (IUK), Great Britain to Belgium.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 3000000000
+  - code: entsog.bacton_bbl
+    name: Bacton (BBL) entry flow (United Kingdom → Netherlands)
+    commodity: natgas
+    region: Netherlands
+    unit: kWh/d
+    source_unit: kWh/d
+    frequency: daily
+    source_ref: "ITP-00207|UK-TSO-0004|entry"
+    description: BBL pipeline, Great Britain to the Netherlands.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 3000000000

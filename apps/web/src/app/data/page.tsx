@@ -11,6 +11,7 @@ import { ErrorState } from "@/components/error-state";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { extractionDates } from "@/lib/data/attribution";
 import { getRecentRuns, getSeriesCatalog } from "@/lib/data/catalog";
 import { isDatabaseConfigured } from "@/lib/data/db";
 import { describeDatabaseError } from "@/lib/data/errors";
@@ -104,7 +105,7 @@ async function Catalog({ searchParams }: { searchParams: PageProps<"/data">["sea
         <h2 className="text-lg font-semibold">Series</h2>
         <FilterBar filters={filters} />
         {series.length > 0 ? (
-          <SeriesTable series={series} now={now} />
+          <SeriesTable series={series} now={now} extractionDates={extractionDates(runs)} />
         ) : (
           <Card>
             <CardContent>

@@ -16,7 +16,8 @@ Secrets live in `worker/.env` (gitignored); see `.env.example`.
 
 - `catalog/<source>.yaml`: the series of each source, with unit, frequency, licence and attribution
   (checked against the provider's terms on the date given), publication lag and plausible range.
-- `worker/sources/<source>.py`: one module per source; each states what was checked live.
+- `worker/sources/<source>.py`: one module per source (GIE AGSI+ and ALSI share `gie.py`); each
+  states what was checked live.
 - `worker/runner.py`: fetch → validate → store → `ingest_runs`, for one source.
 - `worker/units.py`: the only place values change unit or currency.
 - `worker/migrate.py`: applies `db/migrations/`.

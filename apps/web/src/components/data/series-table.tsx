@@ -1,5 +1,6 @@
 import { FreshnessBadge } from "@/components/freshness-badge";
 import { Badge } from "@/components/ui/badge";
+import { resolveAttribution } from "@/lib/data/attribution";
 import type { CatalogSeries } from "@/lib/data/catalog";
 import { SOURCE_LABELS } from "@/lib/data/filters";
 import { formatDate, formatNumber } from "@/lib/format";
@@ -8,10 +9,12 @@ import { freshnessStatus } from "@/lib/freshness";
 interface SeriesTableProps {
   series: CatalogSeries[];
   now: Date;
+  /** Source → date of its last successful run, for attributions that must quote it. */
+  extractionDates: Record<string, string>;
 }
 
 /** The catalogue: what each series is, where it comes from, under which licence, and how fresh it is. */
-export function SeriesTable({ series, now }: SeriesTableProps) {
+export function SeriesTable({ series, now, extractionDates }: SeriesTableProps) {
   return (
     // The table scrolls inside its container on narrow screens; the page itself never scrolls sideways.
     <div className="overflow-x-auto rounded-lg border">
@@ -64,7 +67,9 @@ export function SeriesTable({ series, now }: SeriesTableProps) {
                   <p>{s.license}</p>
                 )}
                 {s.attribution && (
-                  <p className="mt-0.5 text-xs text-muted-foreground">{s.attribution}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {resolveAttribution(s.attribution, s.source, extractionDates)}
+                  </p>
                 )}
               </td>
               <td className="px-3 py-2 whitespace-nowrap">
