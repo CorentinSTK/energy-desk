@@ -42,6 +42,11 @@ class SeriesSpec(BaseModel):
     description: str = ""
     price_kind: PriceKind | None = None
     is_unofficial: bool = False
+    # The unit string the provider returns, when it differs in spelling from `unit` (e.g. "$/BBL").
+    # Sources that report units check it, so a provider-side unit change fails loudly.
+    source_unit: str | None = None
+    # Normal delay between a value's date and its publication; freshness ignores this much age.
+    publication_lag_days: int = Field(default=0, ge=0)
     # Values outside this range are rejected by validation, not stored.
     plausible_min: float
     plausible_max: float
