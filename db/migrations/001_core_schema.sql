@@ -77,12 +77,13 @@ alter table market.ingest_runs enable row level security;
 -- Views for the site -----------------------------------------------------------------------------
 
 -- Largest normal interval between two observations, in days, per frequency. A longer interval is a gap.
--- Daily allows 4 days so that weekends and a one-day holiday are not reported as gaps.
+-- Daily allows 5 days: business-day series skip weekends, and Easter (Good Friday and Easter Monday
+-- closed) leaves a Thursday-to-Tuesday interval. Checked on ECB reference rates since 1999.
 create function web.gap_threshold_days(frequency text) returns double precision
     language sql immutable
     return case frequency
         when 'hourly' then 1
-        when 'daily' then 4
+        when 'daily' then 5
         when 'weekly' then 10
         when 'monthly' then 45
     end;

@@ -68,8 +68,8 @@ def test_duplicate_observation_is_rejected(conn: psycopg.Connection) -> None:
 
 def test_catalog_reports_coverage_and_gaps(conn: psycopg.Connection) -> None:
     series_id = insert_series(conn)
-    # Days 0-4, then a weekend-sized jump (4 days: not a gap), then a 10-day hole (a gap).
-    insert_observations(conn, series_id, [0, 1, 2, 3, 4, 8, 18, 19])
+    # Days 0-4, an Easter-sized jump (5 days: not a gap), then a 10-day hole (a gap).
+    insert_observations(conn, series_id, [0, 1, 2, 3, 4, 9, 19, 20])
     row = conn.execute(
         "select observation_count, gap_count, largest_interval_days, last_observation"
         " from web.series_catalog where code = %s",
@@ -80,7 +80,7 @@ def test_catalog_reports_coverage_and_gaps(conn: psycopg.Connection) -> None:
     assert count == 8
     assert gaps == 1
     assert largest == pytest.approx(10.0)
-    assert last == datetime(2026, 1, 20, tzinfo=UTC)
+    assert last == datetime(2026, 1, 21, tzinfo=UTC)
 
 
 def test_catalog_lists_series_without_observations(conn: psycopg.Connection) -> None:
