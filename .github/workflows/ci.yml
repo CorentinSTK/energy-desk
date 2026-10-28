@@ -18,14 +18,36 @@ jobs:
     name: web
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    # Throwaway database for the /data page tests: migrations + a CI-only fixture (not market data).
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
     env:
       NEXT_TELEMETRY_DISABLED: 1
+      DATABASE_URL_READONLY: postgresql://web_reader:ci@localhost:5432/postgres
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
+      - uses: astral-sh/setup-uv@v10.3.2 # no floating major tag is published
+        with:
+          enable-cache: true
+          cache-dependency-glob: worker/uv.lock
+      - name: Prepare test database
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
+          PGPASSWORD: postgres
+        run: |
+          (cd worker && uv sync --locked --no-dev && uv run --no-dev python -m worker.migrate)
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f db/fixtures/ci_catalog.sql
+          psql -h localhost -U postgres -c "alter role web_reader with login password 'ci'"
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck

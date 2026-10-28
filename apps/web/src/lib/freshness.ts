@@ -19,12 +19,17 @@ export const FRESHNESS_THRESHOLDS_DAYS: Record<Frequency, { fresh: number; delay
   monthly: { fresh: 45, delayed: 75 },
 };
 
+/**
+ * `publicationLagDays` is the series' normal delay between a value's date and its publication
+ * (e.g. about a week for EIA spot prices): that much age is expected, not stale.
+ */
 export function freshnessStatus(
   lastObservation: Date,
   frequency: Frequency,
   now: Date = new Date(),
+  publicationLagDays = 0,
 ): FreshnessStatus {
-  const ageDays = (now.getTime() - lastObservation.getTime()) / DAY_MS;
+  const ageDays = (now.getTime() - lastObservation.getTime()) / DAY_MS - publicationLagDays;
   const limits = FRESHNESS_THRESHOLDS_DAYS[frequency];
   if (ageDays <= limits.fresh) return "fresh";
   if (ageDays <= limits.delayed) return "delayed";
