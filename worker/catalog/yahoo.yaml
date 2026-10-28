@@ -1,0 +1,37 @@
+# Yahoo Finance — UNOFFICIAL, delayed, not licensed for redistribution (ADR 0003, with its 2026-10-28
+# amendment). Only derived indicators and a single front-month KPI reach the site; raw contract
+# settlements stay in market.futures_contracts. These are NYMEX Dutch TTF (Platts) contracts, not ICE
+# Endex TTF.
+source: yahoo
+licence:
+  name: Unofficial source — not licensed for redistribution; shown for research only (ADR 0003)
+  url: https://legal.yahoo.com/us/en/yahoo/terms/otos/index.html
+  attribution: "Yahoo Finance — unofficial, delayed, research only"
+licence_checked: 2026-10-28
+series:
+  - code: yahoo.ttf.front_month
+    name: TTF front month (NYMEX Dutch TTF, unofficial)
+    commodity: natgas
+    region: Netherlands
+    unit: €/MWh
+    frequency: daily
+    source_ref: TTF=F
+    description: Yahoo's continuous front-month close of the NYMEX Dutch TTF (Platts) future. Shown as a single KPI only.
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 500  # TTF peaked near 340 €/MWh in August 2022
+  - code: yahoo.ttf.m1_m2_spread
+    name: TTF M1–M2 spread (NYMEX Dutch TTF, unofficial)
+    commodity: natgas
+    region: Netherlands
+    unit: €/MWh
+    frequency: daily
+    source_ref: TTF|m1-m2
+    description: Front month minus second month, both by delivery month after the trading date. Positive means backwardation (prompt gas dearer than next month).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -150
+    plausible_max: 150

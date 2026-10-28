@@ -72,3 +72,18 @@ def test_full_run_writes_rows_and_logs_the_run(
         conn.execute("delete from market.ingest_runs")
         conn.execute("delete from market.series")
         conn.commit()
+
+
+def test_yahoo_raw_settlements_are_persisted(conn: psycopg.Connection) -> None:
+    from datetime import date
+
+    from worker.sources.yahoo import YahooSource
+
+    source = YahooSource()
+    source._settles = {date(2026, 12, 1): {date(2026, 10, 28): 99.1}}
+    assert source.persist(conn) == 1
+    assert source.persist(conn) == 1  # idempotent upsert on (contract, ts)
+    row = conn.execute(
+        "select contract, exchange, delivery_month, settle from market.futures_contracts"
+    ).fetchone()
+    assert row == ("TTFZ26.NYM", "NYMEX", date(2026, 12, 1), 99.1)

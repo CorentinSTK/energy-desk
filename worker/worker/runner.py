@@ -132,6 +132,7 @@ def run(
             summary.rows_written = store.upsert_observations(
                 conn, series_ids, summary.validation.valid
             )
+            summary.rows_written += source.persist(conn)
             conn.commit()
         except psycopg.Error as error:
             conn.rollback()

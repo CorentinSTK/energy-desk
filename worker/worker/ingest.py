@@ -21,6 +21,7 @@ from worker.sources.eia import EiaSource
 from worker.sources.entsog import EntsogSource
 from worker.sources.fred import FredSource
 from worker.sources.gie import GieAgsiSource, GieAlsiSource
+from worker.sources.yahoo import YahooSource
 
 SOURCES: dict[str, Callable[[], Source]] = {
     "ecb": EcbSource,
@@ -29,6 +30,7 @@ SOURCES: dict[str, Callable[[], Source]] = {
     "fred": FredSource,
     "gie_agsi": GieAgsiSource,
     "gie_alsi": GieAlsiSource,
+    "yahoo": YahooSource,
 }
 
 EXIT_OK = 0
