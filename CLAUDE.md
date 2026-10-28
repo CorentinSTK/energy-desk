@@ -52,17 +52,19 @@ milestones. If a request conflicts with it, point out the conflict and ask befor
 ## Commands (keep this section up to date as the project is scaffolded)
 
 ```bash
-# web
+# web (run from the repo root; npm workspace "web" = apps/web)
 npm install
-npm run dev          # http://localhost:3000
-npm run lint && npm run typecheck && npm run test
+npm run dev          # http://localhost:3000 — style guide at /styleguide
+npm run lint && npm run typecheck && npm run format:check && npm run test
 npm run build
+npm run test:e2e     # Playwright smoke tests (dev server locally; CI=1 uses the production build)
+npm run format       # apply Prettier
 
-# worker
+# worker (Python 3.12, pinned by uv)
 cd worker
 uv sync
 uv run pytest
-uv run ruff check . && uv run ruff format --check . && uv run mypy .
+uv run ruff check . && uv run ruff format --check . && uv run mypy
 uv run python -m worker.ingest --source eia --dry-run
 ```
 

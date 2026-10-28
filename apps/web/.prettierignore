@@ -2,3 +2,6 @@
 node_modules/
 next-env.d.ts
 AGENTS.md
+test-results/
+playwright-report/
+coverage/
