@@ -249,13 +249,17 @@ The GitHub repository is public. See ADR 0001.
 
 ### Core schema (first version)
 
+Tables live in schema `market`, site-facing views in schema `web`, read by the `web_reader` role
+(ADR 0005). Tables are created in the milestone that first needs them: `series`, `observations` and
+`ingest_runs` in M1; `futures_contracts` with the first futures source; forecast tables in M6.
+
 ```
 series(id, code, name, commodity, region, unit, frequency, source, source_ref, description,
        is_unofficial, price_kind,                                  -- spot | futures | index | assessment | null
        license, license_url, attribution)                          -- attribution null = none required
 observations(series_id, ts, value, ingested_at)                  -- PK (series_id, ts)
 futures_contracts(root, contract, expiry, ts, settle, ingested_at)
-ingest_runs(id, source, started_at, finished_at, status, rows_written, error)
+ingest_runs(id, source, started_at, finished_at, status, rows_written, rows_rejected, error)
 forecast_models(id, name, target_series_id, horizon, method, description, version)
 forecasts(id, model_id, issued_at, target_ts, p05, p25, p50, p75, p95)   -- immutable once written
 forecast_scores(forecast_id, realised_value, abs_error, in_80, in_90, scored_at)
