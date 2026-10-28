@@ -18,6 +18,14 @@ export class DatabaseNotConfiguredError extends Error {
   }
 }
 
+/**
+ * Check this before calling a cached query: an error thrown inside `use cache` loses its class when
+ * it crosses the cache boundary, so `instanceof DatabaseNotConfiguredError` cannot be relied on there.
+ */
+export function isDatabaseConfigured(): boolean {
+  return Boolean(process.env.DATABASE_URL_READONLY);
+}
+
 let client: postgres.Sql | undefined;
 
 export function db(): postgres.Sql {
