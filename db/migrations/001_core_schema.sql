@@ -32,6 +32,9 @@ create table market.series (
     license       text not null,       -- confirmed from the provider's terms when the source is integrated
     license_url   text,
     attribution   text,                -- null = no attribution required
+    -- Normal delay between a value's date and its publication (e.g. EIA spot prices: about a week).
+    -- Freshness is judged on the age beyond this delay.
+    publication_lag_days integer not null default 0 check (publication_lag_days >= 0),
     is_active     boolean not null default true,
     created_at    timestamptz not null default now(),
     updated_at    timestamptz not null default now()
@@ -130,6 +133,7 @@ select
     s.license,
     s.license_url,
     s.attribution,
+    s.publication_lag_days,
     coalesce(c.observation_count, 0) as observation_count,
     c.first_observation,
     c.last_observation,
