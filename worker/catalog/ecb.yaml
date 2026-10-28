@@ -1,0 +1,28 @@
+# ECB reference exchange rates. Used to convert prices between currencies (same date only).
+source: ecb
+licence:
+  name: ECB statistics — free reuse with the source quoted, statistics not modified
+  url: https://www.ecb.europa.eu/stats/ecb_statistics/governance_and_quality_framework/html/usage_policy.en.html
+  attribution: "Source: ECB statistics."
+licence_checked: 2026-10-28
+series:
+  - code: fx.eurusd
+    name: EUR/USD ECB reference rate
+    commodity: fx
+    region: Euro area
+    unit: USD per EUR
+    frequency: daily
+    source_ref: D.USD.EUR.SP00.A
+    description: US dollars per euro, ECB reference rate (published around 16:00 CET on TARGET days).
+    plausible_min: 0.5
+    plausible_max: 2.0
+  - code: fx.eurgbp
+    name: EUR/GBP ECB reference rate
+    commodity: fx
+    region: Euro area
+    unit: GBP per EUR
+    frequency: daily
+    source_ref: D.GBP.EUR.SP00.A
+    description: Pounds sterling per euro, ECB reference rate (published around 16:00 CET on TARGET days).
+    plausible_min: 0.4
+    plausible_max: 1.5
