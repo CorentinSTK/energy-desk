@@ -72,6 +72,10 @@ uv run python -m worker.migrate --status   # then without --status to apply
 # database tests need a disposable Postgres: TEST_DATABASE_URL=postgresql://postgres@localhost:54329/postgres
 ```
 
+Local database (optional, for /data and DB tests): Homebrew `postgresql@17` on port 54329, started by
+hand with `pg_ctl` (not a system service). Apply migrations with the worker, backfill a source, give
+`web_reader` a local-only password, and set `DATABASE_URL_READONLY` in `apps/web/.env.local`.
+
 ## Git workflow
 
 `main` is protected (required checks: `web`, `worker`). Work on a branch, open a PR, merge when CI

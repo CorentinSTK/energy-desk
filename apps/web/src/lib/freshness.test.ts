@@ -25,4 +25,9 @@ describe("freshnessStatus", () => {
   it("treats hourly day-ahead data from yesterday as fresh", () => {
     expect(freshnessStatus(daysAgo(1), "hourly", now)).toBe("fresh");
   });
+
+  it("does not count the normal publication lag as staleness", () => {
+    expect(freshnessStatus(daysAgo(12), "daily", now)).toBe("stale");
+    expect(freshnessStatus(daysAgo(12), "daily", now, 9)).toBe("fresh");
+  });
 });
