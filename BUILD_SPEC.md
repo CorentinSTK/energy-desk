@@ -105,8 +105,9 @@ global markets (they are priced globally). Non-European gas and power markets ar
    - *Prices & curve* — benchmarks, forward curve today vs 1 week / 1 month ago, time spreads.
    - *Balance & stocks* — stocks vs 5-year seasonal range, supply/demand components where available.
    - *Flows* — imports, exports, pipeline or terminal flows where available.
-   - *Positioning* — ICE Futures Europe Commitments of Traders first (Brent, gasoil, TTF if covered);
-     CFTC COT for WTI and Henry Hub.
+   - *Positioning* — CFTC COT where it covers the market (WTI, Henry Hub). ICE Futures Europe COT (Brent,
+     gasoil, TTF) cannot be republished under ICE's terms (checked 2026-10-28), so European positioning is a
+     declared data gap unless ICE grants written permission.
    - *Data gaps* — what is not covered and why (including licensing reasons).
 4. **Related:** links to relevant forecasts and Lab presets.
 
@@ -137,10 +138,10 @@ the v1-style IDs below are kept as human-readable references.
 | Market | Data | Source | Access | Frequency | Licence (expected) |
 |---|---|---|---|---|---|
 | Gas | EU gas storage by country and facility | GIE AGSI+ (`agsi.gie.eu/api`) | free key (`x-key` header) | daily | Free reuse, "GIE AGSI" credit mandatory (confirmed 2026-10-28). No GB data since Brexit. |
-| Gas | EU pipeline flows at interconnection and entry points | ENTSOG Transparency (`transparency.entsog.eu/api/v1`) | none | daily | ENTSOG terms — verify |
+| Gas | Pipeline flows at major entry points into the EU | ENTSOG Transparency (`transparency.entsog.eu/api/v1`, `operationalData` per point; country aggregation returns nothing) | none | daily | ENTSOG terms — verify at integration |
 | Gas | Official monthly benchmark (Europe gas) | FRED `PNGASEUUSDM` (IMF); World Bank Pink Sheet later | free key | monthly | IMF data: free reuse with attribution, no alteration (confirmed 2026-10-28) |
 | Gas | Henry Hub spot (context only) | EIA | free key | daily | US public domain |
-| LNG | EU LNG terminal inventory and send-out | GIE ALSI (`alsi.gie.eu/api`) | free key | daily | GIE terms — verify |
+| LNG | EU LNG terminal inventory and send-out | GIE ALSI (`alsi.gie.eu/api`, same key as AGSI+) | free key | daily | Same GIE terms as AGSI+: free reuse, credit mandatory. No GB data since Brexit. |
 | Power | DE-LU, FR day-ahead prices (A44), load (A65), generation by type (A75) | ENTSO-E Transparency (`web-api.tp.entsoe.eu/api`) | free token by email request | hourly | ENTSO-E terms — verify |
 | Power | DE prices, consumption, generation | SMARD (Bundesnetzagentur) | none | hourly | CC BY 4.0 (confirmed via Energy-Charts metadata) |
 | Power | FR consumption, generation by fuel, exchanges | ODRÉ / éCO2mix (RTE, Opendatasoft API) | none | 15-min / hourly | Licence Ouverte v2.0 (confirmed) |
@@ -153,7 +154,7 @@ the v1-style IDs below are kept as human-readable references.
 | Products | Gasoline, ULSD, jet spot (NYH, USGC) | EIA | free key | daily | US public domain |
 | Products | US gasoline (`WGTSTUS1`) and distillate (`WDISTUS1`) stocks, product supplied | EIA WPSR | free key | weekly | US public domain |
 | Products | EU consumer fuel prices by member state (with and without taxes) | European Commission Weekly Oil Bulletin | none | weekly | Commission reuse policy (CC BY 4.0) — verify |
-| All | Positioning: ICE Futures Europe COT (Brent, gasoil, TTF if covered) — **priority** | ICE public COT reports | none | weekly | ICE terms — verify redistribution |
+| All | Positioning: ICE Futures Europe COT (Brent, gasoil, TTF) | ICE public COT reports | none | weekly | **Not usable**: ICE terms allow personal, non-commercial use only and forbid republication without written permission (checked 2026-10-28). Declared gap. |
 | All | Positioning: CFTC COT disaggregated (WTI, Henry Hub) | CFTC Public Reporting API (Socrata) | none | weekly | US public domain |
 | All | FX for unit conversion (EUR/USD, EUR/GBP) | ECB Data Portal (`data-api.ecb.europa.eu`) | none | daily (TARGET days) | Free reuse, quote "Source: ECB statistics.", do not modify (confirmed 2026-10-28) |
 | All | Macro and volatility: USD index, rates, OVX | FRED | free key | daily | per series; some are copyrighted (e.g. CBOE OVX) — verify each |
@@ -163,6 +164,8 @@ the v1-style IDs below are kept as human-readable references.
 Futures note (checked 2026-10-28): on Yahoo, `BZ=F` and `TTF=F` are **NYMEX** contracts (a financially
 settled Brent look-alike and the NYMEX Dutch TTF contract), not ICE Brent or ICE Endex TTF; `CL`, `HO`, `RB`,
 `NG` are NYMEX. ICE gasoil and NBP are not available on Yahoo. Labels must name the actual contract.
+For TTF only the first two monthly contracts are listed (e.g. TTFZ26.NYM, TTFF27.NYM): enough for the
+front-month spread, not for a full curve; spread history accumulates from the first ingestion.
 
 **Phase 2:** LPG (Mont Belvieu propane spot, US propane stocks `WPRSTUS1`, EIA); other European power zones
 (ENTSO-E); non-European markets: US gas storage and US LNG exports (EIA), US power (EIA-930), Japan power
@@ -258,7 +261,7 @@ series(id, code, name, commodity, region, unit, frequency, source, source_ref, d
        is_unofficial, price_kind,                                  -- spot | futures | index | assessment | null
        license, license_url, attribution)                          -- attribution null = none required
 observations(series_id, ts, value, ingested_at)                  -- PK (series_id, ts)
-futures_contracts(root, contract, expiry, ts, settle, ingested_at)
+futures_contracts(contract, root, exchange, delivery_month, ts, settle, source, ingested_at)  -- PK (contract, ts)
 ingest_runs(id, source, started_at, finished_at, status, rows_written, rows_rejected, error)
 forecast_models(id, name, target_series_id, horizon, method, description, version)
 forecasts(id, model_id, issued_at, target_ts, p05, p25, p50, p75, p95)   -- immutable once written
@@ -358,9 +361,9 @@ European markets come first: they are the focus and the most differentiating par
 |---|---|---|
 | M0 | Scaffold, design system, CI, deploy | Monorepo builds; `/styleguide` (noindex, synthetic demo data with a "DEMO — synthetic data, not market data" banner on every card) shows all core components in both themes; CI green; site live on Vercel (`fra1`) |
 | M1 | Data platform | Schema migrated (with `price_kind`, `license`, `attribution`); read-only role and RLS; ingestion framework with retries, rate-limit handling, validation and `ingest_runs`; cron keep-alive verified; units and FX modules; GIE AGSI+, EIA and FRED live; `/data` shows catalogue, licence, freshness and gaps |
-| M2 | European gas & LNG | `/markets/gas` (storage by country vs seasonal, ENTSOG flows, official monthly benchmark, TTF derived indicators from Yahoo, labelled) and `/markets/lng` (GIE ALSI); ICE COT for TTF if covered and redistributable |
+| M2 | European gas & LNG | `/markets/gas` (storage by country vs seasonal, ENTSOG flows, official monthly benchmark, TTF derived indicators from Yahoo, labelled) and `/markets/lng` (GIE ALSI); positioning shown as a declared gap (ICE terms) |
 | M3 | European power | `/markets/power` for DE, FR, GB: day-ahead prices, load, generation mix (ENTSO-E, SMARD, ODRÉ, Elexon; Energy-Charts as cross-check); GB labelled as Elexon MID |
-| M4 | Crude & products | Both pages per template (global view): EIA spot and stocks, EC Weekly Oil Bulletin, Yahoo curve indicators (labelled), ICE COT (Brent, gasoil) and CFTC COT (WTI) |
+| M4 | Crude & products | Both pages per template (global view): EIA spot and stocks, EC Weekly Oil Bulletin, Yahoo curve indicators (labelled), CFTC COT (WTI); Brent and gasoil positioning as a declared gap |
 | M5 | Home | Europe map (hubs, power zones, LNG terminals, entry points) + world view (oil, chokepoints), metric selector, drawers, "today in energy" |
 | M6 | Forecast registry | Three phase-1 models (§6, see §11), walk-forward backtests, live registry, scoreboard pages |
 | M7 | Lab v1 | Rule backtester with European presets and the trade simulator |
@@ -376,15 +379,17 @@ European markets come first: they are the focus and the most differentiating par
 - Whether to add a French/English language toggle.
 - **Lab presets (§7):** replace US-centric presets with European ones (TTF M1–M2 vs EU storage,
   DE–FR day-ahead spread, Brent M1–M2) — to confirm at M7.
-- ICE COT: confirm that the reports may be redistributed, and whether TTF is covered (M2).
 - Carbon (EUA): no confirmed free, redistributable daily price yet (needed for clean spark/dark spreads).
-- **EIA spot prices (WTI, Brent, Henry Hub):** EIA's own data is public domain, and EIA publishes these
-  prices openly through its API ("you may use and/or distribute any of our data"); FRED republishes them
-  with no restriction notice. But EIA's definitions pages name Refinitiv (LSEG) as the source, and EIA
-  warns that third-party material may be protected. Current choice: ingest them, attribute EIA and
-  Refinitiv. Alternative if the owner prefers zero ambiguity: drop the daily spot series and keep EIA
-  stocks only.
+
 
 Decided on 2026-10-28 (see ADRs 0001–0004): Europe focus; public repository; Python 3.12; Frankfurt region;
 Yahoo Finance policy; licence tracking per series; milestones M0–M8; forecast model 2 is France daily
 power demand (replacing US gas storage).
+
+Decided on 2026-10-28 (M2 planning):
+- EIA spot prices (WTI, Brent, Henry Hub) are kept, attributed to EIA with Refinitiv (LSEG) as the
+  underlying source named by EIA.
+- ICE COT is not used (terms forbid republication); European positioning is a declared gap.
+- Yahoo TTF: the front-month level appears only as a single KPI with the unofficial label; charts show
+  derived indicators only (M1–M2 spread, percentiles). Derived series are computed by the worker; raw
+  settlements stay in `futures_contracts`, which the site cannot read (ADR 0003).

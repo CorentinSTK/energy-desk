@@ -17,7 +17,8 @@ US-centric (EIA first, US gas, US power in phase 2). Free European sources each 
   SMARD, ODRÉ/éCO2mix, Energy-Charts, Elexon), and crude and products as global markets (EIA, FRED).
 - Phase 2: LPG, other power zones, non-European markets.
 - The home map is centred on Europe, with a world view for oil and chokepoints.
-- Positioning: ICE Futures Europe COT first (Brent, gasoil, TTF if covered); CFTC COT for WTI and Henry Hub.
+- Positioning: CFTC COT for WTI and Henry Hub. ICE Futures Europe COT was planned first, but ICE's terms
+  forbid republication (checked 2026-10-28), so European positioning is a declared gap.
 
 ### Licences
 
