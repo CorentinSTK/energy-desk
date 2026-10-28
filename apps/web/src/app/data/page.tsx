@@ -13,6 +13,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getRecentRuns, getSeriesCatalog } from "@/lib/data/catalog";
 import { isDatabaseConfigured } from "@/lib/data/db";
+import { describeDatabaseError } from "@/lib/data/errors";
 import { DECLARED_GAPS } from "@/lib/data/declared-gaps";
 import { parseFilters } from "@/lib/data/filters";
 import { formatNumber } from "@/lib/format";
@@ -61,7 +62,9 @@ async function Catalog({ searchParams }: { searchParams: PageProps<"/data">["sea
   let data;
   try {
     data = configured ? await Promise.all([getSeriesCatalog(), getRecentRuns()]) : undefined;
-  } catch {
+  } catch (error) {
+    // Shown to visitors as a generic error state; the cause goes to the server logs (Vercel → Logs).
+    console.error(`[data] catalogue query failed: ${describeDatabaseError(error)}`);
     data = undefined;
   }
   if (data === undefined) {
