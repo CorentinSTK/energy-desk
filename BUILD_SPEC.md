@@ -74,6 +74,7 @@ global markets (they are priced globally). Non-European gas and power markets ar
 /markets/crude            Crude oil (global view)
 /markets/products         Refined products (gasoline, diesel/gasoil, jet, cracks)
 /markets/lpg              LPG (propane)                       [phase 2]
+/markets/freight          Freight & shipping (tankers, LNG carriers, chokepoints)   [later phase]
 /forecasts                Forecast registry and live scoreboard
 /forecasts/[id]           One forecast model: method, history, accuracy vs realised
 /lab                      Research lab: rule backtests and trade simulator
@@ -166,6 +167,17 @@ settled Brent look-alike and the NYMEX Dutch TTF contract), not ICE Brent or ICE
 `NG` are NYMEX. ICE gasoil and NBP are not available on Yahoo. Labels must name the actual contract.
 For TTF only the first two monthly contracts are listed (e.g. TTFZ26.NYM, TTFF27.NYM): enough for the
 front-month spread, not for a full curve; spread history accumulates from the first ingestion.
+
+**Freight & shipping (later phase).** Freight links the regional markets: it sets arbitrage windows
+(e.g. US Gulf → Europe crude, US LNG → Europe vs Asia) and reacts first to chokepoint disruptions. Scope to
+study when the phase starts, each source to be verified live and for licence:
+- Chokepoint and port activity from AIS-derived open data (candidate: IMF PortWatch, daily transits through
+  Hormuz, Bab el-Mandeb, Suez, Panama…).
+- Voyage distances and times for benchmark tanker and LNG routes (e.g. the VLCC MEG → China route),
+  recomputed from port coordinates with an open sea-routing method and stated assumptions (speed, sea
+  margin, port time), never copied from licensed route tables.
+- Freight rates themselves (Baltic Exchange TD/TC routes, Worldscale, Clarksons SIW) are licensed: shown as
+  a declared gap unless a free, redistributable source exists. Bunker prices likewise.
 
 **Phase 2:** LPG (Mont Belvieu propane spot, US propane stocks `WPRSTUS1`, EIA); other European power zones
 (ENTSO-E); non-European markets: US gas storage and US LNG exports (EIA), US power (EIA-930), Japan power
@@ -370,6 +382,7 @@ European markets come first: they are the focus and the most differentiating par
 | M6 | Forecast registry | Three phase-1 models (§6, see §11), walk-forward backtests, live registry, scoreboard pages |
 | M7 | Lab v1 | Rule backtester with European presets and the trade simulator |
 | M8 | Polish & launch | Methodology (incl. Data licensing) and About pages, README with screenshots, Lighthouse ≥ 90, mobile pass, error monitoring |
+| F | Freight & shipping (later phase) | `/markets/freight`: chokepoint transits, computed route distances and voyage times, links to the crude, products and LNG pages; freight rates only if a redistributable source exists |
 | P2 | Phase 2 | LPG; other European power zones; non-European markets (US gas and power, Asia); day-ahead power price forecast; carbon (EUA) if a redistributable source exists |
 
 ---
@@ -382,6 +395,8 @@ European markets come first: they are the focus and the most differentiating par
 - **Lab presets (§7):** replace US-centric presets with European ones (TTF M1–M2 vs EU storage,
   DE–FR day-ahead spread, Brent M1–M2) — to confirm at M7.
 - Carbon (EUA): no confirmed free, redistributable daily price yet (needed for clean spark/dark spreads).
+- Freight & shipping: when to schedule the phase, and which free sources hold up (freight rates and bunker
+  prices are licensed; chokepoint transits and computed voyage times are the likely free core).
 
 
 Decided on 2026-10-28 (see ADRs 0001–0004): Europe focus; public repository; Python 3.12; Frankfurt region;
