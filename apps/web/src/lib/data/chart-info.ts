@@ -41,6 +41,14 @@ export function chartInfo(
     freshness: last
       ? freshnessStatus(new Date(last), first.frequency, now, first.publicationLagDays)
       : undefined,
+    // One link only when every series shares the licence; /data lists each series' licence.
+    licenseUrl: attributions.length > 0 ? sharedLicenseUrl(series) : undefined,
     unofficial: series.some((s) => s.isUnofficial),
   };
+}
+
+function sharedLicenseUrl(series: CatalogSeries[]): string | undefined {
+  const urls = new Set(series.map((s) => s.licenseUrl));
+  const [only] = urls;
+  return urls.size === 1 && only ? only : undefined;
 }

@@ -54,5 +54,7 @@ arrived. The Supabase free tier is limited to about 500 MB, and the database hel
   are declared gaps.
 - Clean spark and dark spreads stay out of scope: there is no daily spot gas price and no free carbon
   price.
-- The Elexon licence text must be confirmed by reading the page in a browser. The page is behind a bot
-  check, and its terms were read through a search summary.
+- The Elexon licence was confirmed on 2026-10-29 from its full text. The page blocks automated
+  requests, so the project owner read it in a browser. It allows publication and commercial reuse with
+  the attribution statement. It excludes third-party rights Elexon cannot license; the market index is
+  published by Elexon as BMRS data, so it is covered.

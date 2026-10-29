@@ -1,9 +1,10 @@
 # Elexon Insights Solution (BMRS) — GB market index price, generation by fuel and demand, no key.
 # Licence: BMRS data licence (https://www.elexon.co.uk/data/balancing-mechanism-reporting-agent/copyright-licence-bmrs-data/):
-# worldwide, royalty-free reuse; the statement "Contains BMRS data © Elexon Limited copyright and database
-# right <year>" and a link to the licence are required; no suggestion of Elexon endorsement. The page sits
-# behind a bot check: its text was read through a search summary on 2026-10-29 and is to be confirmed by
-# reading the page in a browser.
+# worldwide, royalty-free, perpetual licence to copy, publish, distribute and adapt, including commercially;
+# the statement "Contains BMRS data © Elexon Limited copyright and database right <year>" is mandatory, with
+# a link to the licence where possible; no suggestion of official status or Elexon endorsement, and no
+# misrepresentation of the data. Full text read in a browser by the project owner on 2026-10-29 (the page
+# blocks automated requests).
 # Daily series are averages over complete Europe/London days (worker/power.py).
 # Plausible ranges are generous physical bounds: they catch unit errors, not records.
 source: elexon
