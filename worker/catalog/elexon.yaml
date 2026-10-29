@@ -1,0 +1,290 @@
+# Elexon Insights Solution (BMRS) — GB market index price, generation by fuel and demand, no key.
+# Licence: BMRS data licence (https://www.elexon.co.uk/data/balancing-mechanism-reporting-agent/copyright-licence-bmrs-data/):
+# worldwide, royalty-free reuse; the statement "Contains BMRS data © Elexon Limited copyright and database
+# right <year>" and a link to the licence are required; no suggestion of Elexon endorsement. The page sits
+# behind a bot check: its text was read through a search summary on 2026-10-29 and is to be confirmed by
+# reading the page in a browser.
+# Daily series are averages over complete Europe/London days (worker/power.py).
+# Plausible ranges are generous physical bounds: they catch unit errors, not records.
+source: elexon
+licence:
+  name: Elexon BMRS data licence
+  url: https://www.elexon.co.uk/data/balancing-mechanism-reporting-agent/copyright-licence-bmrs-data/
+  attribution: "Contains BMRS data © Elexon Limited copyright and database right 2026."
+licence_checked: 2026-10-29
+series:
+  - code: elexon.gb.mid
+    name: GB market index price (Elexon MID), half-hourly
+    commodity: power
+    region: GB
+    unit: "£/MWh"
+    frequency: half_hourly
+    source_ref: "mid|half_hourly"
+    description: Volume-weighted index of short-term trades on EPEX SPOT (APX provider) per settlement period. An index, not a day-ahead auction price.
+    price_kind: index
+    plausible_min: -1000
+    plausible_max: 10000
+  - code: elexon.gb.mid_base
+    name: GB market index price (Elexon MID), daily average
+    commodity: power
+    region: GB
+    unit: "£/MWh"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "mid|daily_mean"
+    description: Time-average of the half-hourly market index over the day (Europe/London), complete days with trades in every period only.
+    price_kind: index
+    plausible_min: -1000
+    plausible_max: 10000
+  - code: elexon.gb.demand
+    name: GB national demand (INDO)
+    commodity: power
+    region: GB
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "demand|initialDemandOutturn"
+    description: Initial national demand outturn, average power over the day. Transmission-metered; demand met by embedded solar and wind is not included.
+    publication_lag_days: 1
+    plausible_min: 10000
+    plausible_max: 60000
+  - code: elexon.gb.gen.gas_ccgt
+    name: GB generation, gas, combined cycle
+    commodity: power
+    region: GB
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "fuelhh|CCGT"
+    description: FUELHH generation, average power over the day (transmission-connected units only).
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 35000
+  - code: elexon.gb.gen.gas_ocgt
+    name: GB generation, gas, open cycle
+    commodity: power
+    region: GB
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "fuelhh|OCGT"
+    description: FUELHH generation, average power over the day (transmission-connected units only).
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 5000
+  - code: elexon.gb.gen.coal
+    name: GB generation, coal
+    commodity: power
+    region: GB
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "fuelhh|COAL"
+    description: FUELHH generation, average power over the day (transmission-connected units only).
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 30000
+  - code: elexon.gb.gen.nuclear
+    name: GB generation, nuclear
+    commodity: power
+    region: GB
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "fuelhh|NUCLEAR"
+    description: FUELHH generation, average power over the day (transmission-connected units only).
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 12000
+  - code: elexon.gb.gen.wind
+    name: GB generation, wind (transmission-connected)
+    commodity: power
+    region: GB
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "fuelhh|WIND"
+    description: FUELHH generation, average power over the day (transmission-connected units only).
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 30000
+  - code: elexon.gb.gen.biomass
+    name: GB generation, biomass
+    commodity: power
+    region: GB
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "fuelhh|BIOMASS"
+    description: FUELHH generation, average power over the day (transmission-connected units only).
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 6000
+  - code: elexon.gb.gen.hydro
+    name: GB generation, hydro (non pumped)
+    commodity: power
+    region: GB
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "fuelhh|NPSHYD"
+    description: FUELHH generation, average power over the day (transmission-connected units only).
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 3000
+  - code: elexon.gb.gen.pumped_storage
+    name: GB generation, pumped storage
+    commodity: power
+    region: GB
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "fuelhh|PS"
+    description: FUELHH generation, average power over the day (transmission-connected units only).
+    publication_lag_days: 1
+    plausible_min: -1000
+    plausible_max: 5000
+  - code: elexon.gb.gen.oil
+    name: GB generation, oil
+    commodity: power
+    region: GB
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "fuelhh|OIL"
+    description: FUELHH generation, average power over the day (transmission-connected units only).
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 3000
+  - code: elexon.gb.gen.other
+    name: GB generation, other
+    commodity: power
+    region: GB
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "fuelhh|OTHER"
+    description: FUELHH generation, average power over the day (transmission-connected units only).
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 5000
+  - code: elexon.gb.int.ifa
+    name: GB interconnector flow, IFA (France)
+    commodity: power
+    region: GB
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "fuelhh|INTFR"
+    description: Net flow into GB, average power over the day; negative means GB exports.
+    publication_lag_days: 1
+    plausible_min: -3000
+    plausible_max: 3000
+  - code: elexon.gb.int.ifa2
+    name: GB interconnector flow, IFA2 (France)
+    commodity: power
+    region: GB
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "fuelhh|INTIFA2"
+    description: Net flow into GB, average power over the day; negative means GB exports.
+    publication_lag_days: 1
+    plausible_min: -3000
+    plausible_max: 3000
+  - code: elexon.gb.int.eleclink
+    name: GB interconnector flow, ElecLink (France)
+    commodity: power
+    region: GB
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "fuelhh|INTELEC"
+    description: Net flow into GB, average power over the day; negative means GB exports.
+    publication_lag_days: 1
+    plausible_min: -3000
+    plausible_max: 3000
+  - code: elexon.gb.int.britned
+    name: GB interconnector flow, BritNed (Netherlands)
+    commodity: power
+    region: GB
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "fuelhh|INTNED"
+    description: Net flow into GB, average power over the day; negative means GB exports.
+    publication_lag_days: 1
+    plausible_min: -3000
+    plausible_max: 3000
+  - code: elexon.gb.int.nemo
+    name: GB interconnector flow, Nemo Link (Belgium)
+    commodity: power
+    region: GB
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "fuelhh|INTNEM"
+    description: Net flow into GB, average power over the day; negative means GB exports.
+    publication_lag_days: 1
+    plausible_min: -3000
+    plausible_max: 3000
+  - code: elexon.gb.int.nsl
+    name: GB interconnector flow, North Sea Link (Norway)
+    commodity: power
+    region: GB
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "fuelhh|INTNSL"
+    description: Net flow into GB, average power over the day; negative means GB exports.
+    publication_lag_days: 1
+    plausible_min: -3000
+    plausible_max: 3000
+  - code: elexon.gb.int.viking
+    name: GB interconnector flow, Viking Link (Denmark)
+    commodity: power
+    region: GB
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "fuelhh|INTVKL"
+    description: Net flow into GB, average power over the day; negative means GB exports.
+    publication_lag_days: 1
+    plausible_min: -3000
+    plausible_max: 3000
+  - code: elexon.gb.int.moyle
+    name: GB interconnector flow, Moyle (Northern Ireland)
+    commodity: power
+    region: GB
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "fuelhh|INTIRL"
+    description: Net flow into GB, average power over the day; negative means GB exports.
+    publication_lag_days: 1
+    plausible_min: -3000
+    plausible_max: 3000
+  - code: elexon.gb.int.ewic
+    name: GB interconnector flow, East-West (Ireland)
+    commodity: power
+    region: GB
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "fuelhh|INTEW"
+    description: Net flow into GB, average power over the day; negative means GB exports.
+    publication_lag_days: 1
+    plausible_min: -3000
+    plausible_max: 3000
+  - code: elexon.gb.int.greenlink
+    name: GB interconnector flow, Greenlink (Ireland)
+    commodity: power
+    region: GB
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "fuelhh|INTGRNL"
+    description: Net flow into GB, average power over the day; negative means GB exports.
+    publication_lag_days: 1
+    plausible_min: -3000
+    plausible_max: 3000

@@ -104,6 +104,16 @@ def test_intraday_gaps_of_a_few_periods_are_reported(
     assert row == (1,)
 
 
+def test_series_threshold_overrides_the_frequency_default(conn: psycopg.Connection) -> None:
+    # A calendar-day series (power): one missing day is a gap, where business-day series allow 5.
+    series_id = insert_series(conn, code="test.every_day", gap_threshold_days=1)
+    insert_observations(conn, series_id, [0, 1, 2, 4, 5])
+    row = conn.execute(
+        "select gap_count from web.series_catalog where code = 'test.every_day'"
+    ).fetchone()
+    assert row == (1,)
+
+
 def test_catalog_lists_series_without_observations(conn: psycopg.Connection) -> None:
     insert_series(conn, code="test.empty")
     row = conn.execute(

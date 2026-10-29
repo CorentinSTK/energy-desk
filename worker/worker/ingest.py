@@ -18,18 +18,24 @@ from worker import runner
 from worker.sources.base import Source
 from worker.sources.ecb import EcbSource
 from worker.sources.eia import EiaSource
+from worker.sources.elexon import ElexonSource
 from worker.sources.entsog import EntsogSource
 from worker.sources.fred import FredSource
 from worker.sources.gie import GieAgsiSource, GieAlsiSource
+from worker.sources.odre import OdreSource
+from worker.sources.smard import SmardSource
 from worker.sources.yahoo import YahooSource
 
 SOURCES: dict[str, Callable[[], Source]] = {
     "ecb": EcbSource,
     "eia": EiaSource,
+    "elexon": ElexonSource,
     "entsog": EntsogSource,
     "fred": FredSource,
     "gie_agsi": GieAgsiSource,
     "gie_alsi": GieAlsiSource,
+    "odre": OdreSource,
+    "smard": SmardSource,
     "yahoo": YahooSource,
 }
 
