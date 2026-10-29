@@ -5,6 +5,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 const NAV = [
   { href: "/markets/gas", label: "Gas" },
   { href: "/markets/lng", label: "LNG" },
+  { href: "/markets/power", label: "Power" },
   { href: "/data", label: "Data" },
 ];
 

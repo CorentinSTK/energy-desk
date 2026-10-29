@@ -1,0 +1,203 @@
+# SMARD (Bundesnetzagentur) — German power market data and neighbouring day-ahead prices, no key.
+# Terms (read 2026-10-29, https://www.smard.de/en/datennutzung): data is freely available for public use
+# (EnWG §111d) under CC BY 4.0; attribute to "Bundesnetzagentur | SMARD.de". SMARD receives the data
+# from ENTSO-E. Filter IDs checked live on 2026-10-29 (see worker/sources/smard.py).
+# Daily series are the average power (MW) or average price over complete Europe/Berlin delivery days
+# (worker/power.py). Plausible ranges are generous physical bounds: they catch unit errors, not records.
+source: smard
+licence:
+  name: CC BY 4.0
+  url: https://www.smard.de/en/datennutzung
+  attribution: "Source: Bundesnetzagentur | SMARD.de (CC BY 4.0)."
+licence_checked: 2026-10-29
+series:
+  - code: smard.de_lu.price_da
+    name: Germany-Luxembourg day-ahead price, hourly
+    commodity: power
+    region: DE-LU
+    unit: "€/MWh"
+    frequency: hourly
+    source_ref: "4169|DE-LU|hourly"
+    description: Day-ahead (SDAC) auction price per hour; since 1 October 2025 the mean of the four quarter-hour prices.
+    price_kind: spot
+    plausible_min: -600  # harmonised auction floor is -500 €/MWh
+    plausible_max: 10000
+  - code: smard.de_lu.price_da_base
+    name: Germany-Luxembourg day-ahead base price
+    commodity: power
+    region: DE-LU
+    unit: "€/MWh"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "4169|DE-LU|daily_mean"
+    description: Average of the hourly day-ahead prices over the delivery day (Europe/Berlin), complete days only.
+    price_kind: spot
+    plausible_min: -600
+    plausible_max: 10000
+  - code: smard.fr.price_da
+    name: France day-ahead price, hourly
+    commodity: power
+    region: FR
+    unit: "€/MWh"
+    frequency: hourly
+    source_ref: "254|DE-LU|hourly"
+    description: Day-ahead (SDAC) auction price per hour; since 1 October 2025 the mean of the four quarter-hour prices.
+    price_kind: spot
+    plausible_min: -600  # harmonised auction floor is -500 €/MWh
+    plausible_max: 10000
+  - code: smard.fr.price_da_base
+    name: France day-ahead base price
+    commodity: power
+    region: FR
+    unit: "€/MWh"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "254|DE-LU|daily_mean"
+    description: Average of the hourly day-ahead prices over the delivery day (Europe/Berlin), complete days only.
+    price_kind: spot
+    plausible_min: -600
+    plausible_max: 10000
+  - code: smard.de.load
+    name: Germany electricity load
+    commodity: power
+    region: DE
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "410|DE|daily_mean"
+    description: Grid load (Netzlast), average power over the delivery day (Europe/Berlin), complete days only.
+    publication_lag_days: 1
+    plausible_min: 20000
+    plausible_max: 100000
+  - code: smard.de.gen.lignite
+    name: Germany generation, lignite
+    commodity: power
+    region: DE
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "1223|DE|daily_mean"
+    description: Net generation, average power over the delivery day (Europe/Berlin), complete days only.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 20000
+  - code: smard.de.gen.hard_coal
+    name: Germany generation, hard coal
+    commodity: power
+    region: DE
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "4069|DE|daily_mean"
+    description: Net generation, average power over the delivery day (Europe/Berlin), complete days only.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 25000
+  - code: smard.de.gen.gas
+    name: Germany generation, natural gas
+    commodity: power
+    region: DE
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "4071|DE|daily_mean"
+    description: Net generation, average power over the delivery day (Europe/Berlin), complete days only.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 30000
+  - code: smard.de.gen.other_conventional
+    name: Germany generation, other conventional
+    commodity: power
+    region: DE
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "1227|DE|daily_mean"
+    description: Net generation, average power over the delivery day (Europe/Berlin), complete days only.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 15000
+  - code: smard.de.gen.wind_onshore
+    name: Germany generation, wind onshore
+    commodity: power
+    region: DE
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "4067|DE|daily_mean"
+    description: Net generation, average power over the delivery day (Europe/Berlin), complete days only.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 70000
+  - code: smard.de.gen.wind_offshore
+    name: Germany generation, wind offshore
+    commodity: power
+    region: DE
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "1225|DE|daily_mean"
+    description: Net generation, average power over the delivery day (Europe/Berlin), complete days only.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 15000
+  - code: smard.de.gen.solar
+    name: Germany generation, solar
+    commodity: power
+    region: DE
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "4068|DE|daily_mean"
+    description: Net generation, average power over the delivery day (Europe/Berlin), complete days only.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 80000
+  - code: smard.de.gen.hydro
+    name: Germany generation, hydro
+    commodity: power
+    region: DE
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "1226|DE|daily_mean"
+    description: Net generation, average power over the delivery day (Europe/Berlin), complete days only.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 10000
+  - code: smard.de.gen.biomass
+    name: Germany generation, biomass
+    commodity: power
+    region: DE
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "4066|DE|daily_mean"
+    description: Net generation, average power over the delivery day (Europe/Berlin), complete days only.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 10000
+  - code: smard.de.gen.other_renewables
+    name: Germany generation, other renewables
+    commodity: power
+    region: DE
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "1228|DE|daily_mean"
+    description: Net generation, average power over the delivery day (Europe/Berlin), complete days only.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 5000
+  - code: smard.de.gen.pumped_storage
+    name: Germany generation, pumped storage
+    commodity: power
+    region: DE
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: "4070|DE|daily_mean"
+    description: Net generation, average power over the delivery day (Europe/Berlin), complete days only.
+    publication_lag_days: 1
+    plausible_min: 0
+    plausible_max: 15000

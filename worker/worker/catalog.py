@@ -47,6 +47,9 @@ class SeriesSpec(BaseModel):
     source_unit: str | None = None
     # Normal delay between a value's date and its publication; freshness ignores this much age.
     publication_lag_days: int = Field(default=0, ge=0)
+    # Largest normal interval between observations, when the frequency's default does not fit (e.g.
+    # 1 for daily series published every calendar day, where the default allows for weekends).
+    gap_threshold_days: float | None = Field(default=None, gt=0)
     # Values outside this range are rejected by validation, not stored.
     plausible_min: float
     plausible_max: float

@@ -1,13 +1,14 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  MISSING,
   decimalsFor,
   formatChange,
   formatDate,
+  formatDateTime,
   formatNumber,
   formatPercentChange,
   formatPercentile,
-  MISSING,
 } from "./format";
 
 describe("formatNumber", () => {
@@ -67,6 +68,14 @@ describe("formatPercentile", () => {
   it("clamps and rounds", () => {
     expect(formatPercentile(91.6)).toBe("92nd pct");
     expect(formatPercentile(140)).toBe("100th pct");
+  });
+});
+
+describe("formatDateTime", () => {
+  it("shows the time in the market's zone, clock changes included", () => {
+    expect(formatDateTime("2026-10-26T13:00:00Z", "Europe/Berlin")).toBe("26 Oct 2026, 14:00 CET");
+    expect(formatDateTime("2026-07-01T13:00:00Z", "Europe/London")).toBe("1 Jul 2026, 14:00 BST");
+    expect(formatDateTime(null, "Europe/Paris")).toBe("—");
   });
 });
 

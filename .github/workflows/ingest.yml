@@ -5,13 +5,14 @@ on:
   schedule:
     - cron: "15 16 * * 1-5" # ECB reference rates, published around 16:00 CET on TARGET days
     - cron: "0 17 * * 1-5" # EIA (spot prices weekly, stocks Wednesday 10:30 ET) and FRED
+    - cron: "15 14 * * *" # Power: SMARD (day-ahead results ~12:45 CET), RTE éCO2mix and Elexon (day D-1 complete)
     - cron: "30 21 * * *" # GIE AGSI+ and ALSI, ENTSOG (gas day D by the evening of D+1); Yahoo after NYMEX settlement
   workflow_dispatch:
     inputs:
       source:
         description: Source to ingest
         type: choice
-        options: [ecb, eia, entsog, fred, gie_agsi, gie_alsi, yahoo]
+        options: [ecb, eia, elexon, entsog, fred, gie_agsi, gie_alsi, odre, smard, yahoo]
       backfill:
         description: Fetch the full history
         type: boolean
@@ -34,6 +35,7 @@ jobs:
           case "$SCHEDULE" in
             "15 16 * * 1-5") sources='["ecb"]' ;;
             "0 17 * * 1-5") sources='["eia","fred"]' ;;
+            "15 14 * * *") sources='["smard","odre","elexon"]' ;;
             "30 21 * * *") sources='["gie_agsi","gie_alsi","entsog","yahoo"]' ;;
             *) sources="[\"$MANUAL_SOURCE\"]" ;;
           esac
@@ -42,7 +44,8 @@ jobs:
   ingest:
     needs: plan
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # A full SMARD history is a few thousand small files fetched politely: allow backfills longer.
+    timeout-minutes: ${{ inputs.backfill && 120 || 30 }}
     strategy:
       fail-fast: false
       matrix:

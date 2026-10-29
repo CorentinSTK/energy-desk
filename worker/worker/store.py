@@ -21,8 +21,8 @@ def sync_series(conn: psycopg.Connection, catalog: SourceCatalog) -> dict[str, i
             """
             insert into market.series (code, name, commodity, region, unit, frequency, source,
                 source_ref, description, is_unofficial, price_kind, license, license_url,
-                attribution, publication_lag_days, updated_at)
-            values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, now())
+                attribution, publication_lag_days, gap_threshold_days, updated_at)
+            values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, now())
             on conflict (code) do update set
                 name = excluded.name, commodity = excluded.commodity, region = excluded.region,
                 unit = excluded.unit, frequency = excluded.frequency, source = excluded.source,
@@ -31,6 +31,7 @@ def sync_series(conn: psycopg.Connection, catalog: SourceCatalog) -> dict[str, i
                 license = excluded.license, license_url = excluded.license_url,
                 attribution = excluded.attribution,
                 publication_lag_days = excluded.publication_lag_days,
+                gap_threshold_days = excluded.gap_threshold_days,
                 is_active = true, updated_at = now()
             returning id
             """,
@@ -50,6 +51,7 @@ def sync_series(conn: psycopg.Connection, catalog: SourceCatalog) -> dict[str, i
                 licence.url,
                 licence.attribution,
                 spec.publication_lag_days,
+                spec.gap_threshold_days,
             ),
         ).fetchone()
         assert row is not None

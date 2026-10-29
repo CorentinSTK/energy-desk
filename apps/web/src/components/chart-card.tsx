@@ -15,6 +15,8 @@ export interface ChartSourceInfo {
   source: string;
   /** Required attribution text from the series licence; omitted when none is required. */
   attribution?: string;
+  /** Licence page of the series, linked next to the attribution (CC BY, BMRS licence ask for it). */
+  licenseUrl?: string;
   unit: string;
   lastObservation?: string;
   freshness?: FreshnessStatus;
@@ -101,7 +103,24 @@ export function ChartCard({
             />
           )}
         </div>
-        {info.attribution && <p>{info.attribution}</p>}
+        {info.attribution && (
+          <p>
+            {info.attribution}
+            {info.licenseUrl && (
+              <>
+                {" "}
+                <a
+                  href={info.licenseUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-foreground"
+                >
+                  Licence
+                </a>
+              </>
+            )}
+          </p>
+        )}
         {info.unofficial && <UnofficialDataLabel />}
       </CardFooter>
     </Card>

@@ -8,7 +8,7 @@
 
 import type { EChartsCoreOption } from "echarts/core";
 
-import { formatDate, formatNumber } from "@/lib/format";
+import { formatDate, formatDateTime, formatNumber } from "@/lib/format";
 
 import type { ChartTokens } from "./chart-tokens";
 
@@ -21,6 +21,8 @@ export interface TimeSeriesInput {
   data: TimeSeriesPoint[];
   unit: string;
   decimals: number;
+  /** Intraday data: the tooltip shows the time in this IANA zone (e.g. "Europe/Berlin"). */
+  timeZone?: string;
 }
 
 export interface SeasonalInput {
@@ -107,7 +109,8 @@ export function timeSeriesOption(t: ChartTokens, s: TimeSeriesInput): EChartsCor
       formatter: (params: TooltipParam[]) => {
         const p = params[0];
         const [date, value] = s.data[p.dataIndex];
-        return `${formatDate(date)}${tooltipRow(p.marker ?? "", s.name, `${formatNumber(value, s.decimals)} ${s.unit}`)}`;
+        const when = s.timeZone ? formatDateTime(date, s.timeZone) : formatDate(date);
+        return `${when}${tooltipRow(p.marker ?? "", s.name, `${formatNumber(value, s.decimals)} ${s.unit}`)}`;
       },
     },
     xAxis: { type: "time", ...categoryLikeAxis(t) },
@@ -228,7 +231,8 @@ export function seasonalOption(t: ChartTokens, s: SeasonalInput): EChartsCoreOpt
 }
 
 export interface MultiLineInput {
-  series: { name: string; data: TimeSeriesPoint[] }[];
+  /** `colorIndex` pins a palette colour (0-based), e.g. the same colour for a fuel in every zone. */
+  series: { name: string; data: TimeSeriesPoint[]; colorIndex?: number }[];
   unit: string;
   decimals: number;
   /** Stack the series as areas. Only for distinct quantities whose sum means something. */
@@ -276,8 +280,24 @@ export function multiLineOption(t: ChartTokens, s: MultiLineInput): EChartsCoreO
       showSymbol: false,
       connectNulls: false,
       sampling: "lttb",
-      lineStyle: { width: s.stacked ? 0.5 : LINE_WIDTH },
-      ...(s.stacked && { stack: "total", areaStyle: { opacity: 0.85 } }),
+      ...(line.colorIndex !== undefined && {
+        itemStyle: { color: t.series[line.colorIndex % t.series.length] },
+      }),
+      lineStyle: {
+        width: s.stacked ? 0.5 : LINE_WIDTH,
+        ...(line.colorIndex !== undefined && {
+          color: t.series[line.colorIndex % t.series.length],
+        }),
+      },
+      ...(s.stacked && {
+        stack: "total",
+        areaStyle: {
+          opacity: 0.85,
+          ...(line.colorIndex !== undefined && {
+            color: t.series[line.colorIndex % t.series.length],
+          }),
+        },
+      }),
     })),
   };
 }

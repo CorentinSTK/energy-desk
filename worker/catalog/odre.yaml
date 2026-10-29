@@ -1,0 +1,194 @@
+# ODRÉ éCO2mix (RTE) — French electricity consumption, generation by fuel and exchanges, no key.
+# Licence (read 2026-10-29 from the dataset metadata of eco2mix-national-tr and -cons-def): Licence
+# Ouverte v2.0 (Etalab) — free reuse, including commercial, with attribution of the source and date.
+# Every series is the average power (MW) over complete Europe/Paris days (worker/power.py), from
+# consolidated data where published, real-time data otherwise (worker/sources/odre.py).
+# Plausible ranges are generous physical bounds: they catch unit errors, not records. Generation is net
+# of the plants' own consumption, so an idle plant can report a small negative value (coal, July 2020).
+source: odre
+licence:
+  name: Licence Ouverte v2.0 (Etalab)
+  url: https://www.etalab.gouv.fr/licence-ouverte-open-licence/
+  attribution: "Source: RTE éCO2mix, via ODRÉ (Licence Ouverte v2.0)."
+licence_checked: 2026-10-29
+series:
+  - code: odre.fr.load
+    name: France electricity consumption
+    commodity: power
+    region: FR
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: consommation
+    description: Consumption, average power over the day.
+    publication_lag_days: 1
+    plausible_min: 20000
+    plausible_max: 110000
+  - code: odre.fr.gen.nuclear
+    name: France generation, nuclear
+    commodity: power
+    region: FR
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: nucleaire
+    description: Generation, average power over the day.
+    publication_lag_days: 1
+    plausible_min: -1000
+    plausible_max: 70000
+  - code: odre.fr.gen.wind
+    name: France generation, wind
+    commodity: power
+    region: FR
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: eolien
+    description: Generation, average power over the day.
+    publication_lag_days: 1
+    plausible_min: -1000
+    plausible_max: 30000
+  - code: odre.fr.gen.solar
+    name: France generation, solar
+    commodity: power
+    region: FR
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: solaire
+    description: Generation, average power over the day.
+    publication_lag_days: 1
+    plausible_min: -1000
+    plausible_max: 40000
+  - code: odre.fr.gen.hydro
+    name: France generation, hydro
+    commodity: power
+    region: FR
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: hydraulique
+    description: Generation, average power over the day.
+    publication_lag_days: 1
+    plausible_min: -1000
+    plausible_max: 30000
+  - code: odre.fr.gen.gas
+    name: France generation, natural gas
+    commodity: power
+    region: FR
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: gaz
+    description: Generation, average power over the day.
+    publication_lag_days: 1
+    plausible_min: -1000
+    plausible_max: 15000
+  - code: odre.fr.gen.coal
+    name: France generation, coal
+    commodity: power
+    region: FR
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: charbon
+    description: Generation, average power over the day.
+    publication_lag_days: 1
+    plausible_min: -1000
+    plausible_max: 5000
+  - code: odre.fr.gen.oil
+    name: France generation, oil
+    commodity: power
+    region: FR
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: fioul
+    description: Generation, average power over the day.
+    publication_lag_days: 1
+    plausible_min: -1000
+    plausible_max: 5000
+  - code: odre.fr.gen.bioenergy
+    name: France generation, bioenergy
+    commodity: power
+    region: FR
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: bioenergies
+    description: Generation, average power over the day.
+    publication_lag_days: 1
+    plausible_min: -1000
+    plausible_max: 5000
+  - code: odre.fr.exch.net_physical
+    name: France net physical imports
+    commodity: power
+    region: FR
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: ech_physiques
+    description: Net physical exchanges with all neighbours; negative means net exports.
+    publication_lag_days: 1
+    plausible_min: -25000
+    plausible_max: 25000
+  - code: odre.fr.exch.gb
+    name: France net commercial imports from Great Britain
+    commodity: power
+    region: FR
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: ech_comm_angleterre
+    description: Scheduled commercial exchanges with Great Britain; negative means exports from France.
+    publication_lag_days: 1
+    plausible_min: -15000
+    plausible_max: 15000
+  - code: odre.fr.exch.es
+    name: France net commercial imports from Spain
+    commodity: power
+    region: FR
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: ech_comm_espagne
+    description: Scheduled commercial exchanges with Spain; negative means exports from France.
+    publication_lag_days: 1
+    plausible_min: -15000
+    plausible_max: 15000
+  - code: odre.fr.exch.it
+    name: France net commercial imports from Italy
+    commodity: power
+    region: FR
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: ech_comm_italie
+    description: Scheduled commercial exchanges with Italy; negative means exports from France.
+    publication_lag_days: 1
+    plausible_min: -15000
+    plausible_max: 15000
+  - code: odre.fr.exch.ch
+    name: France net commercial imports from Switzerland
+    commodity: power
+    region: FR
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: ech_comm_suisse
+    description: Scheduled commercial exchanges with Switzerland; negative means exports from France.
+    publication_lag_days: 1
+    plausible_min: -15000
+    plausible_max: 15000
+  - code: odre.fr.exch.de_be
+    name: France net commercial imports from Germany and Belgium
+    commodity: power
+    region: FR
+    unit: "MW"
+    frequency: daily
+    gap_threshold_days: 1  # published for every calendar day
+    source_ref: ech_comm_allemagne_belgique
+    description: Scheduled commercial exchanges with Germany and Belgium; negative means exports from France.
+    publication_lag_days: 1
+    plausible_min: -15000
+    plausible_max: 15000

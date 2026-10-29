@@ -101,6 +101,22 @@ export function formatDate(value: string | Date | null | undefined): string {
   }).format(date);
 }
 
+/** Date and time in a market's time zone, e.g. "26 Oct 2026, 14:00 CET" (intraday power prices). */
+export function formatDateTime(value: string | null | undefined, timeZone: string): string {
+  if (value === null || value === undefined) return MISSING;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return MISSING;
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone,
+    timeZoneName: "short",
+  }).format(date);
+}
+
 function isZeroAfterRounding(value: number, decimals: number): boolean {
   return Math.abs(value) < 0.5 * 10 ** -decimals;
 }

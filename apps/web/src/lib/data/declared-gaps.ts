@@ -53,6 +53,30 @@ export const DECLARED_GAPS: DeclaredGap[] = [
     markets: ["lng"],
   },
   {
+    title: "Power forward curves and intraday auctions",
+    reason:
+      "Power futures (EEX, ICE Endex) and exchange intraday data (EPEX SPOT) are licensed. Day-ahead auction prices (DE-LU, France) and the GB market index are shown instead.",
+    markets: ["power"],
+  },
+  {
+    title: "GB day-ahead auction price",
+    reason:
+      "The N2EX and EPEX GB day-ahead auction results are licensed. Great Britain is shown with the Elexon market index (MID), an index of short-term trades, labelled as such and never put in a spread with continental auction prices.",
+    markets: ["power"],
+  },
+  {
+    title: "GB embedded solar and wind",
+    reason:
+      "Elexon reports transmission-connected generation only. Most British solar is connected to distribution networks, so it is missing from the GB generation mix, and GB demand (INDO) excludes demand met by it.",
+    markets: ["power"],
+  },
+  {
+    title: "Clean spark and dark spreads",
+    reason:
+      "They need a daily gas price and a carbon price of the same kind as the power price. The only daily gas price available is a futures contract (unofficial), and no free EUA price is confirmed, so mixing them with spot power would break the like-for-like rule.",
+    markets: ["power"],
+  },
+  {
     title: "EUA carbon price",
     reason: "No free, redistributable daily source confirmed yet.",
     markets: ["power"],
