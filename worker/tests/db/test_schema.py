@@ -83,6 +83,27 @@ def test_catalog_reports_coverage_and_gaps(conn: psycopg.Connection) -> None:
     assert last == datetime(2026, 1, 21, tzinfo=UTC)
 
 
+@pytest.mark.parametrize(
+    ("frequency", "step", "hole_steps"),
+    [("hourly", timedelta(hours=1), 2), ("half_hourly", timedelta(minutes=30), 2)],
+)
+def test_intraday_gaps_of_a_few_periods_are_reported(
+    conn: psycopg.Connection, frequency: str, step: timedelta, hole_steps: int
+) -> None:
+    series_id = insert_series(conn, code=f"test.{frequency}", frequency=frequency)
+    start = datetime(2026, 3, 29, tzinfo=UTC)  # spans the CET clock change: UTC has no hole
+    steps = [*range(10), 10 + hole_steps, 11 + hole_steps]
+    with conn.cursor() as cur:
+        cur.executemany(
+            "insert into market.observations (series_id, ts, value) values (%s, %s, 50)",
+            [(series_id, start + step * i) for i in steps],
+        )
+    row = conn.execute(
+        "select gap_count from web.series_catalog where code = %s", (f"test.{frequency}",)
+    ).fetchone()
+    assert row == (1,)
+
+
 def test_catalog_lists_series_without_observations(conn: psycopg.Connection) -> None:
     insert_series(conn, code="test.empty")
     row = conn.execute(

@@ -6,13 +6,14 @@
  * first version; M1 can refine them per source once real publication schedules are recorded.
  */
 
-export type Frequency = "hourly" | "daily" | "weekly" | "monthly";
+export type Frequency = "half_hourly" | "hourly" | "daily" | "weekly" | "monthly";
 export type FreshnessStatus = "fresh" | "delayed" | "stale";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 /** Maximum age (in days) for each status; older than `delayed` is stale. */
 export const FRESHNESS_THRESHOLDS_DAYS: Record<Frequency, { fresh: number; delayed: number }> = {
+  half_hourly: { fresh: 1.5, delayed: 3 }, // GB market index, published with a few hours' delay
   hourly: { fresh: 1.5, delayed: 3 }, // day-ahead power is published once a day for the next day
   daily: { fresh: 4, delayed: 7 }, // a long weekend plus one publication day
   weekly: { fresh: 10, delayed: 17 },
