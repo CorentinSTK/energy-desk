@@ -124,3 +124,37 @@ Known limitations: TTF spread history starts 1 Oct 2026; flows have five years o
 tables scroll horizontally on phones; the TTF spread axis shows day numbers only.
 
 Next: M3 (European power DE/FR/GB). Needs the ENTSO-E token.
+
+## 2026-10-29 — M3 European power (built; production backfill pending)
+
+Built (PR #16 merged; worker + web PR open):
+- Migrations 003 (half-hourly frequency, intraday gap thresholds of 1.5 periods) and 004 (per-series gap
+  threshold: calendar-day power series report a single missing day).
+- Sources, all keyless and openly licensed (ADR 0006): SMARD (DE-LU and FR day-ahead prices, German load
+  and generation), RTE éCO2mix via ODRÉ (French consumption, generation, exchanges), Elexon (GB market
+  index, generation by fuel, interconnectors, demand). ENTSO-E is no longer needed for DE/FR/GB.
+- `worker/power.py`: daily average power over complete local delivery days only (clock changes handled).
+- `worker.crosscheck power`: SMARD vs Energy-Charts, 0 differences over 193 hours (DE-LU and FR).
+- `/markets/power?zone=de|fr|gb`: base price vs five-year range, intraday prices with local-time tooltips,
+  DE–FR spread, load vs season, generation mix by fuel group (fixed colour per fuel), renewable share,
+  FR borders and GB interconnectors; forward curve, positioning, GB auction price, GB embedded solar and
+  spark/dark spreads declared as gaps. Chart footers now link the licence next to the attribution.
+
+Local backfill (2020 onwards): SMARD 154,616 rows in 41 min, 0 rejected, 0 gaps; Elexon 167,802 rows
+in 4 min (source holes: GB wind 31 missing days, MID 77 intraday gaps); ODRÉ 37,285 rows. Local database
+72 MB in total. Findings for 28–29 Oct 2026: DE-LU base 315 €/MWh (above the 2021–2025 range), DE–FR
+spread +48 €/MWh, German load 57.6 GW (close to average), renewables 46% of German generation.
+
+Found and fixed: SMARD filter 254 checked as France against Energy-Charts; ODRÉ consolidated data is
+30-minute and real-time 15-minute (30-minute slots); French net coal generation can be slightly negative
+(idle plants' own use: range widened); Elexon MID allows 7 days per request, its stream endpoints do not;
+N2EX MID rows are empty; the daily 5-day gap threshold hid missing power days (migration 004); the FR–GB
+exchange sign checked against Elexon interconnectors; renewable share footer showed GW instead of %.
+
+Decisions (approved plan): prices at source resolution, load and generation daily as average MW; Elexon
+licence confirmed from its full text by the user (publication and commercial use allowed with attribution).
+
+Known limitations: no hourly generation chart; German cross-border flows not shown yet; GB generation
+excludes embedded solar; the SMARD backfill takes about 40 minutes; pages cache data for up to an hour.
+
+Next: apply 003 and 004 on Supabase, backfill smard, odre and elexon, check the live page; then M4.
