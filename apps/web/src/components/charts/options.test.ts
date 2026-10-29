@@ -123,4 +123,23 @@ describe("multiLineOption", () => {
     expect(series[0].connectNulls).toBe(false);
     expect(option.color).toEqual(["#010101", "#020202"]);
   });
+
+  it("pins a palette colour when a series asks for one", () => {
+    const option = multiLineOption(tokens, {
+      series: [
+        { name: "Wind", data: [["2026-01-01", 1]], colorIndex: 1 },
+        { name: "Other", data: [["2026-01-01", 2]] },
+      ],
+      unit: "GW",
+      decimals: 1,
+      stacked: true,
+    });
+    const series = option.series as (Series & {
+      itemStyle?: { color: string };
+      areaStyle?: { color?: string };
+    })[];
+    expect(series[0].itemStyle?.color).toBe("#020202");
+    expect(series[0].areaStyle?.color).toBe("#020202");
+    expect(series[1].itemStyle).toBeUndefined();
+  });
 });

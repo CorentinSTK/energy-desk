@@ -143,11 +143,11 @@ the v1-style IDs below are kept as human-readable references.
 | Gas | Official monthly benchmark (Europe gas) | FRED `PNGASEUUSDM` (IMF); World Bank Pink Sheet later | free key | monthly | IMF data: free reuse with attribution, no alteration (confirmed 2026-10-28) |
 | Gas | Henry Hub spot (context only) | EIA | free key | daily | US public domain |
 | LNG | EU LNG terminal inventory and send-out | GIE ALSI (`alsi.gie.eu/api`, same key as AGSI+) | free key | daily | Same GIE terms as AGSI+: free reuse, credit mandatory. No GB data since Brexit. |
-| Power | DE-LU, FR day-ahead prices (A44), load (A65), generation by type (A75) | ENTSO-E Transparency (`web-api.tp.entsoe.eu/api`) | free token by email request | hourly | ENTSO-E terms — verify |
-| Power | DE prices, consumption, generation | SMARD (Bundesnetzagentur) | none | hourly | CC BY 4.0 (confirmed via Energy-Charts metadata) |
-| Power | FR consumption, generation by fuel, exchanges | ODRÉ / éCO2mix (RTE, Opendatasoft API) | none | 15-min / hourly | Licence Ouverte v2.0 (confirmed) |
-| Power | Cross-check and fallback for DE/FR | Energy-Charts (Fraunhofer ISE, `api.energy-charts.info`) | none | hourly | per dataset, returned in `license_info` (DE price: CC BY 4.0 from SMARD) |
-| Power | GB market index price (MID), system prices, generation by fuel (FUELHH), demand | Elexon Insights (`data.elexon.co.uk/bmrs/api/v1`) | none | half-hourly | BSC Open Data Licence — verify |
+| Power | DE-LU and FR day-ahead prices (filters 4169, 254), German load and generation by fuel | SMARD (Bundesnetzagentur, `smard.de/app/chart_data`) | none | hourly | CC BY 4.0, "Bundesnetzagentur \| SMARD.de" (confirmed 2026-10-29, smard.de/en/datennutzung). FR price matches Energy-Charts exactly. |
+| Power | FR consumption, generation by fuel, commercial exchanges per border | ODRÉ / éCO2mix (RTE, Opendatasoft API: `eco2mix-national-cons-def` + `-tr`) | none | 30-min / 15-min | Licence Ouverte v2.0 (confirmed 2026-10-29 from dataset metadata) |
+| Power | GB market index price (MID, APX provider), generation by fuel and interconnectors (FUELHH), national demand (INDO) | Elexon Insights (`data.elexon.co.uk/bmrs/api/v1`) | none | half-hourly | BMRS data licence: free reuse, "Contains BMRS data © Elexon Limited copyright and database right <year>" (read via search summary 2026-10-29; page behind a bot check, to confirm in a browser) |
+| Power | Cross-check of SMARD prices (`worker.crosscheck power`, not stored) | Energy-Charts (Fraunhofer ISE, `api.energy-charts.info`) | none | 15-min | per dataset in `license_info` (DE-LU and FR prices: CC BY 4.0 from SMARD) |
+| Power | Cross-check, other zones (phase 2) | ENTSO-E Transparency (`web-api.tp.entsoe.eu/api`) | free token by email request | hourly | ENTSO-E terms — verify when the token arrives. Not needed for DE, FR, GB (ADR 0006). |
 | Crude | WTI, Brent spot (`RWTC`, `RBRTE`) | EIA API v2 | free key | daily (published weekly) | EIA public domain; EIA states the spot prices come from Refinitiv (LSEG) — see §11 |
 | Crude | US stocks: commercial (`WCESTUS1`), Cushing (`W_EPC0_SAX_YCUOK_MBBL`), SPR (`WCSSTUS1`) | EIA WPSR | free key | weekly | US public domain |
 | Crude | US production (`WCRFPUS2`), imports/exports, refinery utilisation (`WPULEUS3`) | EIA WPSR | free key | weekly | US public domain |
@@ -282,8 +282,11 @@ forecasts(id, model_id, issued_at, target_ts, p05, p25, p50, p75, p95)   -- immu
 forecast_scores(forecast_id, realised_value, abs_error, in_80, in_90, scored_at)
 ```
 
-Volume budget: Supabase free tier is limited (~500 MB). Store power at hourly resolution, keep raw
-API payloads out of the database, and add indexes only where queries need them.
+Volume budget: Supabase free tier is limited (~500 MB). Power prices are stored at source resolution
+(hourly DE/FR, half-hourly GB); load, generation and flows are stored per day as average power (MW) over
+complete local delivery days (ADR 0006). Keep raw API payloads out of the database, and add indexes only
+where queries need them. Series published every calendar day set `gap_threshold_days: 1` so a single
+missing day is reported as a gap (migration 004).
 
 `futures_contracts` (Yahoo data) is **not granted to the public read-only role**. The site reads only
 derived views (spreads, curve structure, percentiles, z-scores) built from it (ADR 0003).

@@ -3,7 +3,8 @@
 # Ouverte v2.0 (Etalab) — free reuse, including commercial, with attribution of the source and date.
 # Every series is the average power (MW) over complete Europe/Paris days (worker/power.py), from
 # consolidated data where published, real-time data otherwise (worker/sources/odre.py).
-# Plausible ranges are generous physical bounds: they catch unit errors, not records.
+# Plausible ranges are generous physical bounds: they catch unit errors, not records. Generation is net
+# of the plants' own consumption, so an idle plant can report a small negative value (coal, July 2020).
 source: odre
 licence:
   name: Licence Ouverte v2.0 (Etalab)
@@ -33,7 +34,7 @@ series:
     source_ref: nucleaire
     description: Generation, average power over the day.
     publication_lag_days: 1
-    plausible_min: 0
+    plausible_min: -1000
     plausible_max: 70000
   - code: odre.fr.gen.wind
     name: France generation, wind
@@ -45,7 +46,7 @@ series:
     source_ref: eolien
     description: Generation, average power over the day.
     publication_lag_days: 1
-    plausible_min: 0
+    plausible_min: -1000
     plausible_max: 30000
   - code: odre.fr.gen.solar
     name: France generation, solar
@@ -57,7 +58,7 @@ series:
     source_ref: solaire
     description: Generation, average power over the day.
     publication_lag_days: 1
-    plausible_min: 0
+    plausible_min: -1000
     plausible_max: 40000
   - code: odre.fr.gen.hydro
     name: France generation, hydro
@@ -69,7 +70,7 @@ series:
     source_ref: hydraulique
     description: Generation, average power over the day.
     publication_lag_days: 1
-    plausible_min: 0
+    plausible_min: -1000
     plausible_max: 30000
   - code: odre.fr.gen.gas
     name: France generation, natural gas
@@ -81,7 +82,7 @@ series:
     source_ref: gaz
     description: Generation, average power over the day.
     publication_lag_days: 1
-    plausible_min: 0
+    plausible_min: -1000
     plausible_max: 15000
   - code: odre.fr.gen.coal
     name: France generation, coal
@@ -93,7 +94,7 @@ series:
     source_ref: charbon
     description: Generation, average power over the day.
     publication_lag_days: 1
-    plausible_min: 0
+    plausible_min: -1000
     plausible_max: 5000
   - code: odre.fr.gen.oil
     name: France generation, oil
@@ -105,7 +106,7 @@ series:
     source_ref: fioul
     description: Generation, average power over the day.
     publication_lag_days: 1
-    plausible_min: 0
+    plausible_min: -1000
     plausible_max: 5000
   - code: odre.fr.gen.bioenergy
     name: France generation, bioenergy
@@ -117,7 +118,7 @@ series:
     source_ref: bioenergies
     description: Generation, average power over the day.
     publication_lag_days: 1
-    plausible_min: 0
+    plausible_min: -1000
     plausible_max: 5000
   - code: odre.fr.exch.net_physical
     name: France net physical imports

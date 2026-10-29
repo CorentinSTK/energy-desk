@@ -6,6 +6,7 @@
 
 const RESCALE: Record<string, { unit: string; factor: number }> = {
   "kWh/d": { unit: "GWh/d", factor: 1e-6 },
+  MW: { unit: "GW", factor: 1e-3 },
 };
 
 export function displayUnit(sourceUnit: string): { unit: string; factor: number } {

@@ -16,6 +16,8 @@ interface TimeSeriesChartProps {
   decimals: number;
   height: number;
   ariaLabel: string;
+  /** Intraday data: show times in this IANA zone in the tooltip. */
+  timeZone?: string;
 }
 
 export function TimeSeriesChart({
@@ -26,11 +28,12 @@ export function TimeSeriesChart({
   decimals,
   height,
   ariaLabel,
+  timeZone,
 }: TimeSeriesChartProps) {
   const build = useCallback(
     (t: ChartTokens) =>
-      timeSeriesOption(t, { name, color: t.commodity[commodity], data, unit, decimals }),
-    [name, commodity, data, unit, decimals],
+      timeSeriesOption(t, { name, color: t.commodity[commodity], data, unit, decimals, timeZone }),
+    [name, commodity, data, unit, decimals, timeZone],
   );
   return <EChart build={build} height={height} ariaLabel={ariaLabel} />;
 }

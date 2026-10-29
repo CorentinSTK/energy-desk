@@ -3,16 +3,19 @@
  * so arbitrary query strings are ignored rather than passed anywhere.
  */
 
-export const COMMODITY_FILTERS = ["crude", "natgas", "lng", "fx"] as const;
+export const COMMODITY_FILTERS = ["crude", "natgas", "lng", "power", "fx"] as const;
 export type CommodityFilter = (typeof COMMODITY_FILTERS)[number];
 
 export const SOURCE_LABELS: Record<string, string> = {
   ecb: "ECB",
   eia: "EIA",
+  elexon: "Elexon",
   entsog: "ENTSOG",
   fred: "FRED",
   gie_agsi: "GIE AGSI+",
   gie_alsi: "GIE ALSI",
+  odre: "RTE éCO2mix",
+  smard: "SMARD",
   yahoo: "Yahoo Finance",
 };
 
