@@ -19,9 +19,10 @@ Checked live on 2026-10-29:
   networks and is absent (a declared gap). INT* values are interconnector flows, negative when GB
   exports (cross-checked with RTE éCO2mix, 29 October 2026).
 - Values are MW per settlement period (30 minutes); prices £/MWh.
-- Licence: BMRS data licence (full text checked 2026-10-29) — worldwide, royalty-free reuse, including
-  publication and commercial use, with the statement "Contains BMRS data © Elexon Limited copyright
-  and database right <year>" and, where possible, a link to the licence; no implied endorsement.
+- Licence: BMRS data licence (full text checked 2026-10-29) — worldwide, royalty-free reuse,
+  including publication and commercial use, with the statement "Contains BMRS data © Elexon Limited
+  copyright and database right <year>" and, where possible, a link to the licence; no implied
+  endorsement.
 """
 
 import time
