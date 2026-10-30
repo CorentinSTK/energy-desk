@@ -61,7 +61,7 @@ series:
     name: US commercial crude oil stocks (excl. SPR)
     commodity: crude
     region: US
-    unit: mb
+    unit: kb
     source_unit: MBBL
     frequency: weekly
     source_ref: petroleum/stoc/wstk|WCESTUS1
@@ -73,7 +73,7 @@ series:
     name: Cushing crude oil stocks
     commodity: crude
     region: US
-    unit: mb
+    unit: kb
     source_unit: MBBL
     frequency: weekly
     source_ref: petroleum/stoc/wstk|W_EPC0_SAX_YCUOK_MBBL
@@ -81,3 +81,430 @@ series:
     publication_lag_days: 5
     plausible_min: 0
     plausible_max: 120000
+  - code: eia.spr_crude_stocks
+    name: US Strategic Petroleum Reserve crude stocks
+    commodity: crude
+    region: US
+    unit: kb
+    source_unit: MBBL
+    frequency: weekly
+    source_ref: petroleum/stoc/wstk|WCSSTUS1
+    description: U.S. ending stocks of crude oil in the SPR, thousand barrels.
+    publication_lag_days: 5
+    plausible_min: 0
+    plausible_max: 800000
+  - code: eia.us_total_oil_stocks
+    name: US crude oil and petroleum product stocks (incl. SPR)
+    commodity: crude
+    region: US
+    unit: kb
+    source_unit: MBBL
+    frequency: weekly
+    source_ref: petroleum/stoc/wstk|WTTSTUS1
+    description: U.S. ending stocks of crude oil and petroleum products, including the SPR, thousand barrels.
+    publication_lag_days: 5
+    plausible_min: 800000
+    plausible_max: 2500000
+  - code: eia.us_crude_production
+    name: US crude oil field production
+    commodity: crude
+    region: US
+    unit: kb/d
+    source_unit: MBBL/D
+    frequency: weekly
+    source_ref: petroleum/sum/sndw|WCRFPUS2
+    description: U.S. field production of crude oil, thousand barrels per day (weekly estimate, rounded by EIA).
+    publication_lag_days: 5
+    plausible_min: 3000
+    plausible_max: 20000
+  - code: eia.us_crude_imports
+    name: US crude oil imports
+    commodity: crude
+    region: US
+    unit: kb/d
+    source_unit: MBBL/D
+    frequency: weekly
+    source_ref: petroleum/move/wkly|WCRIMUS2
+    description: U.S. imports of crude oil (including SPR imports), thousand barrels per day.
+    publication_lag_days: 5
+    plausible_min: 0
+    plausible_max: 15000
+  - code: eia.us_crude_exports
+    name: US crude oil exports
+    commodity: crude
+    region: US
+    unit: kb/d
+    source_unit: MBBL/D
+    frequency: weekly
+    source_ref: petroleum/move/wkly|WCREXUS2
+    description: U.S. exports of crude oil, thousand barrels per day.
+    publication_lag_days: 5
+    plausible_min: 0
+    plausible_max: 10000
+  - code: eia.us_crude_net_imports
+    name: US crude oil net imports
+    commodity: crude
+    region: US
+    unit: kb/d
+    source_unit: MBBL/D
+    frequency: weekly
+    source_ref: petroleum/move/wkly|WCRNTUS2
+    description: U.S. net imports of crude oil (imports minus exports, as published by EIA), thousand barrels per day.
+    publication_lag_days: 5
+    plausible_min: -5000
+    plausible_max: 15000
+  - code: eia.us_refinery_utilisation
+    name: US refinery utilisation
+    commodity: crude
+    region: US
+    unit: "%"
+    source_unit: "%"
+    frequency: weekly
+    source_ref: petroleum/pnp/wiup|WPULEUS3
+    description: U.S. percent utilisation of refinery operable capacity.
+    publication_lag_days: 5
+    plausible_min: 30  # Winter Storm Uri (February 2021) took it near 56%
+    plausible_max: 105
+  - code: eia.us_refinery_crude_input
+    name: US refiner net input of crude oil
+    commodity: crude
+    region: US
+    unit: kb/d
+    source_unit: MBBL/D
+    frequency: weekly
+    source_ref: petroleum/pnp/wiup|WCRRIUS2
+    description: U.S. refiner net input of crude oil, thousand barrels per day.
+    publication_lag_days: 5
+    plausible_min: 5000
+    plausible_max: 20000
+  - code: eia.world_liquids_production
+    name: World petroleum and other liquids production (EIA STEO)
+    commodity: crude
+    region: World
+    unit: mb/d
+    source_unit: million barrels per day
+    frequency: monthly
+    source_ref: steo|PAPR_WORLD
+    description: Total world petroleum production, million barrels per day. EIA estimates for past months, revised in each monthly STEO; forecast months are not stored.
+    publication_lag_days: 45  # month M-1 appears in the STEO published around the 10th of M+1
+    plausible_min: 60
+    plausible_max: 130
+  - code: eia.world_liquids_consumption
+    name: World liquid fuels consumption (EIA STEO)
+    commodity: crude
+    region: World
+    unit: mb/d
+    source_unit: million barrels per day
+    frequency: monthly
+    source_ref: steo|PATC_WORLD
+    description: Total world liquid fuels consumption, million barrels per day. EIA estimates for past months, revised in each monthly STEO; forecast months are not stored.
+    publication_lag_days: 45
+    plausible_min: 60
+    plausible_max: 130
+  - code: eia.world_stock_withdrawals
+    name: World net inventory withdrawals (EIA STEO)
+    commodity: crude
+    region: World
+    unit: mb/d
+    source_unit: million barrels per day
+    frequency: monthly
+    source_ref: steo|T3_STCHANGE_WORLD
+    description: Net inventory withdrawals of crude oil and other liquids, million barrels per day, as published by EIA. Positive means stocks are drawn (consumption above production), negative means stocks build.
+    publication_lag_days: 45
+    plausible_min: -15
+    plausible_max: 15
+  - code: eia.opec_crude_production
+    name: OPEC crude oil production (EIA STEO)
+    commodity: crude
+    region: OPEC
+    unit: mb/d
+    source_unit: million barrels per day
+    frequency: monthly
+    source_ref: steo|COPR_OPEC
+    description: OPEC total crude oil production, million barrels per day (EIA estimates; membership as defined by EIA for each month).
+    publication_lag_days: 45
+    plausible_min: 10
+    plausible_max: 40
+  - code: eia.opec_crude_capacity
+    name: OPEC crude oil production capacity (EIA STEO)
+    commodity: crude
+    region: OPEC
+    unit: mb/d
+    source_unit: million barrels per day
+    frequency: monthly
+    source_ref: steo|COPC_OPEC
+    description: OPEC total crude oil production capacity, million barrels per day (EIA estimates).
+    publication_lag_days: 45
+    plausible_min: 10
+    plausible_max: 45
+  - code: eia.opec_spare_capacity
+    name: OPEC spare crude oil production capacity (EIA STEO)
+    commodity: crude
+    region: OPEC
+    unit: mb/d
+    source_unit: million barrels per day
+    frequency: monthly
+    source_ref: steo|COPS_OPEC
+    description: OPEC spare crude oil production capacity, million barrels per day (EIA estimates). EIA counts as spare only capacity that can be brought online within 30 days and sustained for 90 days.
+    publication_lag_days: 45
+    plausible_min: 0
+    plausible_max: 15
+  # Refined products ------------------------------------------------------------------------------
+  - code: eia.gasoline_nyh_spot
+    name: New York Harbor conventional gasoline spot price
+    commodity: products
+    region: US East Coast
+    unit: $/gal
+    source_unit: $/GAL
+    frequency: daily
+    source_ref: petroleum/pri/spt|EER_EPMRU_PF4_Y35NY_DPG
+    description: New York Harbor conventional gasoline regular spot price FOB.
+    price_kind: spot
+    publication_lag_days: 9
+    plausible_min: 0
+    plausible_max: 10
+    licence: *spot_licence
+  - code: eia.gasoline_usgc_spot
+    name: US Gulf Coast conventional gasoline spot price
+    commodity: products
+    region: US Gulf Coast
+    unit: $/gal
+    source_unit: $/GAL
+    frequency: daily
+    source_ref: petroleum/pri/spt|EER_EPMRU_PF4_RGC_DPG
+    description: U.S. Gulf Coast conventional gasoline regular spot price FOB.
+    price_kind: spot
+    publication_lag_days: 9
+    plausible_min: 0
+    plausible_max: 10
+    licence: *spot_licence
+  - code: eia.gasoline_la_spot
+    name: Los Angeles RBOB gasoline spot price
+    commodity: products
+    region: US West Coast
+    unit: $/gal
+    source_unit: $/GAL
+    frequency: daily
+    source_ref: petroleum/pri/spt|EER_EPMRR_PF4_Y05LA_DPG
+    description: Los Angeles reformulated RBOB regular gasoline spot price.
+    price_kind: spot
+    publication_lag_days: 9
+    plausible_min: 0
+    plausible_max: 10
+    licence: *spot_licence
+  - code: eia.ulsd_nyh_spot
+    name: New York Harbor ultra-low sulfur diesel spot price
+    commodity: products
+    region: US East Coast
+    unit: $/gal
+    source_unit: $/GAL
+    frequency: daily
+    source_ref: petroleum/pri/spt|EER_EPD2DXL0_PF4_Y35NY_DPG
+    description: New York Harbor ultra-low sulfur No. 2 diesel spot price.
+    price_kind: spot
+    publication_lag_days: 9
+    plausible_min: 0
+    plausible_max: 10
+    licence: *spot_licence
+  - code: eia.ulsd_usgc_spot
+    name: US Gulf Coast ultra-low sulfur diesel spot price
+    commodity: products
+    region: US Gulf Coast
+    unit: $/gal
+    source_unit: $/GAL
+    frequency: daily
+    source_ref: petroleum/pri/spt|EER_EPD2DXL0_PF4_RGC_DPG
+    description: U.S. Gulf Coast ultra-low sulfur No. 2 diesel spot price.
+    price_kind: spot
+    publication_lag_days: 9
+    plausible_min: 0
+    plausible_max: 10
+    licence: *spot_licence
+  - code: eia.ulsd_la_spot
+    name: Los Angeles CARB diesel spot price
+    commodity: products
+    region: US West Coast
+    unit: $/gal
+    source_unit: $/GAL
+    frequency: daily
+    source_ref: petroleum/pri/spt|EER_EPD2DC_PF4_Y05LA_DPG
+    description: Los Angeles ultra-low sulfur CARB diesel spot price.
+    price_kind: spot
+    publication_lag_days: 9
+    plausible_min: 0
+    plausible_max: 10
+    licence: *spot_licence
+  - code: eia.jet_usgc_spot
+    name: US Gulf Coast jet fuel spot price
+    commodity: products
+    region: US Gulf Coast
+    unit: $/gal
+    source_unit: $/GAL
+    frequency: daily
+    source_ref: petroleum/pri/spt|EER_EPJK_PF4_RGC_DPG
+    description: U.S. Gulf Coast kerosene-type jet fuel spot price FOB.
+    price_kind: spot
+    publication_lag_days: 9
+    plausible_min: 0
+    plausible_max: 10
+    licence: *spot_licence
+  - code: eia.heating_oil_nyh_spot
+    name: New York Harbor No. 2 heating oil spot price
+    commodity: products
+    region: US East Coast
+    unit: $/gal
+    source_unit: $/GAL
+    frequency: daily
+    source_ref: petroleum/pri/spt|EER_EPD2F_PF4_Y35NY_DPG
+    description: New York Harbor No. 2 heating oil spot price FOB.
+    price_kind: spot
+    publication_lag_days: 9
+    plausible_min: 0
+    plausible_max: 10
+    licence: *spot_licence
+  - code: eia.crack_321_usgc
+    name: US Gulf Coast 3-2-1 crack spread (spot)
+    commodity: products
+    region: US Gulf Coast
+    unit: $/bbl
+    frequency: daily
+    source_ref: derived|crack_321_usgc
+    description: (2 × US Gulf Coast conventional gasoline + 1 × US Gulf Coast ULSD) ÷ 3, converted from $/gal at 42 gal/bbl, minus WTI Cushing spot. All EIA spot prices of the same date; a date missing any component has no value. A gauge of US refining margins, not a refinery's actual margin.
+    price_kind: spot
+    publication_lag_days: 9
+    plausible_min: -30
+    plausible_max: 150
+    licence: *spot_licence
+  - code: eia.crack_ulsd_nyh_brent
+    name: New York Harbor ULSD crack against Brent (spot)
+    commodity: products
+    region: US East Coast
+    unit: $/bbl
+    frequency: daily
+    source_ref: derived|crack_ulsd_nyh_brent
+    description: New York Harbor ULSD spot, converted from $/gal at 42 gal/bbl, minus Brent spot. EIA spot prices of the same date only. Diesel on the US East Coast competes with European cargoes, so this crack tracks the Atlantic Basin diesel market.
+    price_kind: spot
+    publication_lag_days: 9
+    plausible_min: -30
+    plausible_max: 150
+    licence: *spot_licence
+  - code: eia.us_gasoline_stocks
+    name: US total gasoline stocks
+    commodity: products
+    region: US
+    unit: kb
+    source_unit: MBBL
+    frequency: weekly
+    source_ref: petroleum/stoc/wstk|WGTSTUS1
+    description: U.S. ending stocks of total gasoline (finished and blending components), thousand barrels.
+    publication_lag_days: 5
+    plausible_min: 100000
+    plausible_max: 350000
+  - code: eia.us_distillate_stocks
+    name: US distillate fuel oil stocks
+    commodity: products
+    region: US
+    unit: kb
+    source_unit: MBBL
+    frequency: weekly
+    source_ref: petroleum/stoc/wstk|WDISTUS1
+    description: U.S. ending stocks of distillate fuel oil (diesel and heating oil), thousand barrels.
+    publication_lag_days: 5
+    plausible_min: 50000
+    plausible_max: 250000
+  - code: eia.us_jet_stocks
+    name: US kerosene-type jet fuel stocks
+    commodity: products
+    region: US
+    unit: kb
+    source_unit: MBBL
+    frequency: weekly
+    source_ref: petroleum/stoc/wstk|WKJSTUS1
+    description: U.S. ending stocks of kerosene-type jet fuel, thousand barrels.
+    publication_lag_days: 5
+    plausible_min: 10000
+    plausible_max: 80000
+  - code: eia.us_gasoline_supplied
+    name: US finished motor gasoline product supplied
+    commodity: products
+    region: US
+    unit: kb/d
+    source_unit: MBBL/D
+    frequency: weekly
+    source_ref: petroleum/cons/wpsup|WGFUPUS2
+    description: U.S. product supplied of finished motor gasoline, thousand barrels per day. EIA's proxy for demand (disappearance from primary supply), not measured consumption.
+    publication_lag_days: 5
+    plausible_min: 3000
+    plausible_max: 12000
+  - code: eia.us_distillate_supplied
+    name: US distillate fuel oil product supplied
+    commodity: products
+    region: US
+    unit: kb/d
+    source_unit: MBBL/D
+    frequency: weekly
+    source_ref: petroleum/cons/wpsup|WDIUPUS2
+    description: U.S. product supplied of distillate fuel oil, thousand barrels per day. A demand proxy, noisy week to week.
+    publication_lag_days: 5
+    plausible_min: 1000
+    plausible_max: 7000
+  - code: eia.us_jet_supplied
+    name: US kerosene-type jet fuel product supplied
+    commodity: products
+    region: US
+    unit: kb/d
+    source_unit: MBBL/D
+    frequency: weekly
+    source_ref: petroleum/cons/wpsup|WKJUPUS2
+    description: U.S. product supplied of kerosene-type jet fuel, thousand barrels per day. A demand proxy.
+    publication_lag_days: 5
+    plausible_min: 200
+    plausible_max: 2500
+  - code: eia.us_total_products_supplied
+    name: US total petroleum products supplied
+    commodity: products
+    region: US
+    unit: kb/d
+    source_unit: MBBL/D
+    frequency: weekly
+    source_ref: petroleum/cons/wpsup|WRPUPUS2
+    description: U.S. product supplied of all petroleum products, thousand barrels per day. A demand proxy.
+    publication_lag_days: 5
+    plausible_min: 10000
+    plausible_max: 26000
+  - code: eia.us_distillate_exports
+    name: US distillate exports
+    commodity: products
+    region: US
+    unit: kb/d
+    source_unit: MBBL/D
+    frequency: weekly
+    source_ref: petroleum/move/wkly|WDIEXUS2
+    description: U.S. exports of total distillate, thousand barrels per day (weekly estimates).
+    publication_lag_days: 5
+    plausible_min: 0
+    plausible_max: 3000
+  - code: eia.us_gasoline_exports
+    name: US motor gasoline exports
+    commodity: products
+    region: US
+    unit: kb/d
+    source_unit: MBBL/D
+    frequency: weekly
+    source_ref: petroleum/move/wkly|W_EPM0F_EEX_NUS-Z00_MBBLD
+    description: U.S. exports of total motor gasoline, thousand barrels per day (weekly estimates).
+    publication_lag_days: 5
+    plausible_min: 0
+    plausible_max: 2500
+  - code: eia.us_jet_exports
+    name: US jet fuel exports
+    commodity: products
+    region: US
+    unit: kb/d
+    source_unit: MBBL/D
+    frequency: weekly
+    source_ref: petroleum/move/wkly|WKJEXUS2
+    description: U.S. exports of kerosene-type jet fuel, thousand barrels per day (weekly estimates).
+    publication_lag_days: 5
+    plausible_min: 0
+    plausible_max: 1000
