@@ -64,15 +64,30 @@ def year_windows(start: datetime, end: datetime) -> list[tuple[datetime, datetim
     return windows
 
 
+# RTE's marker for a value that is not available (found once in 2015 consolidated data, in the
+# Germany-Belgium commercial exchange): a missing value, never a number.
+NOT_AVAILABLE = {"", "ND"}
+
+
 def parse_rows(rows: list[dict[str, Any]]) -> dict[str, list[Point]]:
-    """Points per column; empty values are skipped."""
+    """Points per column. Empty and "ND" values are skipped: that day is a gap for that column only.
+
+    Some columns come as numeric strings ("4409"); any other text fails loudly, naming the column
+    and the time.
+    """
     points: dict[str, list[Point]] = {column: [] for column in COLUMNS}
     for row in rows:
         ts = datetime.fromisoformat(row["date_heure"]).astimezone(UTC)
         for column in COLUMNS:
             value = row.get(column)
-            if value not in (None, ""):
+            if value is None or value in NOT_AVAILABLE:
+                continue
+            try:
                 points[column].append((ts, float(value)))
+            except ValueError as error:
+                raise ValueError(
+                    f"{column} at {row['date_heure']}: unexpected value {value!r}"
+                ) from error
     return points
 
 
