@@ -1,0 +1,264 @@
+# CFTC Commitments of Traders, disaggregated, futures only (dataset 72hh-3qpy).
+# Terms (read 2026-10-30, https://www.cftc.gov/WebPolicy/index.htm): "Government information at the
+# CFTC website is in the public domain" and may be freely distributed; the CFTC asks for appropriate
+# acknowledgement. Raw long and short positions are stored; net positions are computed on the site.
+# ICE Brent and ICE gasoil are not covered by the CFTC (ICE Futures Europe): declared gaps.
+source: cftc
+licence:
+  name: CFTC — public domain
+  url: https://www.cftc.gov/WebPolicy/index.htm
+  attribution: "Source: U.S. Commodity Futures Trading Commission, Commitments of Traders."
+licence_checked: 2026-10-30
+series:
+  - code: cftc.wti.open_interest
+    name: WTI crude oil (NYMEX) — open interest
+    commodity: crude
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 1,000 BARRELS)"
+    frequency: weekly
+    source_ref: "067651|open_interest_all"
+    description: NYMEX WTI-Physical (light sweet crude oil) futures, contract market code 067651. Total open interest (futures only), contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 4000000
+  - code: cftc.wti.managed_money_long
+    name: WTI crude oil (NYMEX) — managed money long
+    commodity: crude
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 1,000 BARRELS)"
+    frequency: weekly
+    source_ref: "067651|m_money_positions_long_all"
+    description: NYMEX WTI-Physical (light sweet crude oil) futures, contract market code 067651. Long positions of managed money (CTAs, hedge funds, other money managers), contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 4000000
+  - code: cftc.wti.managed_money_short
+    name: WTI crude oil (NYMEX) — managed money short
+    commodity: crude
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 1,000 BARRELS)"
+    frequency: weekly
+    source_ref: "067651|m_money_positions_short_all"
+    description: NYMEX WTI-Physical (light sweet crude oil) futures, contract market code 067651. Short positions of managed money, contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 4000000
+  - code: cftc.wti.producer_long
+    name: WTI crude oil (NYMEX) — producer/merchant long
+    commodity: crude
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 1,000 BARRELS)"
+    frequency: weekly
+    source_ref: "067651|prod_merc_positions_long"
+    description: NYMEX WTI-Physical (light sweet crude oil) futures, contract market code 067651. Long positions of producers, merchants, processors and users (commercial hedgers), contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 4000000
+  - code: cftc.wti.producer_short
+    name: WTI crude oil (NYMEX) — producer/merchant short
+    commodity: crude
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 1,000 BARRELS)"
+    frequency: weekly
+    source_ref: "067651|prod_merc_positions_short"
+    description: NYMEX WTI-Physical (light sweet crude oil) futures, contract market code 067651. Short positions of producers, merchants, processors and users, contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 4000000
+  - code: cftc.wti.swap_long
+    name: WTI crude oil (NYMEX) — swap dealer long
+    commodity: crude
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 1,000 BARRELS)"
+    frequency: weekly
+    source_ref: "067651|swap_positions_long_all"
+    description: NYMEX WTI-Physical (light sweet crude oil) futures, contract market code 067651. Long positions of swap dealers, contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 4000000
+  - code: cftc.wti.swap_short
+    name: WTI crude oil (NYMEX) — swap dealer short
+    commodity: crude
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 1,000 BARRELS)"
+    frequency: weekly
+    source_ref: "067651|swap__positions_short_all"
+    description: NYMEX WTI-Physical (light sweet crude oil) futures, contract market code 067651. Short positions of swap dealers, contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 4000000
+  - code: cftc.rbob.open_interest
+    name: RBOB gasoline (NYMEX) — open interest
+    commodity: products
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 42,000 U.S. GALLONS)"
+    frequency: weekly
+    source_ref: "111659|open_interest_all"
+    description: NYMEX RBOB gasoline futures, contract market code 111659. Total open interest (futures only), contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 1500000
+  - code: cftc.rbob.managed_money_long
+    name: RBOB gasoline (NYMEX) — managed money long
+    commodity: products
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 42,000 U.S. GALLONS)"
+    frequency: weekly
+    source_ref: "111659|m_money_positions_long_all"
+    description: NYMEX RBOB gasoline futures, contract market code 111659. Long positions of managed money (CTAs, hedge funds, other money managers), contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 1500000
+  - code: cftc.rbob.managed_money_short
+    name: RBOB gasoline (NYMEX) — managed money short
+    commodity: products
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 42,000 U.S. GALLONS)"
+    frequency: weekly
+    source_ref: "111659|m_money_positions_short_all"
+    description: NYMEX RBOB gasoline futures, contract market code 111659. Short positions of managed money, contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 1500000
+  - code: cftc.rbob.producer_long
+    name: RBOB gasoline (NYMEX) — producer/merchant long
+    commodity: products
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 42,000 U.S. GALLONS)"
+    frequency: weekly
+    source_ref: "111659|prod_merc_positions_long"
+    description: NYMEX RBOB gasoline futures, contract market code 111659. Long positions of producers, merchants, processors and users (commercial hedgers), contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 1500000
+  - code: cftc.rbob.producer_short
+    name: RBOB gasoline (NYMEX) — producer/merchant short
+    commodity: products
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 42,000 U.S. GALLONS)"
+    frequency: weekly
+    source_ref: "111659|prod_merc_positions_short"
+    description: NYMEX RBOB gasoline futures, contract market code 111659. Short positions of producers, merchants, processors and users, contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 1500000
+  - code: cftc.rbob.swap_long
+    name: RBOB gasoline (NYMEX) — swap dealer long
+    commodity: products
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 42,000 U.S. GALLONS)"
+    frequency: weekly
+    source_ref: "111659|swap_positions_long_all"
+    description: NYMEX RBOB gasoline futures, contract market code 111659. Long positions of swap dealers, contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 1500000
+  - code: cftc.rbob.swap_short
+    name: RBOB gasoline (NYMEX) — swap dealer short
+    commodity: products
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 42,000 U.S. GALLONS)"
+    frequency: weekly
+    source_ref: "111659|swap__positions_short_all"
+    description: NYMEX RBOB gasoline futures, contract market code 111659. Short positions of swap dealers, contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 1500000
+  - code: cftc.ulsd.open_interest
+    name: NY Harbor ULSD (NYMEX) — open interest
+    commodity: products
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 42,000 U.S. GALLONS)"
+    frequency: weekly
+    source_ref: "022651|open_interest_all"
+    description: NYMEX New York Harbor ULSD (heating oil) futures, contract market code 022651. Total open interest (futures only), contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 1500000
+  - code: cftc.ulsd.managed_money_long
+    name: NY Harbor ULSD (NYMEX) — managed money long
+    commodity: products
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 42,000 U.S. GALLONS)"
+    frequency: weekly
+    source_ref: "022651|m_money_positions_long_all"
+    description: NYMEX New York Harbor ULSD (heating oil) futures, contract market code 022651. Long positions of managed money (CTAs, hedge funds, other money managers), contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 1500000
+  - code: cftc.ulsd.managed_money_short
+    name: NY Harbor ULSD (NYMEX) — managed money short
+    commodity: products
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 42,000 U.S. GALLONS)"
+    frequency: weekly
+    source_ref: "022651|m_money_positions_short_all"
+    description: NYMEX New York Harbor ULSD (heating oil) futures, contract market code 022651. Short positions of managed money, contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 1500000
+  - code: cftc.ulsd.producer_long
+    name: NY Harbor ULSD (NYMEX) — producer/merchant long
+    commodity: products
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 42,000 U.S. GALLONS)"
+    frequency: weekly
+    source_ref: "022651|prod_merc_positions_long"
+    description: NYMEX New York Harbor ULSD (heating oil) futures, contract market code 022651. Long positions of producers, merchants, processors and users (commercial hedgers), contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 1500000
+  - code: cftc.ulsd.producer_short
+    name: NY Harbor ULSD (NYMEX) — producer/merchant short
+    commodity: products
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 42,000 U.S. GALLONS)"
+    frequency: weekly
+    source_ref: "022651|prod_merc_positions_short"
+    description: NYMEX New York Harbor ULSD (heating oil) futures, contract market code 022651. Short positions of producers, merchants, processors and users, contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 1500000
+  - code: cftc.ulsd.swap_long
+    name: NY Harbor ULSD (NYMEX) — swap dealer long
+    commodity: products
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 42,000 U.S. GALLONS)"
+    frequency: weekly
+    source_ref: "022651|swap_positions_long_all"
+    description: NYMEX New York Harbor ULSD (heating oil) futures, contract market code 022651. Long positions of swap dealers, contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 1500000
+  - code: cftc.ulsd.swap_short
+    name: NY Harbor ULSD (NYMEX) — swap dealer short
+    commodity: products
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 42,000 U.S. GALLONS)"
+    frequency: weekly
+    source_ref: "022651|swap__positions_short_all"
+    description: NYMEX New York Harbor ULSD (heating oil) futures, contract market code 022651. Short positions of swap dealers, contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 1500000

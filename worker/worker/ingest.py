@@ -16,6 +16,7 @@ from datetime import date
 
 from worker import runner
 from worker.sources.base import Source
+from worker.sources.cftc import CftcSource
 from worker.sources.ecb import EcbSource
 from worker.sources.eia import EiaSource
 from worker.sources.elexon import ElexonSource
@@ -27,6 +28,7 @@ from worker.sources.smard import SmardSource
 from worker.sources.yahoo import YahooSource
 
 SOURCES: dict[str, Callable[[], Source]] = {
+    "cftc": CftcSource,
     "ecb": EcbSource,
     "eia": EiaSource,
     "elexon": ElexonSource,
