@@ -48,7 +48,8 @@ test.describe("home page", () => {
   test("unknown parameters fall back to defaults", async ({ page }) => {
     await page.goto("/?view=%3Cscript%3E&layer=x&focus=%3Cb%3E");
     await expect(page.getByRole("group", { name: /Map of Europe/ })).toBeVisible();
-    await expect(page.getByText("Select a country or a marker")).toBeVisible();
+    // Scoped to <main>: while streaming, Next.js keeps a hidden copy of the content outside it.
+    await expect(page.getByRole("main").getByText("Select a country or a marker")).toBeVisible();
   });
 
   test("has no horizontal page scroll", async ({ page }) => {
