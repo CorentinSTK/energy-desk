@@ -59,6 +59,24 @@
   --chart-series-7: #424a53;
   --chart-series-8: #8b5a24;
   --chart-series-9: #17732f;
+
+  /* Map: diverging scale (below ↔ above, neither "good" nor "bad"), percentile scale, no data. */
+  --map-div-n3: #1f4e9c;
+  --map-div-n2: #4f7fc8;
+  --map-div-n1: #a7c0e6;
+  --map-div-0: #e6eaee;
+  --map-div-p1: #f2c09b;
+  --map-div-p2: #e08a4f;
+  --map-div-p3: #a8480e;
+  --map-seq-1: #eef3fb;
+  --map-seq-2: #c6d7f0;
+  --map-seq-3: #8fb0e0;
+  --map-seq-4: #4f7fc8;
+  --map-seq-5: #1f4e9c;
+  --map-nodata: #f6f7f9;
+  --map-land: #dfe4e9;
+  --map-stroke: #ffffff;
+  --map-water: #f8fafc;
 }
 
 .dark {
@@ -102,6 +120,23 @@
   --chart-series-7: #a9b4c2;
   --chart-series-8: #d6a56b;
   --chart-series-9: #3fb950;
+
+  --map-div-n3: #9cc0f7;
+  --map-div-n2: #5b8ed8;
+  --map-div-n1: #34507a;
+  --map-div-0: #2a313b;
+  --map-div-p1: #7a4a2a;
+  --map-div-p2: #d27a3c;
+  --map-div-p3: #f5a46b;
+  --map-seq-1: #1e2a3a;
+  --map-seq-2: #2d4a73;
+  --map-seq-3: #3f6fb0;
+  --map-seq-4: #6d9ae0;
+  --map-seq-5: #a9c8f5;
+  --map-nodata: #262e39;
+  --map-land: #1b222c;
+  --map-stroke: #0b0f14;
+  --map-water: #0a0e13;
 }
 
 /* Theme-independent tokens */
