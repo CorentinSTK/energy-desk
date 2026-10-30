@@ -125,9 +125,9 @@ tables scroll horizontally on phones; the TTF spread axis shows day numbers only
 
 Next: M3 (European power DE/FR/GB). Needs the ENTSO-E token.
 
-## 2026-10-29 — M3 European power (built; production backfill pending)
+## 2026-10-29 — M3 European power (live)
 
-Built (PR #16 merged; worker + web PR open):
+Built (PRs #16 and #17 merged):
 - Migrations 003 (half-hourly frequency, intraday gap thresholds of 1.5 periods) and 004 (per-series gap
   threshold: calendar-day power series report a single missing day).
 - Sources, all keyless and openly licensed (ADR 0006): SMARD (DE-LU and FR day-ahead prices, German load
@@ -157,4 +157,16 @@ licence confirmed from its full text by the user (publication and commercial use
 Known limitations: no hourly generation chart; German cross-border flows not shown yet; GB generation
 excludes embedded solar; the SMARD backfill takes about 40 minutes; pages cache data for up to an hour.
 
-Next: apply 003 and 004 on Supabase, backfill smard, odre and elexon, check the live page; then M4.
+Production (29–30 Oct): migrations 003 and 004 applied; backfills smard 154,616 rows (38 min), odre
+37,285, elexon 167,807, all status ok. The live catalogue lists 118 series, all fresh; the Playwright
+suite passes against the live site (44 tests, after making two power selectors exact: the KPI label
+also opens the chart takeaway when data is present). Live KPIs on 30 Oct: DE-LU base 268.62 €/MWh
+for delivery on 30 Oct, France 247.71 €/MWh, GB MID 199.60 £/MWh (28 Oct).
+
+Found in production: the first evening cron was `partial` because SMARD hourly prices for tomorrow's
+delivery hours (priced by the noon auction) were rejected as "in the future" (they were taken on the
+next run, nothing was lost). Fix: a catalogue field `delivery_lead_days` (validation only) set to 1
+for the day-ahead series. Unrelated: GIE ALSI sent two send-out values ~100× too high for 5 Oct; they
+were rejected by the plausible range, as intended.
+
+Next: M4 (crude and products), plan first; ENTSO-E as a cross-check when the token arrives.
