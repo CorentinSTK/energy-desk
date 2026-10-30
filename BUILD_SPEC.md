@@ -166,7 +166,8 @@ the v1-style IDs below are kept as human-readable references.
 | All | Positioning: CFTC COT disaggregated, futures only (NYMEX WTI `067651`, RBOB `111659`, NY Harbor ULSD `022651`; Socrata dataset `72hh-3qpy`) | CFTC Public Reporting API (Socrata) | none | weekly | Public domain, acknowledge the CFTC (cftc.gov/WebPolicy, confirmed 2026-10-30). Raw longs and shorts stored; nets computed on the site |
 | All | FX for unit conversion (EUR/USD, EUR/GBP) | ECB Data Portal (`data-api.ecb.europa.eu`) | none | daily (TARGET days) | Free reuse, quote "Source: ECB statistics.", do not modify (confirmed 2026-10-28) |
 | All | Macro and volatility: USD index, rates, OVX | FRED | free key | daily | per series; some are copyrighted (e.g. CBOE OVX) — verify each |
-| All | Weather for demand models (HDD/CDD) | Open-Meteo (archive + forecast) | none | daily | CC BY 4.0 |
+| All | Weather for demand models (HDD/CDD): daily mean temperature of the eight largest cities of metropolitan France | Open-Meteo (archive for history from 2015; forecast API read at issue time, never stored as observations) | none | daily | CC BY 4.0, "Weather data by Open-Meteo.com"; ERA5 from Copernicus C3S; free API for non-commercial use (confirmed 2026-10-30) |
+| All | French public holidays (demand model) | calendrier.api.gouv.fr | none | yearly | Licence Ouverte (Etalab) |
 | Futures | Front month and individual contracts where available (see note) | Yahoo Finance via `yfinance` | unofficial | daily, delayed | **not licensed for redistribution** — see ADR 0003 |
 
 Futures note (checked 2026-10-28): on Yahoo, `BZ=F` and `TTF=F` are **NYMEX** contracts (a financially
@@ -315,6 +316,11 @@ The point is not to beat the market; it is to be **honest and measurable**.
 - Report: MAE, RMSE, bias, skill vs baseline, and interval coverage (did 90% intervals contain 90%?).
 - Historical performance comes from **walk-forward backtests** (expanding window, no look-ahead);
   live performance from the registry. Show both, clearly labelled.
+- Exact rules (ADR 0009): a live forecast is refused if its outcome is already published, and can never
+  be changed or deleted. Each forecast carries its baselines' forecasts for the same target. 90%
+  intervals are the 5th–95th percentiles of earlier errors at the same horizon (at least 50). A model is
+  said to beat its baselines only with ≥ 30 scored forecasts and a mean absolute error at least 5% lower
+  than each baseline's; between 0 and 5% the site says "no clear edge".
 
 Initial models (phase 1), chosen because the target is published on a fixed schedule:
 1. **US weekly crude stock change** (EIA WPSR, Wednesday): seasonal baseline + regression on refinery

@@ -244,3 +244,29 @@ becomes 130% (#26). The 31 ALSI rejections are source errors (placeholder 100,00
 and Ravenna, small negative values) and stay rejected.
 
 Next: merge #26 and #27, re-run the `gie_agsi` backfill; then M6 (forecast registry), plan first.
+
+## 2026-10-30 — M6 Forecast registry (built; production rollout pending)
+
+Built (PRs: #28 registry, #29 Open-Meteo, engine, pages):
+- Migration 007: forecasts stored at issue time with baselines and inputs; live forecasts cannot be
+  changed or deleted, nor issued once their outcome is published (triggers); scores computed in views.
+  Migration 008: `weather` category.
+- Open-Meteo temperatures for eight French cities from 2015; ODRÉ history extended to 2015.
+- `worker/forecast`: models only see the history cut at the issue date's publications; walk-forward
+  backtests; empirical 90% intervals from earlier errors only; CLI and a daily Forecast workflow.
+- Models and local backtests (to 30 Oct 2026): EU storage in 30 days (MAE 1.8 pts, skill +77% vs naive,
+  +19% vs seasonal, coverage 89%); France demand 1–7 days (day 1: MAE 1.6 GW, +54% / +62%, coverage 92%,
+  with observed weather); US crude stocks next report (MAE 4.2 mb, +2% / +1%: no clear edge).
+- `/forecasts` and `/forecasts/[id]`; "related forecast" links on the gas, power and crude pages.
+
+Found and fixed: "target after issue time" was the wrong guard (Tuesday's forecast of last Friday's
+stocks), replaced by "outcome not yet published"; a weekday/ISO-day mix-up in the crude model's seasonal
+weeks (caught by a synthetic-data test); French demand horizons start tomorrow; a "beats both baselines"
+badge on +2%/+1% skill, replaced by a 5% clear-edge rule; unknown model ids now return a real 404.
+
+Known limitations: backtests use revised data and, for French demand, observed weather (optimistic); the
+crude model has no useful skill (shown as such); live scores need about a month (daily models) or seven
+months (weekly) before a verdict; no load value on 25 Oct 2026 (clock change) in the source data.
+
+Next: merge #28, #29, the engine and pages PRs; DB migrate (007, 008); backfill `open_meteo` and `odre`;
+run the Forecast workflow in backtest mode for all models, then let the daily issue run; then M7 (Lab).
