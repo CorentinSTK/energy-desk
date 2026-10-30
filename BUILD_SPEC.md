@@ -85,18 +85,24 @@ global markets (they are priced globally). Non-European gas and power markets ar
 
 ### Home page
 
-- A map (no tile provider needed: TopoJSON + d3-geo or react-simple-maps) with two views:
-  - **Europe (default):** gas hubs (TTF, NBP, THE, PEG, …), power zones (DE-LU, FR, GB),
-    LNG terminals (from GIE ALSI) and major gas entry points (from ENTSOG: Norwegian landfalls,
-    LNG and pipeline entries).
-  - **World:** oil benchmarks (Brent/North Sea, Cushing, …) and chokepoints (Hormuz, Bab el-Mandeb,
-    Suez, Malacca, Panama).
-  - A colour scale chosen by the user: today's move, percentile vs history, or stocks vs seasonal.
-    A metric that has no free official data for a point (e.g. daily NBP/THE/PEG prices) shows that
-    point as "no data", never estimated. Storage vs seasonal (AGSI+, by country) is the default metric.
-- Click a hub, zone or terminal → side drawer with its key numbers and a link to the market page.
-- "Today in energy": 4–6 auto-generated one-line takeaways across markets (biggest moves, extremes).
-- A compact strip of benchmark prices with daily change, each labelled with its price type and source.
+- A map rendered on the server as plain SVG (d3-geo + world-atlas, no tile provider; ADR 0008), two views:
+  - **Europe (default):** countries coloured by a **layer**: gas storage (AGSI+, 18 EU countries),
+    power prices (bidding zones DE-LU, FR, GB) or the diesel pump price (EC Weekly Oil Bulletin, 27
+    states). Markers: 29 LNG terminals (GIE ALSI, per terminal), 9 pipeline entry points (ENTSOG) and
+    the gas hubs (TTF with unofficial futures data; NBP, THE, PEG drawn as "no data").
+  - **World:** oil and gas benchmarks (Brent/North Sea, WTI/Cushing, Henry Hub) and chokepoints (Hormuz,
+    Bab el-Mandeb, Suez, Malacca, Panama; "no data" until the freight phase).
+  - A **measure** chosen by the user, unit-free so different series share one scale (`web.series_snapshot`,
+    migration 006): *vs 5-year average* (% from the mean of the same day / ISO week; the default),
+    *latest move* (z-score of the latest change against the past year's changes) or *5-year
+    percentile*. A point without data is shown as "no data", never estimated.
+  - Marker positions: Natural Earth ports and towns (public domain), approximate, drawing only.
+- Click a country or marker → side panel (state in the URL, `?focus=`) with its latest values, date,
+  percentile and seasonal gap, and a link to the market page. The same data is available as a table.
+- "Today in energy": up to 6 sentences from fixed rules (EU storage vs norm, moves of 2σ or more,
+  5-year extremes beyond the 95th/5th percentile, the storage country furthest from its norm).
+- A compact strip of benchmark prices with the change from the previous value, each labelled with its
+  price type and source.
 
 ### Market page template (identical structure for every market)
 

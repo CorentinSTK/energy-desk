@@ -208,3 +208,29 @@ load; the specs pass when re-run and CI uses the production build.
 
 Next: merge the M4 PRs in order (#18, #19, #20, #21, web), run DB migrate (005), backfill `eia`, `cftc`,
 `ec_wob` and `yahoo`, check the live pages; then M5 (home).
+
+## 2026-10-30 — M5 Home page (built; production backfill pending)
+
+M4 in production: backfills ok (EIA 108,541 rows, CFTC 22,323, bulletin 123,551, Yahoo 23,418; 317 series).
+Migration 005 was not yet applied in production at the time (DB migrate pending) and #22 needed a
+rebase (session log conflict only).
+
+Built (PRs #23 coverage, #24 migration 006, #25 home page):
+- AGSI+ storage for all 18 EU countries with data; ALSI data per LNG terminal (29 active EU terminals,
+  generated from the live listing; Stade and Hamina never published and are left out). The 5 Oct send-out
+  anomaly is Ravenna's 100,000 GWh/d, still rejected.
+- `web.series_snapshot`: latest value, move z-score, 5-year percentile and seasonal gap per series in one
+  query (0.3 s for 80 series on the full local database).
+- Home page: server-rendered SVG map (Europe: storage / power / diesel layers, terminals, entry points,
+  hubs; world: benchmarks and chokepoints), three unit-free measures, side panel from `?focus=`, the map as
+  a table, a labelled benchmark strip and rule-based "Today in energy" (ADR 0008).
+
+Found and fixed: conic parallels are arcs, so a frame from corners cut off Malta and Sicily; world-atlas
+territories without an ISO code duplicated React keys; marker ids with underscores were refused by the
+URL check; psql prints timings with a French decimal comma (0.3 s, not 314 s).
+
+Known limitations: markers are small touch targets on phones (the table is the alternative); marker
+positions are approximate (up to ~50 km); series on the map have different dates (shown in the panel).
+
+Next: merge #22, #23, #24 and #25; DB migrate (005 and 006); backfill `gie_agsi` and `gie_alsi`; check the
+live home page; then M6 (forecast registry), plan first.
