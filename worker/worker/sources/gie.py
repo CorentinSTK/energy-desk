@@ -1,7 +1,8 @@
 """GIE transparency platforms (free key in the `x-key` header): AGSI+ (gas storage) and ALSI (LNG).
 
-`source_ref` is "<area>|<field>": area is "eu" (EU aggregate) or a country code ("DE"); field is a
-platform field, with a dot for nested values ("inventory.gwh" for ALSI's {"inventory": {"gwh": …}}).
+`source_ref` is "<area>|<field>": area is "eu" (EU aggregate), a country code ("DE") or one facility
+as "<country>~<company EIC>~<facility EIC>" (e.g. one LNG terminal); field is a platform field, with
+a dot for nested values ("inventory.gwh" for ALSI's {"inventory": {"gwh": …}}).
 
 Checked live on 2026-10-28 (both platforms share the API shape):
 - One request returns every field for an area and day, so responses are cached per area for the
@@ -12,6 +13,8 @@ Checked live on 2026-10-28 (both platforms share the API shape):
   skipped. Status "E" (estimated) values are stored and overwritten when GIE confirms them, which
   is why the lookback window is long.
 - The United Kingdom is listed as "Pre-Brexit" with no data on either platform: a declared gap.
+- Facilities (checked 2026-10-30): `?country=FR&company=<EIC>&facility=<EIC>` returns one terminal
+  or storage site, in the same row shape; the list is at /api/about?show=listing.
 """
 
 import time
@@ -30,6 +33,16 @@ AGSI_URL = "https://agsi.gie.eu/api"
 ALSI_URL = "https://alsi.gie.eu/api"
 PAGE_SIZE = 300
 NO_DATA = {"-", "", None}
+
+
+def area_params(area: str) -> dict[str, str]:
+    """Query parameters for an area: the EU aggregate, a country, or one facility."""
+    if area.lower() == "eu":
+        return {"type": "eu"}
+    if "~" in area:
+        country, company, facility = area.split("~")
+        return {"country": country, "company": company, "facility": facility}
+    return {"country": area}
 
 
 def field_value(row: dict[str, Any], field: str) -> Any:
@@ -72,7 +85,7 @@ class GieSource(Source):
     ) -> list[dict[str, Any]]:
         if (area, since) not in self._cache:
             params: dict[str, Any] = {"size": PAGE_SIZE}
-            params.update({"type": "eu"} if area.lower() == "eu" else {"country": area})
+            params.update(area_params(area))
             if since is not None:
                 params["from"] = since.isoformat()
             rows: list[dict[str, Any]] = []

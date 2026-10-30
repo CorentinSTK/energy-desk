@@ -7,7 +7,14 @@ import respx
 from worker.catalog import load_catalog
 from worker.http_client import make_client
 from worker.sources.gie import AGSI_URL as URL
-from worker.sources.gie import ALSI_URL, GieAgsiSource, GieAlsiSource, field_value, parse_rows
+from worker.sources.gie import (
+    ALSI_URL,
+    GieAgsiSource,
+    GieAlsiSource,
+    area_params,
+    field_value,
+    parse_rows,
+)
 
 CATALOG = {s.code: s for s in load_catalog("gie_agsi").series}
 
@@ -82,3 +89,46 @@ def test_alsi_uses_its_own_endpoint() -> None:
         observations = GieAlsiSource(api_key="test").fetch(client, spec, date(2026, 10, 1))
     assert [o.value for o in observations] == [967.3]
     assert route.call_count == 1
+
+
+def test_area_params_for_eu_country_and_facility() -> None:
+    assert area_params("eu") == {"type": "eu"}
+    assert area_params("PL") == {"country": "PL"}
+    assert area_params("FR~21X0000000013368~21W0000000001148") == {
+        "country": "FR",
+        "company": "21X0000000013368",
+        "facility": "21W0000000001148",
+    }
+
+
+@respx.mock
+def test_terminal_series_query_one_facility() -> None:
+    # Montoir, 28 Oct 2026 (live response, trimmed).
+    route = respx.get(ALSI_URL).mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "last_page": 1,
+                "data": [
+                    {
+                        "gasDayStart": "2026-10-28",
+                        "sendOut": "93.5",
+                        "inventory": {"gwh": "1759.79"},
+                    }
+                ],
+            },
+        )
+    )
+    specs = {s.code: s for s in load_catalog("gie_alsi").series}
+    spec = specs["alsi.t.montoir_de_bretagne.inventory"]
+    with make_client() as client:
+        source = GieAlsiSource(api_key="test")
+        inventory = source.fetch(client, spec, date(2026, 10, 28))
+        send_out = source.fetch(
+            client, specs["alsi.t.montoir_de_bretagne.send_out"], date(2026, 10, 28)
+        )
+    assert [o.value for o in inventory] == [1759.79]
+    assert [o.value for o in send_out] == [93.5]
+    assert route.call_count == 1
+    params = route.calls[0].request.url.params
+    assert params["country"] == "FR" and "facility" in params and "company" in params
