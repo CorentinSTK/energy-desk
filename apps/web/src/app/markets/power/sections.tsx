@@ -13,7 +13,7 @@ import { attempt, daysAgo, type PageContext, seriesOf } from "@/lib/data/page-co
 import { getPoints, getSeasonal, type Points, type SeasonalRow } from "@/lib/data/series";
 import { displayUnit, rescale } from "@/lib/display-units";
 import { formatChange, formatDate, formatNumber } from "@/lib/format";
-import { differenceOnDates, shareOnDates, sumOnDates } from "@/lib/power";
+import { differenceOnDates, shareOnDates, sumOnDates } from "@/lib/points";
 import { latestLevelTakeaway, seasonalLevelTakeaway } from "@/lib/takeaways";
 import { cn } from "@/lib/utils";
 

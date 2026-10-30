@@ -149,14 +149,15 @@ the v1-style IDs below are kept as human-readable references.
 | Power | Cross-check of SMARD prices (`worker.crosscheck power`, not stored) | Energy-Charts (Fraunhofer ISE, `api.energy-charts.info`) | none | 15-min | per dataset in `license_info` (DE-LU and FR prices: CC BY 4.0 from SMARD) |
 | Power | Cross-check, other zones (phase 2) | ENTSO-E Transparency (`web-api.tp.entsoe.eu/api`) | free token by email request | hourly | ENTSO-E terms — verify when the token arrives. Not needed for DE, FR, GB (ADR 0006). |
 | Crude | WTI, Brent spot (`RWTC`, `RBRTE`) | EIA API v2 | free key | daily (published weekly) | EIA public domain; EIA states the spot prices come from Refinitiv (LSEG) — see §11 |
-| Crude | US stocks: commercial (`WCESTUS1`), Cushing (`W_EPC0_SAX_YCUOK_MBBL`), SPR (`WCSSTUS1`) | EIA WPSR | free key | weekly | US public domain |
-| Crude | US production (`WCRFPUS2`), imports/exports, refinery utilisation (`WPULEUS3`) | EIA WPSR | free key | weekly | US public domain |
-| Crude | World balance, OPEC production and spare capacity | EIA STEO | free key | monthly | US public domain |
-| Products | Gasoline, ULSD, jet spot (NYH, USGC) | EIA | free key | daily | US public domain |
-| Products | US gasoline (`WGTSTUS1`) and distillate (`WDISTUS1`) stocks, product supplied | EIA WPSR | free key | weekly | US public domain |
-| Products | EU consumer fuel prices by member state (with and without taxes) | European Commission Weekly Oil Bulletin | none | weekly | Commission reuse policy (CC BY 4.0) — verify |
+| Crude | US stocks: commercial (`WCESTUS1`), Cushing (`W_EPC0_SAX_YCUOK_MBBL`), SPR (`WCSSTUS1`), total (`WTTSTUS1`) | EIA WPSR (`petroleum/stoc/wstk`) | free key | weekly | US public domain |
+| Crude | US production (`WCRFPUS2`, route `petroleum/sum/sndw`), imports/exports/net (`WCRIMUS2`, `WCREXUS2`, `WCRNTUS2`), refinery utilisation and runs (`WPULEUS3`, `WCRRIUS2`) | EIA WPSR | free key | weekly | US public domain |
+| Crude | World production, consumption, stock change; OPEC production, capacity, spare capacity (`PAPR_WORLD`, `PATC_WORLD`, `T3_STCHANGE_WORLD`, `COPR_OPEC`, `COPC_OPEC`, `COPS_OPEC`) | EIA STEO (`steo`, facet `seriesId`) | free key | monthly | US public domain. **History only**: months before the current one; forecast months are not stored (ADR 0007) |
+| Products | Gasoline (NYH, USGC, LA RBOB), ULSD (NYH, USGC, LA CARB), USGC jet, NYH heating oil spot | EIA (`petroleum/pri/spt`) | free key | daily (published weekly) | as WTI/Brent spot |
+| Products | Crack spreads: USGC 3-2-1 vs WTI, NYH ULSD vs Brent | computed by the worker from same-date EIA spots (`worker/oil.py`) | — | daily | as EIA spot |
+| Products | US gasoline, distillate, jet stocks (`WGTSTUS1`, `WDISTUS1`, `WKJSTUS1`), product supplied (`WGFUPUS2`, `WDIUPUS2`, `WKJUPUS2`, `WRPUPUS2`), exports (`WDIEXUS2`, `W_EPM0F_EEX_NUS-Z00_MBBLD`, `WKJEXUS2`) | EIA WPSR | free key | weekly | US public domain |
+| Products | EU consumer fuel prices (Euro-super 95, diesel) with and without taxes, EU, euro area and 27 member states | European Commission Weekly Oil Bulletin, price history workbook | none | weekly | CC BY 4.0 under the Commission legal notice (Decision 2011/833/EU), credit and indicate changes (confirmed 2026-10-30) |
 | All | Positioning: ICE Futures Europe COT (Brent, gasoil, TTF) | ICE public COT reports | none | weekly | **Not usable**: ICE terms allow personal, non-commercial use only and forbid republication without written permission (checked 2026-10-28). Declared gap. |
-| All | Positioning: CFTC COT disaggregated (WTI, Henry Hub) | CFTC Public Reporting API (Socrata) | none | weekly | US public domain |
+| All | Positioning: CFTC COT disaggregated, futures only (NYMEX WTI `067651`, RBOB `111659`, NY Harbor ULSD `022651`; Socrata dataset `72hh-3qpy`) | CFTC Public Reporting API (Socrata) | none | weekly | Public domain, acknowledge the CFTC (cftc.gov/WebPolicy, confirmed 2026-10-30). Raw longs and shorts stored; nets computed on the site |
 | All | FX for unit conversion (EUR/USD, EUR/GBP) | ECB Data Portal (`data-api.ecb.europa.eu`) | none | daily (TARGET days) | Free reuse, quote "Source: ECB statistics.", do not modify (confirmed 2026-10-28) |
 | All | Macro and volatility: USD index, rates, OVX | FRED | free key | daily | per series; some are copyrighted (e.g. CBOE OVX) — verify each |
 | All | Weather for demand models (HDD/CDD) | Open-Meteo (archive + forecast) | none | daily | CC BY 4.0 |
@@ -167,6 +168,8 @@ settled Brent look-alike and the NYMEX Dutch TTF contract), not ICE Brent or ICE
 `NG` are NYMEX. ICE gasoil and NBP are not available on Yahoo. Labels must name the actual contract.
 For TTF only the first two monthly contracts are listed (e.g. TTFZ26.NYM, TTFF27.NYM): enough for the
 front-month spread, not for a full curve; spread history accumulates from the first ingestion.
+The oil contracts (CL, BZ, HO, RB) are listed more than a year ahead (checked 2026-10-30), so curve
+structure M1 − Mn is shown as spreads; M1 follows each contract's exchange expiry rule (ADR 0007).
 
 **Freight & shipping (later phase).** Freight links the regional markets: it sets arbitrage windows
 (e.g. US Gulf → Europe crude, US LNG → Europe vs Asia) and reacts first to chokepoint disruptions. Scope to
@@ -199,9 +202,10 @@ Rules:
   attribution under every chart that uses the series (in the `ChartCard` footer). If a source's terms
   forbid redistribution, the source is not used.
 - **Units:** store in the source unit, convert in one place (`units` module). Display conventions:
-  crude and products $/bbl (products also ¢/gal or $/t where the market quotes them), European gas €/MWh
+  crude and products $/bbl (products also $/gal where the market quotes them; EU pump prices €/L), European gas €/MWh
   (NBP in p/therm where shown), US gas $/MMBtu, power €/MWh (DE, FR) and £/MWh (GB), storage in TWh and
-  % full, flows in GWh/d, oil volumes in mb. Currency conversion uses the FX series of the same date only.
+  % full, flows in GWh/d, oil volumes in mb (million barrels; stored as kb = thousand barrels, EIA "MBBL"),
+  oil flows in kb/d (mb/d for world balances). Currency conversion uses the FX series of the same date only.
   The site may rescale SI prefixes of the same unit for display (kWh/d → GWh/d, `lib/display-units.ts`);
   that is not a unit conversion, which only the worker's `units` module does.
 - **Seasonal norms:** "vs 5Y" means same week (weekly data) or same month (monthly data) over the five
@@ -380,7 +384,7 @@ European markets come first: they are the focus and the most differentiating par
 | M1 | Data platform | Schema migrated (with `price_kind`, `license`, `attribution`); read-only role and RLS; ingestion framework with retries, rate-limit handling, validation and `ingest_runs`; cron keep-alive verified; units and FX modules; GIE AGSI+, EIA and FRED live; `/data` shows catalogue, licence, freshness and gaps |
 | M2 | European gas & LNG | `/markets/gas` (storage by country vs seasonal, ENTSOG flows, official monthly benchmark, TTF derived indicators from Yahoo, labelled) and `/markets/lng` (GIE ALSI); positioning shown as a declared gap (ICE terms) |
 | M3 | European power | `/markets/power` for DE, FR, GB: day-ahead prices, load, generation mix (ENTSO-E, SMARD, ODRÉ, Elexon; Energy-Charts as cross-check); GB labelled as Elexon MID |
-| M4 | Crude & products | Both pages per template (global view): EIA spot and stocks, EC Weekly Oil Bulletin, Yahoo curve indicators (labelled), CFTC COT (WTI); Brent and gasoil positioning as a declared gap |
+| M4 | Crude & products | Both pages per template (global view): EIA spot and stocks, EC Weekly Oil Bulletin, Yahoo curve indicators (labelled), CFTC COT (WTI, RBOB, ULSD); Brent and gasoil positioning as a declared gap |
 | M5 | Home | Europe map (hubs, power zones, LNG terminals, entry points) + world view (oil, chokepoints), metric selector, drawers, "today in energy" |
 | M6 | Forecast registry | Three phase-1 models (§6, see §11), walk-forward backtests, live registry, scoreboard pages |
 | M7 | Lab v1 | Rule backtester with European presets and the trade simulator |

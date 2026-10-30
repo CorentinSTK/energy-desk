@@ -7,6 +7,10 @@
 const RESCALE: Record<string, { unit: string; factor: number }> = {
   "kWh/d": { unit: "GWh/d", factor: 1e-6 },
   MW: { unit: "GW", factor: 1e-3 },
+  // Oil stocks: thousand → million barrels.
+  kb: { unit: "mb", factor: 1e-3 },
+  // EC Weekly Oil Bulletin: euros per 1,000 litres → per litre, as shown at the pump.
+  "€/1000 L": { unit: "€/L", factor: 1e-3 },
 };
 
 export function displayUnit(sourceUnit: string): { unit: string; factor: number } {
