@@ -34,7 +34,7 @@ CONSOLIDATED = "eco2mix-national-cons-def"
 REAL_TIME = "eco2mix-national-tr"
 TZ = ZoneInfo("Europe/Paris")
 SLOT = timedelta(minutes=30)
-HISTORY_START = date(2020, 1, 1)
+HISTORY_START = date(2015, 1, 1)  # matches the weather history used by the demand forecast (M6)
 COLUMNS = (
     "consommation",
     "nucleaire",
