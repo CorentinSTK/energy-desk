@@ -9,7 +9,9 @@ test.describe("power market page", () => {
     page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
     await page.goto("/markets/power");
     await expect(page.getByRole("heading", { level: 1, name: "European power" })).toBeVisible();
-    await expect(page.getByText("DE-LU day-ahead base").filter({ visible: true })).toBeVisible();
+    await expect(
+      page.getByText("DE-LU day-ahead base", { exact: true }).filter({ visible: true }),
+    ).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Is Germany power expensive for the season?" }),
     ).toBeVisible();
@@ -27,7 +29,7 @@ test.describe("power market page", () => {
     await expect(page).toHaveURL(/\/markets\/power\?zone=gb$/);
     // GB is the Elexon market index, labelled as such (never called a day-ahead price).
     await expect(
-      page.getByText("GB market index (Elexon MID)").filter({ visible: true }),
+      page.getByText("GB market index (Elexon MID)", { exact: true }).filter({ visible: true }),
     ).toBeVisible();
     await page
       .getByRole("navigation", { name: "Sections" })
