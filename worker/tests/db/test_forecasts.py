@@ -67,13 +67,15 @@ def test_backtests_can_be_replaced(conn: psycopg.Connection, model: str) -> None
     assert conn.execute("select count(*) from market.forecasts").fetchone() == (0,)
 
 
-def test_forecast_must_be_issued_before_its_target(conn: psycopg.Connection, model: str) -> None:
-    with pytest.raises(psycopg.errors.CheckViolation):
-        conn.execute(
-            "insert into market.forecasts (model_id, version, kind, issued_at, target_ts, horizon,"
-            " point) values (%s, 'v1', 'live', %s, %s, 1, 1)",
-            (model, DAY, DAY),
-        )
+def test_live_forecast_of_a_published_outcome_is_refused(
+    conn: psycopg.Connection, model: str
+) -> None:
+    series_id = conn.execute("select id from market.series where code = %s", (CODE,)).fetchone()
+    assert series_id is not None
+    insert_values(conn, series_id[0], {date(2026, 10, 28): 10.0})
+    with pytest.raises(psycopg.errors.RestrictViolation), conn.transaction():
+        add(conn, model, target=DAY)
+    add(conn, model, kind="backtest", target=DAY)  # backtests are made after the fact by design
 
 
 def test_interval_must_contain_the_point(conn: psycopg.Connection, model: str) -> None:
@@ -85,6 +87,7 @@ def test_scores_follow_the_realised_value(conn: psycopg.Connection, model: str) 
     targets = [datetime(2026, 10, d, tzinfo=UTC) for d in (26, 27, 28)]
     for target, point in zip(targets, (10.0, 12.0, 9.0), strict=True):
         add(conn, model, target=target, point=point, baselines={"naive": 7.0, "seasonal": 10.0})
+    # Outcomes are published after the forecasts were stored.
     # Realised 10, 10, 13: model errors 0, 2, 4; naive errors 3, 3, 6; seasonal errors 0, 0, 3.
     series_id = conn.execute("select id from market.series where code = %s", (CODE,)).fetchone()
     assert series_id is not None
