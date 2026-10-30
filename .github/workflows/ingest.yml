@@ -4,15 +4,15 @@ name: Ingest
 on:
   schedule:
     - cron: "15 16 * * 1-5" # ECB reference rates, published around 16:00 CET on TARGET days
-    - cron: "0 17 * * 1-5" # EIA (spot prices weekly, stocks Wednesday 10:30 ET) and FRED
+    - cron: "0 17 * * 1-5" # EIA (spot prices weekly, stocks Wednesday 10:30 ET), FRED, EC Weekly Oil Bulletin (Thursday)
     - cron: "15 14 * * *" # Power: SMARD (day-ahead results ~12:45 CET), RTE éCO2mix and Elexon (day D-1 complete)
-    - cron: "30 21 * * *" # GIE AGSI+ and ALSI, ENTSOG (gas day D by the evening of D+1); Yahoo after NYMEX settlement
+    - cron: "30 21 * * *" # GIE AGSI+ and ALSI, ENTSOG (gas day D by the evening of D+1); Yahoo after NYMEX settlement; CFTC COT (Friday ~19:30 UTC, later in holiday weeks)
   workflow_dispatch:
     inputs:
       source:
         description: Source to ingest
         type: choice
-        options: [ecb, eia, elexon, entsog, fred, gie_agsi, gie_alsi, odre, smard, yahoo]
+        options: [cftc, ec_wob, ecb, eia, elexon, entsog, fred, gie_agsi, gie_alsi, odre, smard, yahoo]
       backfill:
         description: Fetch the full history
         type: boolean
@@ -34,9 +34,9 @@ jobs:
         run: |
           case "$SCHEDULE" in
             "15 16 * * 1-5") sources='["ecb"]' ;;
-            "0 17 * * 1-5") sources='["eia","fred"]' ;;
+            "0 17 * * 1-5") sources='["eia","fred","ec_wob"]' ;;
             "15 14 * * *") sources='["smard","odre","elexon"]' ;;
-            "30 21 * * *") sources='["gie_agsi","gie_alsi","entsog","yahoo"]' ;;
+            "30 21 * * *") sources='["gie_agsi","gie_alsi","entsog","yahoo","cftc"]' ;;
             *) sources="[\"$MANUAL_SOURCE\"]" ;;
           esac
           echo "sources=$sources" >> "$GITHUB_OUTPUT"
