@@ -1,0 +1,110 @@
+# Open-Meteo historical weather API (archive, no key), daily mean temperature at 2 m.
+# Terms (read 2026-10-30 from the site's licence page source, github.com/open-meteo/open-meteo-website):
+# API data under CC BY 4.0, credit "Weather data by Open-Meteo.com" with a link; the free API is for
+# non-commercial use (no subscriptions or advertising), under 10,000 calls a day. Historical data is
+# reanalysis from the Copernicus Climate Change Service (ERA5), credited as modified Copernicus data.
+# Cities: the eight largest of metropolitan France in Natural Earth populated places (public domain),
+# at their Natural Earth coordinates; the forecast model weights them by Natural Earth population.
+source: open_meteo
+licence:
+  name: Open-Meteo — CC BY 4.0 (ERA5 reanalysis, Copernicus C3S)
+  url: https://open-meteo.com/en/licence
+  attribution: "Weather data by Open-Meteo.com (CC BY 4.0); contains modified Copernicus Climate Change Service information."
+licence_checked: 2026-10-30
+series:
+  - code: open_meteo.fr.paris.tmean
+    name: Paris daily mean temperature
+    commodity: weather
+    region: Paris
+    unit: "°C"
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "48.8686,2.3314"
+    description: Daily mean air temperature at 2 m (local day, Europe/Paris), reanalysis. Input of the French power demand forecast.
+    publication_lag_days: 6  # the archive is final about five days after the day
+    plausible_min: -30
+    plausible_max: 45
+  - code: open_meteo.fr.lyon.tmean
+    name: Lyon daily mean temperature
+    commodity: weather
+    region: Lyon
+    unit: "°C"
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "45.772,4.8281"
+    description: Daily mean air temperature at 2 m (local day, Europe/Paris), reanalysis. Input of the French power demand forecast.
+    publication_lag_days: 6  # the archive is final about five days after the day
+    plausible_min: -30
+    plausible_max: 45
+  - code: open_meteo.fr.marseille.tmean
+    name: Marseille daily mean temperature
+    commodity: weather
+    region: Marseille
+    unit: "°C"
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "43.2919,5.3731"
+    description: Daily mean air temperature at 2 m (local day, Europe/Paris), reanalysis. Input of the French power demand forecast.
+    publication_lag_days: 6  # the archive is final about five days after the day
+    plausible_min: -30
+    plausible_max: 45
+  - code: open_meteo.fr.lille.tmean
+    name: Lille daily mean temperature
+    commodity: weather
+    region: Lille
+    unit: "°C"
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "50.6519,3.0781"
+    description: Daily mean air temperature at 2 m (local day, Europe/Paris), reanalysis. Input of the French power demand forecast.
+    publication_lag_days: 6  # the archive is final about five days after the day
+    plausible_min: -30
+    plausible_max: 45
+  - code: open_meteo.fr.nice.tmean
+    name: Nice daily mean temperature
+    commodity: weather
+    region: Nice
+    unit: "°C"
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "43.717,7.2631"
+    description: Daily mean air temperature at 2 m (local day, Europe/Paris), reanalysis. Input of the French power demand forecast.
+    publication_lag_days: 6  # the archive is final about five days after the day
+    plausible_min: -30
+    plausible_max: 45
+  - code: open_meteo.fr.toulouse.tmean
+    name: Toulouse daily mean temperature
+    commodity: weather
+    region: Toulouse
+    unit: "°C"
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "43.6219,1.448"
+    description: Daily mean air temperature at 2 m (local day, Europe/Paris), reanalysis. Input of the French power demand forecast.
+    publication_lag_days: 6  # the archive is final about five days after the day
+    plausible_min: -30
+    plausible_max: 45
+  - code: open_meteo.fr.bordeaux.tmean
+    name: Bordeaux daily mean temperature
+    commodity: weather
+    region: Bordeaux
+    unit: "°C"
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "44.852,-0.597"
+    description: Daily mean air temperature at 2 m (local day, Europe/Paris), reanalysis. Input of the French power demand forecast.
+    publication_lag_days: 6  # the archive is final about five days after the day
+    plausible_min: -30
+    plausible_max: 45
+  - code: open_meteo.fr.rouen.tmean
+    name: Rouen daily mean temperature
+    commodity: weather
+    region: Rouen
+    unit: "°C"
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "49.4304,1.08"
+    description: Daily mean air temperature at 2 m (local day, Europe/Paris), reanalysis. Input of the French power demand forecast.
+    publication_lag_days: 6  # the archive is final about five days after the day
+    plausible_min: -30
+    plausible_max: 45

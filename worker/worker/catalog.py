@@ -16,7 +16,7 @@ from worker.config import WORKER_DIR
 
 CATALOG_DIR = WORKER_DIR / "catalog"
 
-Commodity = Literal["crude", "products", "natgas", "lng", "lpg", "power", "fx", "macro"]
+Commodity = Literal["crude", "products", "natgas", "lng", "lpg", "power", "fx", "macro", "weather"]
 Frequency = Literal["half_hourly", "hourly", "daily", "weekly", "monthly"]
 PriceKind = Literal["spot", "futures", "index", "assessment"]
 
