@@ -211,8 +211,8 @@ series:
     source_ref: steo|T3_STCHANGE_WORLD
     description: Net inventory withdrawals of crude oil and other liquids, million barrels per day, as published by EIA. Positive means stocks are drawn (consumption above production), negative means stocks build.
     publication_lag_days: 45
-    plausible_min: -15
-    plausible_max: 15
+    plausible_min: -25  # April 2020 (COVID): stocks built by about 16 mb/d
+    plausible_max: 25
   - code: eia.opec_crude_production
     name: OPEC crude oil production (EIA STEO)
     commodity: crude
