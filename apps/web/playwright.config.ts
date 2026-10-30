@@ -12,6 +12,9 @@ export default defineConfig({
   forbidOnly: isCI,
   retries: isCI ? 1 : 0,
   reporter: isCI ? [["github"], ["html", { open: "never" }]] : "list",
+  // A page variant rendered for the first time (cold serverless function on the live site, or
+  // compilation on the dev server) can take longer than the 5 s default after a click.
+  expect: { timeout: 15_000 },
   use: { baseURL: remoteBaseURL ?? `http://localhost:${PORT}`, trace: "retain-on-failure" },
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
