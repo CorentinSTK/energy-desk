@@ -4,6 +4,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 
 import { ErrorState } from "@/components/error-state";
+import { RelatedForecasts } from "@/components/forecasts/related-forecasts";
 import { ChartCardSkeleton, KpiCardSkeleton } from "@/components/loading-skeletons";
 import { MarketHeader } from "@/components/market-header";
 import { TabNav } from "@/components/markets/tab-nav";
@@ -112,6 +113,7 @@ async function PowerContent({
         </Link>
         .
       </p>
+      <RelatedForecasts ids={["fr_power_demand"]} />
     </>
   );
 }
