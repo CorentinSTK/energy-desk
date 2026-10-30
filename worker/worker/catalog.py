@@ -50,6 +50,9 @@ class SeriesSpec(BaseModel):
     # Largest normal interval between observations, when the frequency's default does not fit (e.g.
     # 1 for daily series published every calendar day, where the default allows for weekends).
     gap_threshold_days: float | None = Field(default=None, gt=0)
+    # Days ahead of today a value may be dated: day-ahead auctions price tomorrow's delivery hours.
+    # Validation only (not stored); everything else is rejected beyond one day of time-zone slack.
+    delivery_lead_days: int = Field(default=0, ge=0, le=7)
     # Values outside this range are rejected by validation, not stored.
     plausible_min: float
     plausible_max: float

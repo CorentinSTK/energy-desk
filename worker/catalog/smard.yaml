@@ -20,6 +20,7 @@ series:
     source_ref: "4169|DE-LU|hourly"
     description: Day-ahead (SDAC) auction price per hour; since 1 October 2025 the mean of the four quarter-hour prices.
     price_kind: spot
+    delivery_lead_days: 1  # the auction at noon CET prices tomorrow's hours
     plausible_min: -600  # harmonised auction floor is -500 €/MWh
     plausible_max: 10000
   - code: smard.de_lu.price_da_base
@@ -32,6 +33,7 @@ series:
     source_ref: "4169|DE-LU|daily_mean"
     description: Average of the hourly day-ahead prices over the delivery day (Europe/Berlin), complete days only.
     price_kind: spot
+    delivery_lead_days: 1  # the auction at noon CET prices tomorrow's hours
     plausible_min: -600
     plausible_max: 10000
   - code: smard.fr.price_da
@@ -43,6 +45,7 @@ series:
     source_ref: "254|DE-LU|hourly"
     description: Day-ahead (SDAC) auction price per hour; since 1 October 2025 the mean of the four quarter-hour prices.
     price_kind: spot
+    delivery_lead_days: 1  # the auction at noon CET prices tomorrow's hours
     plausible_min: -600  # harmonised auction floor is -500 €/MWh
     plausible_max: 10000
   - code: smard.fr.price_da_base
@@ -55,6 +58,7 @@ series:
     source_ref: "254|DE-LU|daily_mean"
     description: Average of the hourly day-ahead prices over the delivery day (Europe/Berlin), complete days only.
     price_kind: spot
+    delivery_lead_days: 1  # the auction at noon CET prices tomorrow's hours
     plausible_min: -600
     plausible_max: 10000
   - code: smard.de.load

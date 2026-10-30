@@ -66,7 +66,7 @@ def _problem(
         return "unknown series"
     if obs.ts.tzinfo is None:
         return "timestamp without time zone"
-    if obs.ts > now + FUTURE_TOLERANCE:
+    if obs.ts > now + FUTURE_TOLERANCE + timedelta(days=spec.delivery_lead_days):
         return "timestamp in the future"
     if not math.isfinite(obs.value):
         return "non-finite value"

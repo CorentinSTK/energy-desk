@@ -53,3 +53,16 @@ def test_summary_counts_reasons() -> None:
     text = summarise_rejections(result.rejected)
     assert "non-finite value: 1" in text
     assert "outside plausible range [-50.0, 300.0]: 2" in text
+
+
+def test_day_ahead_series_may_be_dated_tomorrow() -> None:
+    # Run at 19:00 UTC: the noon auction has priced every hour up to tomorrow 23:00 Berlin time.
+    run = datetime(2026, 10, 29, 19, tzinfo=UTC)
+    last_hour = Observation(SPEC.code, datetime(2026, 10, 30, 22, tzinfo=UTC), 250.0)
+    day_ahead = SPEC.model_copy(update={"delivery_lead_days": 1})
+    assert validate([last_hour], SPECS, run).rejected[0].reason == "timestamp in the future"
+    assert validate([last_hour], {SPEC.code: day_ahead}, run).rejected == []
+    too_far = Observation(SPEC.code, run + timedelta(days=3), 250.0)
+    assert validate([too_far], {SPEC.code: day_ahead}, run).rejected[0].reason == (
+        "timestamp in the future"
+    )
