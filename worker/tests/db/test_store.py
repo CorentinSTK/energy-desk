@@ -80,10 +80,17 @@ def test_yahoo_raw_settlements_are_persisted(conn: psycopg.Connection) -> None:
     from worker.sources.yahoo import YahooSource
 
     source = YahooSource()
-    source._settles = {date(2026, 12, 1): {date(2026, 10, 28): 99.1}}
-    assert source.persist(conn) == 1
-    assert source.persist(conn) == 1  # idempotent upsert on (contract, ts)
-    row = conn.execute(
-        "select contract, exchange, delivery_month, settle from market.futures_contracts"
-    ).fetchone()
-    assert row == ("TTFZ26.NYM", "NYMEX", date(2026, 12, 1), 99.1)
+    source._settles = {
+        "TTF": {date(2026, 12, 1): {date(2026, 10, 28): 99.1}},
+        "CL": {date(2026, 12, 1): {date(2026, 10, 28): 103.5}},
+    }
+    assert source.persist(conn) == 2
+    assert source.persist(conn) == 2  # idempotent upsert on (contract, ts)
+    rows = conn.execute(
+        "select contract, root, exchange, delivery_month, settle from market.futures_contracts"
+        " order by contract"
+    ).fetchall()
+    assert rows == [
+        ("CLZ26.NYM", "CL", "NYMEX", date(2026, 12, 1), 103.5),
+        ("TTFZ26.NYM", "TTF", "NYMEX", date(2026, 12, 1), 99.1),
+    ]
