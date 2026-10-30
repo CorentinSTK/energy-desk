@@ -68,10 +68,10 @@ def agsi_entries() -> str:
     unit: "%"
     frequency: daily
     source_ref: {cc}|full
-    description: Gas in storage as a share of working gas volume.
+    description: Gas in storage as a share of working gas volume (can exceed 100%).
     publication_lag_days: 1
     plausible_min: 0
-    plausible_max: 105
+    plausible_max: 130
 """)
     return "".join(out)
 

@@ -209,7 +209,7 @@ load; the specs pass when re-run and CI uses the production build.
 Next: merge the M4 PRs in order (#18, #19, #20, #21, web), run DB migrate (005), backfill `eia`, `cftc`,
 `ec_wob` and `yahoo`, check the live pages; then M5 (home).
 
-## 2026-10-30 — M5 Home page (built; production backfill pending)
+## 2026-10-30 — M5 Home page (live)
 
 M4 in production: backfills ok (EIA 108,541 rows, CFTC 22,323, bulletin 123,551, Yahoo 23,418; 317 series).
 Migration 005 was not yet applied in production at the time (DB migrate pending) and #22 needed a
@@ -232,5 +232,15 @@ URL check; psql prints timings with a French decimal comma (0.3 s, not 314 s).
 Known limitations: markers are small touch targets on phones (the table is the alternative); marker
 positions are approximate (up to ~50 km); series on the map have different dates (shown in the panel).
 
-Next: merge #22, #23, #24 and #25; DB migrate (005 and 006); backfill `gie_agsi` and `gie_alsi`; check the
-live home page; then M6 (forecast registry), plan first.
+Production (30 Oct): #22–#25 merged, migrations 005 and 006 applied, `gie_agsi` and `gie_alsi`
+backfilled (58 terminal series with data). The live home page colours all 18 storage countries and the
+terminals; Playwright passes against the live site (70 tests, after raising the expectation timeout to
+15 s for first renders, #27). Live finding: Slovakia is the storage country furthest from normal (54.0%
+full on 28 Oct, 32.2 pts below its 2021–2025 average); EU storage 74.9%, 14.8 pts below.
+
+The full local backfill also showed 492 storage filling levels above 105% rejected: real values above
+declared working volume (Portugal 2019–2024, Belgium autumn 2022, Denmark 31 Oct 2016), so the bound
+becomes 130% (#26). The 31 ALSI rejections are source errors (placeholder 100,000 at Revythoussa, Rovigo
+and Ravenna, small negative values) and stay rejected.
+
+Next: merge #26 and #27, re-run the `gie_agsi` backfill; then M6 (forecast registry), plan first.
