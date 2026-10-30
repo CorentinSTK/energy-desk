@@ -6,6 +6,11 @@ import {
   promptSpreadTakeaway,
   seasonalLevelTakeaway,
   storageTakeaway,
+  balanceTakeaway,
+  curveTakeaway,
+  positioningTakeaway,
+  pumpPriceTakeaway,
+  spreadTakeaway,
 } from "./takeaways";
 
 const base = { mean: 89.6, min: 77, max: 98.6, yearsCount: 5 };
@@ -119,5 +124,89 @@ describe("seasonalLevelTakeaway", () => {
         "2021–2025",
       ),
     ).toBe("X was 3,300 GWh/d on 26 Oct 2026, close to the 2021–2025 average for this date.");
+  });
+});
+
+describe("oil takeaways", () => {
+  const date = "2026-10-29T00:00:00Z";
+
+  it("describes the curve shape from M1 − M2 and the year-out spread", () => {
+    expect(curveTakeaway("WTI", date, 1.95, "$/bbl", 20.56)).toBe(
+      "On 29 Oct 2026 WTI is in backwardation: the front month is 1.95 $/bbl above the second month and 20.56 $/bbl above the twelfth.",
+    );
+    expect(curveTakeaway("RBOB", date, -0.12, "$/gal")).toContain("contango");
+    expect(curveTakeaway("RBOB", date, 0.01, "$/gal")).toContain("flat");
+  });
+
+  it("says which price is higher", () => {
+    expect(spreadTakeaway("Brent", "WTI", 19.73, "$/bbl", 2, date)).toBe(
+      "Brent was 19.73 $/bbl above WTI on 29 Oct 2026.",
+    );
+  });
+
+  it("states managed-money positioning with its share and percentile", () => {
+    expect(positioningTakeaway("WTI", date, 36187, 1.97, 35, 3)).toBe(
+      "On 29 Oct 2026 managed money was net long 36,187 WTI contracts (2.0% of open interest), the 35th percentile of the last 3 years.",
+    );
+    expect(positioningTakeaway("RBOB", date, -5000, null, null, 3)).toContain("net short 5,000");
+  });
+
+  it("summarises EU pump prices", () => {
+    const text = pumpPriceTakeaway(
+      "diesel",
+      { withTax: 2.146, taxShare: 37, date },
+      { area: "Netherlands", withTax: 2.469 },
+      { area: "Malta", withTax: 1.21 },
+    );
+    expect(text).toContain("2.146 €/L on 29 Oct 2026, 37% of it duties and taxes");
+    expect(text).toContain("Dearest: Netherlands (2.469 €/L)");
+  });
+});
+
+describe("balanceTakeaway", () => {
+  it("states the surplus or deficit of the latest month", () => {
+    expect(balanceTakeaway("2026-09-01T00:00:00Z", 101.3, 104.24)).toBe(
+      "In September 2026 world consumption exceeded production by 2.9 mb/d (EIA estimates): stocks were being drawn.",
+    );
+    expect(balanceTakeaway("2026-09-01T00:00:00Z", 100.05, 100)).toContain("roughly balanced");
+  });
+});
+
+describe("seasonalLevelTakeaway for weekly stocks", () => {
+  it("agrees with a plural subject and writes percentages without a space", () => {
+    const c = {
+      current: 27,
+      mean: 24.8,
+      min: 20,
+      max: 35,
+      deviation: 2.2,
+      position: "within" as const,
+      yearsCount: 5,
+    };
+    expect(
+      seasonalLevelTakeaway(
+        "Cushing crude stocks",
+        "2026-10-23T00:00:00Z",
+        c,
+        "mb",
+        1,
+        "2021–2025",
+        "week",
+        true,
+      ),
+    ).toBe(
+      "Cushing crude stocks were 27.0 mb on 23 Oct 2026, 9% above the 2021–2025 average for this week.",
+    );
+    expect(
+      seasonalLevelTakeaway(
+        "US refinery utilisation",
+        "2026-10-23T00:00:00Z",
+        { ...c, current: 92.8 },
+        "%",
+        1,
+        "2021–2025",
+        "week",
+      ),
+    ).toContain("was 92.8% on");
   });
 });

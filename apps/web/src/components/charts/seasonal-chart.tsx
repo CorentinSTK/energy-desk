@@ -18,6 +18,7 @@ export function SeasonalChart({ commodity, height, ariaLabel, ...input }: Season
   const {
     periods,
     dailyAxis,
+    weeklyAxis,
     min,
     max,
     average,
@@ -33,6 +34,7 @@ export function SeasonalChart({ commodity, height, ariaLabel, ...input }: Season
       seasonalOption(t, {
         periods,
         dailyAxis,
+        weeklyAxis,
         min,
         max,
         average,
@@ -47,6 +49,7 @@ export function SeasonalChart({ commodity, height, ariaLabel, ...input }: Season
     [
       periods,
       dailyAxis,
+      weeklyAxis,
       min,
       max,
       average,

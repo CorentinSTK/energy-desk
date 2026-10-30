@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { differenceOnDates, shareOnDates, sumOnDates } from "./power";
+import { differenceOnDates, shareOnDates, sumOnDates } from "./points";
 
 const D1 = "2026-10-26T00:00:00Z";
 const D2 = "2026-10-27T00:00:00Z";
