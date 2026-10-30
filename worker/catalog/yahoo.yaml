@@ -35,3 +35,368 @@ series:
     publication_lag_days: 1
     plausible_min: -150
     plausible_max: 150
+  # Oil (M4): NYMEX contracts. M1 follows each contract's expiry rule (worker/futures.py).
+  - code: yahoo.cl.front_month
+    name: WTI front month (NYMEX CL, unofficial)
+    commodity: crude
+    region: US
+    unit: $/bbl
+    frequency: daily
+    source_ref: CL=F
+    description: Yahoo's continuous front-month close of the NYMEX WTI light sweet crude oil future. Shown as a single KPI only; official spot prices come from EIA.
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -50  # WTI futures settled below zero in April 2020
+    plausible_max: 300
+  - code: yahoo.bz.front_month
+    name: Brent front month (NYMEX BZ, unofficial)
+    commodity: crude
+    region: Europe
+    unit: $/bbl
+    frequency: daily
+    source_ref: BZ=F
+    description: Yahoo's continuous front-month close of the NYMEX Brent Last Day Financial (a look-alike settled on ICE Brent, not ICE Brent itself) future. Shown as a single KPI only; official spot prices come from EIA.
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: 0  # WTI futures settled below zero in April 2020
+    plausible_max: 300
+  - code: yahoo.cl.m1_m2
+    name: WTI M1–M2 spread (NYMEX CL, unofficial)
+    commodity: crude
+    region: US
+    unit: $/bbl
+    frequency: daily
+    source_ref: CL|m1-m2
+    description: Front month minus the contract 1 month later, NYMEX WTI light sweet crude oil, same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -100
+    plausible_max: 100
+  - code: yahoo.cl.m1_m3
+    name: WTI M1–M3 spread (NYMEX CL, unofficial)
+    commodity: crude
+    region: US
+    unit: $/bbl
+    frequency: daily
+    source_ref: CL|m1-m3
+    description: Front month minus the contract 2 months later, NYMEX WTI light sweet crude oil, same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -100
+    plausible_max: 100
+  - code: yahoo.cl.m1_m4
+    name: WTI M1–M4 spread (NYMEX CL, unofficial)
+    commodity: crude
+    region: US
+    unit: $/bbl
+    frequency: daily
+    source_ref: CL|m1-m4
+    description: Front month minus the contract 3 months later, NYMEX WTI light sweet crude oil, same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -100
+    plausible_max: 100
+  - code: yahoo.cl.m1_m5
+    name: WTI M1–M5 spread (NYMEX CL, unofficial)
+    commodity: crude
+    region: US
+    unit: $/bbl
+    frequency: daily
+    source_ref: CL|m1-m5
+    description: Front month minus the contract 4 months later, NYMEX WTI light sweet crude oil, same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -100
+    plausible_max: 100
+  - code: yahoo.cl.m1_m6
+    name: WTI M1–M6 spread (NYMEX CL, unofficial)
+    commodity: crude
+    region: US
+    unit: $/bbl
+    frequency: daily
+    source_ref: CL|m1-m6
+    description: Front month minus the contract 5 months later, NYMEX WTI light sweet crude oil, same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -100
+    plausible_max: 100
+  - code: yahoo.cl.m1_m7
+    name: WTI M1–M7 spread (NYMEX CL, unofficial)
+    commodity: crude
+    region: US
+    unit: $/bbl
+    frequency: daily
+    source_ref: CL|m1-m7
+    description: Front month minus the contract 6 months later, NYMEX WTI light sweet crude oil, same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -100
+    plausible_max: 100
+  - code: yahoo.cl.m1_m8
+    name: WTI M1–M8 spread (NYMEX CL, unofficial)
+    commodity: crude
+    region: US
+    unit: $/bbl
+    frequency: daily
+    source_ref: CL|m1-m8
+    description: Front month minus the contract 7 months later, NYMEX WTI light sweet crude oil, same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -100
+    plausible_max: 100
+  - code: yahoo.cl.m1_m9
+    name: WTI M1–M9 spread (NYMEX CL, unofficial)
+    commodity: crude
+    region: US
+    unit: $/bbl
+    frequency: daily
+    source_ref: CL|m1-m9
+    description: Front month minus the contract 8 months later, NYMEX WTI light sweet crude oil, same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -100
+    plausible_max: 100
+  - code: yahoo.cl.m1_m10
+    name: WTI M1–M10 spread (NYMEX CL, unofficial)
+    commodity: crude
+    region: US
+    unit: $/bbl
+    frequency: daily
+    source_ref: CL|m1-m10
+    description: Front month minus the contract 9 months later, NYMEX WTI light sweet crude oil, same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -100
+    plausible_max: 100
+  - code: yahoo.cl.m1_m11
+    name: WTI M1–M11 spread (NYMEX CL, unofficial)
+    commodity: crude
+    region: US
+    unit: $/bbl
+    frequency: daily
+    source_ref: CL|m1-m11
+    description: Front month minus the contract 10 months later, NYMEX WTI light sweet crude oil, same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -100
+    plausible_max: 100
+  - code: yahoo.cl.m1_m12
+    name: WTI M1–M12 spread (NYMEX CL, unofficial)
+    commodity: crude
+    region: US
+    unit: $/bbl
+    frequency: daily
+    source_ref: CL|m1-m12
+    description: Front month minus the contract 11 months later, NYMEX WTI light sweet crude oil, same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -100
+    plausible_max: 100
+  - code: yahoo.bz.m1_m2
+    name: Brent M1–M2 spread (NYMEX BZ, unofficial)
+    commodity: crude
+    region: Europe
+    unit: $/bbl
+    frequency: daily
+    source_ref: BZ|m1-m2
+    description: Front month minus the contract 1 month later, NYMEX Brent Last Day Financial (a look-alike settled on ICE Brent, not ICE Brent itself), same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -100
+    plausible_max: 100
+  - code: yahoo.bz.m1_m3
+    name: Brent M1–M3 spread (NYMEX BZ, unofficial)
+    commodity: crude
+    region: Europe
+    unit: $/bbl
+    frequency: daily
+    source_ref: BZ|m1-m3
+    description: Front month minus the contract 2 months later, NYMEX Brent Last Day Financial (a look-alike settled on ICE Brent, not ICE Brent itself), same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -100
+    plausible_max: 100
+  - code: yahoo.bz.m1_m4
+    name: Brent M1–M4 spread (NYMEX BZ, unofficial)
+    commodity: crude
+    region: Europe
+    unit: $/bbl
+    frequency: daily
+    source_ref: BZ|m1-m4
+    description: Front month minus the contract 3 months later, NYMEX Brent Last Day Financial (a look-alike settled on ICE Brent, not ICE Brent itself), same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -100
+    plausible_max: 100
+  - code: yahoo.bz.m1_m5
+    name: Brent M1–M5 spread (NYMEX BZ, unofficial)
+    commodity: crude
+    region: Europe
+    unit: $/bbl
+    frequency: daily
+    source_ref: BZ|m1-m5
+    description: Front month minus the contract 4 months later, NYMEX Brent Last Day Financial (a look-alike settled on ICE Brent, not ICE Brent itself), same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -100
+    plausible_max: 100
+  - code: yahoo.bz.m1_m6
+    name: Brent M1–M6 spread (NYMEX BZ, unofficial)
+    commodity: crude
+    region: Europe
+    unit: $/bbl
+    frequency: daily
+    source_ref: BZ|m1-m6
+    description: Front month minus the contract 5 months later, NYMEX Brent Last Day Financial (a look-alike settled on ICE Brent, not ICE Brent itself), same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -100
+    plausible_max: 100
+  - code: yahoo.bz.m1_m7
+    name: Brent M1–M7 spread (NYMEX BZ, unofficial)
+    commodity: crude
+    region: Europe
+    unit: $/bbl
+    frequency: daily
+    source_ref: BZ|m1-m7
+    description: Front month minus the contract 6 months later, NYMEX Brent Last Day Financial (a look-alike settled on ICE Brent, not ICE Brent itself), same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -100
+    plausible_max: 100
+  - code: yahoo.bz.m1_m8
+    name: Brent M1–M8 spread (NYMEX BZ, unofficial)
+    commodity: crude
+    region: Europe
+    unit: $/bbl
+    frequency: daily
+    source_ref: BZ|m1-m8
+    description: Front month minus the contract 7 months later, NYMEX Brent Last Day Financial (a look-alike settled on ICE Brent, not ICE Brent itself), same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -100
+    plausible_max: 100
+  - code: yahoo.bz.m1_m9
+    name: Brent M1–M9 spread (NYMEX BZ, unofficial)
+    commodity: crude
+    region: Europe
+    unit: $/bbl
+    frequency: daily
+    source_ref: BZ|m1-m9
+    description: Front month minus the contract 8 months later, NYMEX Brent Last Day Financial (a look-alike settled on ICE Brent, not ICE Brent itself), same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -100
+    plausible_max: 100
+  - code: yahoo.bz.m1_m10
+    name: Brent M1–M10 spread (NYMEX BZ, unofficial)
+    commodity: crude
+    region: Europe
+    unit: $/bbl
+    frequency: daily
+    source_ref: BZ|m1-m10
+    description: Front month minus the contract 9 months later, NYMEX Brent Last Day Financial (a look-alike settled on ICE Brent, not ICE Brent itself), same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -100
+    plausible_max: 100
+  - code: yahoo.bz.m1_m11
+    name: Brent M1–M11 spread (NYMEX BZ, unofficial)
+    commodity: crude
+    region: Europe
+    unit: $/bbl
+    frequency: daily
+    source_ref: BZ|m1-m11
+    description: Front month minus the contract 10 months later, NYMEX Brent Last Day Financial (a look-alike settled on ICE Brent, not ICE Brent itself), same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -100
+    plausible_max: 100
+  - code: yahoo.bz.m1_m12
+    name: Brent M1–M12 spread (NYMEX BZ, unofficial)
+    commodity: crude
+    region: Europe
+    unit: $/bbl
+    frequency: daily
+    source_ref: BZ|m1-m12
+    description: Front month minus the contract 11 months later, NYMEX Brent Last Day Financial (a look-alike settled on ICE Brent, not ICE Brent itself), same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -100
+    plausible_max: 100
+  - code: yahoo.ho.m1_m2
+    name: ULSD M1–M2 spread (NYMEX HO, unofficial)
+    commodity: products
+    region: US East Coast
+    unit: $/gal
+    frequency: daily
+    source_ref: HO|m1-m2
+    description: Front month minus the contract 1 month later, NYMEX NY Harbor ULSD, same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -2
+    plausible_max: 2
+  - code: yahoo.ho.m1_m6
+    name: ULSD M1–M6 spread (NYMEX HO, unofficial)
+    commodity: products
+    region: US East Coast
+    unit: $/gal
+    frequency: daily
+    source_ref: HO|m1-m6
+    description: Front month minus the contract 5 months later, NYMEX NY Harbor ULSD, same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -2
+    plausible_max: 2
+  - code: yahoo.rb.m1_m2
+    name: RBOB M1–M2 spread (NYMEX RB, unofficial)
+    commodity: products
+    region: US East Coast
+    unit: $/gal
+    frequency: daily
+    source_ref: RB|m1-m2
+    description: Front month minus the contract 1 month later, NYMEX RBOB gasoline, same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -2
+    plausible_max: 2
+  - code: yahoo.rb.m1_m6
+    name: RBOB M1–M6 spread (NYMEX RB, unofficial)
+    commodity: products
+    region: US East Coast
+    unit: $/gal
+    frequency: daily
+    source_ref: RB|m1-m6
+    description: Front month minus the contract 5 months later, NYMEX RBOB gasoline, same trading date. M1 follows the exchange's expiry rule. Positive means backwardation (prompt barrels dearer).
+    price_kind: futures
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: -2
+    plausible_max: 2

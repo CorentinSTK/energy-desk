@@ -1,22 +1,24 @@
-"""Yahoo Finance futures (unofficial, optional; ADR 0003). TTF only for now.
+"""Yahoo Finance futures (unofficial, optional; ADR 0003 and ADR 0007).
 
-Two series reach the site, both flagged unofficial:
-- `yahoo.ttf.front_month`: Yahoo's continuous front month (TTF=F). Shown only as a single KPI value.
-- `yahoo.ttf.m1_m2_spread`: M1 minus M2, a derived indicator (positive = backwardation).
+What reaches the site, every series flagged unofficial:
+- Front-month levels (`TTF=F`, `CL=F`, `BZ=F`): Yahoo's continuous contract, shown as a single KPI.
+- Calendar spreads M1 - Mn ("<root>|m1-m<n>"): derived indicators, positive = backwardation.
 Raw settlements of the individual contracts go to `market.futures_contracts`, which the site cannot
 read; they make every derived value traceable.
 
-Checked live on 2026-10-28:
-- These are NYMEX contracts (Dutch TTF, Platts-based), not ICE Endex TTF. Labels say so.
+Checked live on 2026-10-28 (TTF) and 2026-10-30 (CL, BZ, HO, RB):
+- All are NYMEX contracts: Dutch TTF (Platts), WTI, Brent Last Day Financial (a look-alike settled
+  on ICE Brent, not ICE Brent itself), NY Harbor ULSD, RBOB. Labels say so.
 - Daily data needs explicit `period1`/`period2`: with `range=max` Yahoo returns coarser points.
-- Only contracts still trading are listed (e.g. X26, Z26, F27, G27 on 28 Oct 2026); expired ones are
-  gone. So for a date D, M1 is strictly the month after D and M2 the month after that; if either has
-  no close that day, there is no spread value (never the next available pair, which would mislabel a
-  further spread as M1-M2). History therefore starts short and grows as we store settlements daily.
+- Only contracts still trading are listed: TTF two or three months ahead, the oil contracts beyond
+  December 2027. Expired contracts are gone, so spread history starts short and grows as we store
+  settlements daily. M1 follows each exchange's expiry rule (worker/futures.py); a date where the
+  front contract or any tenor is missing has no value for that spread, never a relabelled one.
 - Closes are dated in the exchange time zone (America/New_York). Null closes are skipped.
 - No retries: a 429 or a block ends the series for this run (partial run; the page shows a gap).
 """
 
+import re
 import time
 from collections.abc import Callable
 from datetime import UTC, date, datetime, timedelta
@@ -27,56 +29,37 @@ import httpx
 import psycopg
 
 from worker.catalog import SeriesSpec
+from worker.futures import add_months, calendar_spreads, contract_ticker, front_delivery
 from worker.http_client import get_once
 from worker.sources.base import Source
 from worker.validate import Observation
 
 URL = "https://query1.finance.yahoo.com/v8/finance/chart/{ticker}"
-MONTH_CODES = "FGHJKMNQUVXZ"  # futures month letters, January to December
 FRONT_MONTH_START = date(2017, 1, 1)
 CONTRACT_HISTORY_START = date(2025, 1, 1)
-CONTRACTS_AHEAD = 4  # contracts to request beyond the current month
-
-
-def contract_ticker(root: str, delivery_month: date) -> str:
-    """TTF + December 2026 → 'TTFZ26.NYM'."""
-    return f"{root}{MONTH_CODES[delivery_month.month - 1]}{delivery_month.year % 100:02d}.NYM"
-
-
-def add_months(day: date, months: int) -> date:
-    index = day.year * 12 + day.month - 1 + months
-    return date(index // 12, index % 12 + 1, 1)
+# Generic months to rebuild per root (M1..Mn). One contract before the rule's front is requested
+# too, so a holiday-shifted expiry is detected rather than missed.
+TENORS = {"TTF": 4, "CL": 12, "BZ": 12, "HO": 6, "RB": 6}
+SPREAD_REF = re.compile(r"^(?P<root>[A-Z]+)\|m1-m(?P<tenor>\d+)$")
 
 
 def parse_chart(body: dict[str, Any]) -> list[tuple[date, float]]:
-    """(trading date in the exchange time zone, close) pairs; null closes skipped."""
+    """(trading date in the exchange time zone, close) pairs; null closes skipped.
+
+    Continuous tickers (e.g. CL=F) can end with an extra live-quote point dated the same day as
+    the last daily bar: only the first point of each date (the daily bar) is kept.
+    """
     result = (body.get("chart", {}).get("result") or [None])[0]
     if not result:
         return []
     tz = ZoneInfo(result["meta"].get("exchangeTimezoneName") or "America/New_York")
     closes = result["indicators"]["quote"][0]["close"]
-    points = []
+    points: dict[date, float] = {}
     for stamp, close in zip(result.get("timestamp") or [], closes, strict=True):
-        if close is None:
-            continue
-        points.append((datetime.fromtimestamp(stamp, tz).date(), float(close)))
-    return points
-
-
-def m1_m2_spread(settles: dict[date, dict[date, float]]) -> list[tuple[date, float]]:
-    """Spread M1 - M2 per trading date, from settlements keyed by delivery month then date.
-
-    M1 is the month after the trading date, M2 the month after that. A date where either is
-    missing has no value.
-    """
-    dates = sorted({d for by_date in settles.values() for d in by_date})
-    spread = []
-    for d in dates:
-        m1 = settles.get(add_months(d, 1), {}).get(d)
-        m2 = settles.get(add_months(d, 2), {}).get(d)
-        if m1 is not None and m2 is not None:
-            spread.append((d, m1 - m2))
-    return spread
+        day = datetime.fromtimestamp(stamp, tz).date()
+        if close is not None and day not in points:
+            points[day] = float(close)
+    return list(points.items())
 
 
 def at_midnight_utc(day: date) -> datetime:
@@ -90,8 +73,9 @@ class YahooSource(Source):
 
     def __init__(self, today: Callable[[], date] = date.today) -> None:
         self._today = today
-        self._settles: dict[date, dict[date, float]] = {}  # delivery month → date → close
-        self._fetched_contracts = False
+        # root → delivery month → trading date → close
+        self._settles: dict[str, dict[date, dict[date, float]]] = {}
+        self._spreads: dict[str, dict[int, list[tuple[date, float]]]] = {}
 
     def _chart(self, client: httpx.Client, ticker: str, since: date) -> list[tuple[date, float]]:
         params = {
@@ -102,44 +86,53 @@ class YahooSource(Source):
         response = get_once(client, URL.format(ticker=ticker), params)
         return parse_chart(response.json())
 
-    def _contracts(self, client: httpx.Client, root: str, since: date) -> None:
-        """Fetch the next contracts once per run. A contract Yahoo does not list is skipped."""
-        if self._fetched_contracts:
-            return
-        self._fetched_contracts = True
-        first = add_months(self._today(), 0)
-        for offset in range(CONTRACTS_AHEAD + 1):
-            delivery = add_months(first, offset)
-            time.sleep(self.request_interval)
-            try:
-                points = self._chart(client, contract_ticker(root, delivery), since)
-            except Exception as error:
-                if getattr(error, "status_code", None) == 404:
-                    continue  # not (or no longer) listed
-                raise
-            self._settles[delivery] = dict(points)
+    def _contracts(
+        self, client: httpx.Client, root: str, since: date
+    ) -> dict[date, dict[date, float]]:
+        """Fetch a root's contracts once per run. A contract Yahoo does not list is skipped."""
+        if root not in self._settles:
+            settles: dict[date, dict[date, float]] = {}
+            front = front_delivery(root, self._today())
+            for offset in range(-1, TENORS[root]):
+                delivery = add_months(front, offset)
+                time.sleep(self.request_interval)
+                try:
+                    points = self._chart(client, contract_ticker(root, delivery), since)
+                except Exception as error:
+                    if getattr(error, "status_code", None) == 404:
+                        continue  # not (or no longer) listed
+                    raise
+                settles[delivery] = dict(points)
+            self._settles[root] = settles
+        return self._settles[root]
+
+    def _spread(
+        self, client: httpx.Client, root: str, tenor: int, since: date | None
+    ) -> list[tuple[date, float]]:
+        if root not in self._spreads:
+            start = min(since or CONTRACT_HISTORY_START, CONTRACT_HISTORY_START)
+            settles = self._contracts(client, root, start)
+            self._spreads[root] = calendar_spreads(settles, root, list(range(2, TENORS[root] + 1)))
+        return self._spreads[root][tenor]
 
     def fetch(
         self, client: httpx.Client, spec: SeriesSpec, since: date | None
     ) -> list[Observation]:
-        if spec.source_ref == "TTF=F":
-            points = self._chart(client, "TTF=F", since or FRONT_MONTH_START)
-            return [Observation(spec.code, at_midnight_utc(d), v) for d, v in points]
-        if spec.source_ref == "TTF|m1-m2":
-            self._contracts(
-                client, "TTF", min(since or CONTRACT_HISTORY_START, CONTRACT_HISTORY_START)
-            )
-            return [
-                Observation(spec.code, at_midnight_utc(d), v)
-                for d, v in m1_m2_spread(self._settles)
-            ]
-        raise ValueError(f"Unknown Yahoo series reference {spec.source_ref!r}")
+        ref = spec.source_ref
+        if ref.endswith("=F"):
+            points = self._chart(client, ref, since or FRONT_MONTH_START)
+        elif match := SPREAD_REF.match(ref):
+            points = self._spread(client, match["root"], int(match["tenor"]), since)
+        else:
+            raise ValueError(f"Unknown Yahoo series reference {ref!r}")
+        return [Observation(spec.code, at_midnight_utc(d), v) for d, v in points]
 
     def persist(self, conn: psycopg.Connection) -> int:
         """Raw contract settlements → market.futures_contracts (never readable by the site)."""
         rows = [
-            (contract_ticker("TTF", delivery), "TTF", "NYMEX", delivery, at_midnight_utc(d), close)
-            for delivery, by_date in self._settles.items()
+            (contract_ticker(root, delivery), root, "NYMEX", delivery, at_midnight_utc(d), close)
+            for root, by_delivery in self._settles.items()
+            for delivery, by_date in by_delivery.items()
             for d, close in by_date.items()
         ]
         if not rows:
