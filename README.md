@@ -15,7 +15,8 @@ official data. Every number is sourced, labelled with its unit and licence, and 
 ## Credits
 
 Builds on ideas and code from the author's earlier project,
-[oil-tracker](https://github.com/CorentinSTK/oil-tracker).
+[oil-tracker](https://github.com/CorentinSTK/oil-tracker): EIA series IDs, the weekly seasonal norm
+(ISO weeks, week 53 folded into 52) and the futures expiry rules used to rebuild generic months.
 
 ## Licence
 

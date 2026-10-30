@@ -170,3 +170,41 @@ for the day-ahead series. Unrelated: GIE ALSI sent two send-out values ~100× to
 were rejected by the plausible range, as intended.
 
 Next: M4 (crude and products), plan first; ENTSO-E as a cross-check when the token arrives.
+
+## 2026-10-30 — M4 Crude and products (built; production backfill pending)
+
+Built (four PRs: #19 migration 005, #20 official oil sources, #21 oil futures, and the web PR):
+- Migration 005: `web.seasonal_weekly`, the same ISO week of the five prior ISO years (week 53 folded into
+  52, later value kept).
+- EIA: 35 series added. Product spots, WPSR stocks, production (route `petroleum/sum/sndw`), trade,
+  refinery runs and product supplied; STEO world balance and OPEC capacity, stored as history only (ADR 0007).
+  Two crack spreads are computed from same-date spots, checked by hand on 27 Oct: USGC 3-2-1 = 50.196 and
+  NYH ULSD − Brent = 73.754 $/bbl.
+- CFTC COT for WTI, RBOB and NY Harbor ULSD (by contract code), raw longs and shorts, nets on the site.
+- EC Weekly Oil Bulletin: petrol and diesel, with and without taxes, EU + euro area + 27 states (116 series).
+- Yahoo oil futures: M1 follows CME expiry rules (CLZ26 = 20 Nov 2026, checked against Barchart and
+  TradingView), with a guard turning holiday-shifted expiries into gaps. Front months for CL and BZ (KPI
+  only), M1–Mn for n = 2..12 on CL and BZ, M1–M2 and M1–M6 on HO and RB.
+- `/markets/crude` and `/markets/products` per template; shared weekly-seasonal, multi-series and CFTC
+  cards, bar and curve charts. Header links scroll sideways on phones (the page was 96 px too wide).
+
+Local backfill: EIA 108,557 rows, CFTC 22,323, bulletin 123,551, Yahoo 23,705; 317 series in the catalogue.
+Live findings on 23–29 Oct 2026: Brent spot 123.10 $/bbl (92nd percentile of the year), Brent 19.73
+$/bbl above WTI, Brent (BZ) M1–M12 +26 $/bbl (steep backwardation), US commercial crude stocks 410.6 mb
+(3.8% below the 2021–2025 average for the week), OPEC spare capacity 0.02 mb/d (EIA estimate, September),
+3-2-1 crack at the 88th percentile of five years, EU-average diesel 2.146 €/L (37% taxes).
+
+Found and fixed: the old "M1 = month after the trading date" rule is wrong for oil (WTI December is M1 on 30
+Oct); Yahoo appends a live quote dated like the last bar (one point per date kept); April 2020 world stock
+build (−16.1 mb/d) was outside the first plausible range (widened); the STEO uses `seriesId` and `YYYY-MM`;
+CFTC field names are irregular (`swap__positions_short_all`); "Cushing stocks was" in takeaways (plural);
+the managed-money share chart footer said "contracts".
+
+Known limitations: curve history starts in October 2026 (week- and month-earlier curves appear as data
+accumulates); the products main chart is a time series, not a seasonal band (a daily band breaks every
+weekend for trading-day series); no European refining margins or non-US stocks (declared gaps); EIA spot
+prices lag by about a week. The full Playwright suite on the dev server can time out under parallel
+load; the specs pass when re-run and CI uses the production build.
+
+Next: merge the M4 PRs in order (#18, #19, #20, #21, web), run DB migrate (005), backfill `eia`, `cftc`,
+`ec_wob` and `yahoo`, check the live pages; then M5 (home).

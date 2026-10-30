@@ -1,5 +1,6 @@
 /**
- * Date-aligned arithmetic on daily power series (generation groups, renewable share, spreads).
+ * Date-aligned arithmetic on series (power generation groups and shares, price spreads, net
+ * positioning).
  *
  * Every function keeps a date only when all the inputs that should report that day did, so a late or
  * missing publication shows as a gap, never as a drop. A series that had not started yet (e.g. an

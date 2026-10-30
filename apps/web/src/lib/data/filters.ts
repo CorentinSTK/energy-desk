@@ -3,10 +3,12 @@
  * so arbitrary query strings are ignored rather than passed anywhere.
  */
 
-export const COMMODITY_FILTERS = ["crude", "natgas", "lng", "power", "fx"] as const;
+export const COMMODITY_FILTERS = ["crude", "products", "natgas", "lng", "power", "fx"] as const;
 export type CommodityFilter = (typeof COMMODITY_FILTERS)[number];
 
 export const SOURCE_LABELS: Record<string, string> = {
+  cftc: "CFTC",
+  ec_wob: "European Commission",
   ecb: "ECB",
   eia: "EIA",
   elexon: "Elexon",

@@ -3,7 +3,7 @@
  * estimate). Shown on /data. Update this list when a source is added or a gap is closed.
  */
 
-export type GapMarket = "gas" | "lng" | "crude" | "power";
+export type GapMarket = "gas" | "lng" | "crude" | "products" | "power";
 
 export interface DeclaredGap {
   title: string;
@@ -36,10 +36,40 @@ export const DECLARED_GAPS: DeclaredGap[] = [
     markets: ["gas"],
   },
   {
-    title: "ICE Brent and ICE gasoil prices",
+    title: "ICE Brent and ICE gasoil futures prices",
     reason:
-      "Licensed exchange data. Brent is covered by the EIA spot assessment; futures indicators come from unofficial NYMEX look-alike contracts in a later milestone.",
+      "Licensed exchange data. Brent and diesel prices come from EIA spot assessments; curve structure comes from unofficial NYMEX contracts (WTI, the Brent Last Day look-alike, NY Harbor ULSD, RBOB), shown as spreads only.",
+    markets: ["crude", "products"],
+  },
+  {
+    title: "Dated Brent, Dubai, Oman and Urals assessments",
+    reason:
+      "Physical crude assessments (Platts, Argus) are licensed. Brent is shown with the EIA spot price; Middle East and Russian grades are not covered.",
     markets: ["crude"],
+  },
+  {
+    title: "IEA and OPEC monthly oil market reports",
+    reason:
+      "The IEA Oil Market Report is paid, and OPEC's secondary-source production tables cannot be republished. The world balance and OPEC capacity shown are EIA's STEO estimates (public domain).",
+    markets: ["crude"],
+  },
+  {
+    title: "Crude and product stocks outside the US (OECD, ARA, Fujairah, Singapore, China)",
+    reason:
+      "Weekly ARA stocks (Insights Global) and Fujairah data are licensed or not redistributable; OECD and Chinese stocks are monthly or unofficial. Only US weekly stocks (EIA) are shown.",
+    markets: ["crude", "products"],
+  },
+  {
+    title: "Brent and ICE gasoil positioning (Commitments of Traders)",
+    reason:
+      "ICE publishes it, but its terms forbid republication without written permission. CFTC positioning is shown for NYMEX WTI, RBOB and NY Harbor ULSD.",
+    markets: ["crude", "products"],
+  },
+  {
+    title: "North-West Europe cracks and wholesale product prices",
+    reason:
+      "NWE diesel, gasoline and jet cargo prices (Platts, Argus) and ICE gasoil are licensed. European refining margins are therefore not shown; EU pump prices (with and without taxes) come from the Commission's Weekly Oil Bulletin.",
+    markets: ["products"],
   },
   {
     title: "LNG prices (JKM, delivered North-West Europe)",

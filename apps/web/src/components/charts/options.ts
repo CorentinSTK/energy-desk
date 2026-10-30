@@ -30,6 +30,11 @@ export interface SeasonalInput {
   periods: string[];
   /** Periods are calendar days (YYYY-MM-DD): one axis label per month, day names in the tooltip. */
   dailyAxis?: boolean;
+  /**
+   * Periods are weeks, given as the Monday of the week (YYYY-MM-DD in 2001): one axis label per
+   * month, on its first week, and "Week of …" in the tooltip.
+   */
+  weeklyAxis?: boolean;
   min: (number | null)[];
   max: (number | null)[];
   average: (number | null)[];
@@ -155,7 +160,11 @@ export function seasonalOption(t: ChartTokens, s: SeasonalInput): EChartsCoreOpt
       formatter: (params: TooltipParam[]) => {
         const i = params[0].dataIndex;
         return [
-          s.dailyAxis ? dayLabel(s.periods[i]) : s.periods[i],
+          s.dailyAxis
+            ? dayLabel(s.periods[i])
+            : s.weeklyAxis
+              ? `Week of ${dayLabel(s.periods[i])}`
+              : s.periods[i],
           tooltipRow("", s.currentLabel, fmt(s.current[i])),
           tooltipRow("", `${s.rangeLabel} avg`, fmt(s.average[i])),
           tooltipRow("", `${s.rangeLabel} range`, `${fmt(s.min[i])} – ${fmt(s.max[i])}`),
@@ -177,12 +186,13 @@ export function seasonalOption(t: ChartTokens, s: SeasonalInput): EChartsCoreOpt
       data: s.periods,
       boundaryGap: false,
       ...categoryLikeAxis(t),
-      ...(s.dailyAxis && {
+      ...((s.dailyAxis || s.weeklyAxis) && {
         axisLabel: {
           color: t.axis,
-          // One label per month, on its first day; on narrow screens labels that would overlap are
-          // hidden, so a phone shows every other month instead of a run-together row.
-          interval: (_index: number, value: string) => value.endsWith("-01"),
+          // One label per month, on its first day (or first week); on narrow screens labels that
+          // would overlap are hidden, so a phone shows every other month instead of a run-together row.
+          interval: (_index: number, value: string) =>
+            s.weeklyAxis ? Number(value.slice(8, 10)) <= 7 : value.endsWith("-01"),
           hideOverlap: true,
           formatter: (value: string) => MONTHS[Number(value.slice(5, 7)) - 1],
         },
@@ -297,6 +307,121 @@ export function multiLineOption(t: ChartTokens, s: MultiLineInput): EChartsCoreO
             color: t.series[line.colorIndex % t.series.length],
           }),
         },
+      }),
+    })),
+  };
+}
+
+export interface BarInput {
+  /** Category labels, drawn top to bottom. */
+  categories: string[];
+  /** One value per category; null leaves the bar out (no data), never zero. */
+  series: { name: string; values: (number | null)[]; colorIndex?: number }[];
+  unit: string;
+  decimals: number;
+  /** Stack the series: only for parts that add up (e.g. price before taxes + taxes). */
+  stacked?: boolean;
+}
+
+/** Horizontal bars for comparing categories (e.g. countries) on one date. */
+export function barOption(t: ChartTokens, s: BarInput): EChartsCoreOption {
+  const base = baseOption(t);
+  const fmt = (v: number | null) => `${formatNumber(v, s.decimals)} ${s.unit}`;
+  return {
+    ...base,
+    color: t.series,
+    tooltip: {
+      ...(base.tooltip as object),
+      axisPointer: { type: "shadow" },
+      formatter: (params: TooltipParam[]) => {
+        const i = params[0].dataIndex;
+        const rows = s.series.map((line, k) =>
+          tooltipRow(params[k]?.marker ?? "", line.name, fmt(line.values[i])),
+        );
+        const parts = s.series.map((line) => line.values[i]);
+        const total =
+          s.stacked && parts.every((v) => v !== null)
+            ? tooltipRow("", "Total", fmt(parts.reduce<number>((sum, v) => sum + (v ?? 0), 0)))
+            : "";
+        return `${s.categories[i]}${rows.join("")}${total}`;
+      },
+    },
+    legend: {
+      top: 0,
+      icon: "roundRect",
+      itemWidth: 12,
+      itemHeight: 4,
+      textStyle: { color: t.textSecondary },
+    },
+    grid: { left: 8, right: 16, top: 32, bottom: 8, containLabel: true },
+    xAxis: (() => {
+      const axis = valueAxis(t, s.decimals);
+      // Start at zero (bars are lengths) and drop labels that would overlap on a phone.
+      return { ...axis, scale: false, axisLabel: { ...axis.axisLabel, hideOverlap: true } };
+    })(),
+    yAxis: { type: "category", data: s.categories, inverse: true, ...categoryLikeAxis(t) },
+    series: s.series.map((line) => ({
+      name: line.name,
+      type: "bar",
+      data: line.values,
+      barMaxWidth: 14,
+      ...(s.stacked && { stack: "total" }),
+      ...(line.colorIndex !== undefined && {
+        itemStyle: { color: t.series[line.colorIndex % t.series.length] },
+      }),
+    })),
+  };
+}
+
+export interface CurveInput {
+  /** Tenor labels on the x-axis, e.g. "M1"…"M12". */
+  tenors: string[];
+  /** One line per date (e.g. latest, a week earlier, a month earlier); null = no value. */
+  series: { name: string; values: (number | null)[]; colorIndex?: number }[];
+  unit: string;
+  decimals: number;
+}
+
+/** Futures curve shape: value by tenor, one line per date. Gaps are not connected. */
+export function curveOption(t: ChartTokens, s: CurveInput): EChartsCoreOption {
+  const base = baseOption(t);
+  return {
+    ...base,
+    color: t.series,
+    tooltip: {
+      ...(base.tooltip as object),
+      formatter: (params: TooltipParam[]) => {
+        const i = params[0].dataIndex;
+        const rows = s.series.map((line, k) =>
+          tooltipRow(
+            params[k]?.marker ?? "",
+            line.name,
+            `${formatNumber(line.values[i], s.decimals)} ${s.unit}`,
+          ),
+        );
+        return `${s.tenors[i]}${rows.join("")}`;
+      },
+    },
+    legend: {
+      top: 0,
+      icon: "roundRect",
+      itemWidth: 12,
+      itemHeight: 4,
+      textStyle: { color: t.textSecondary },
+    },
+    grid: { left: 8, right: 16, top: 32, bottom: 8, containLabel: true },
+    xAxis: { type: "category", data: s.tenors, boundaryGap: false, ...categoryLikeAxis(t) },
+    yAxis: valueAxis(t, s.decimals),
+    series: s.series.map((line, k) => ({
+      name: line.name,
+      type: "line",
+      data: line.values,
+      connectNulls: false,
+      symbol: "circle",
+      symbolSize: 4,
+      lineStyle: { width: k === 0 ? 2 : LINE_WIDTH, ...(k > 0 && { type: "dashed" }) },
+      ...(line.colorIndex !== undefined && {
+        itemStyle: { color: t.series[line.colorIndex % t.series.length] },
       }),
     })),
   };
