@@ -1,7 +1,7 @@
 -- 007 — Forecast registry (M6, BUILD_SPEC §6, ADR 0009).
 --
 -- Every forecast is stored when it is issued and never edited: a trigger refuses UPDATE and DELETE
--- on live forecasts. Each forecast is the predicted value of a catalogued series at one timestamp
+-- on live forecasts, and another refuses a live forecast whose outcome is already published. Each forecast is the predicted value of a catalogued series at one timestamp
 -- (e.g. US crude stocks on a Friday, French daily load on a date), with its 90% interval and the
 -- forecasts of its simple baselines, so model and baselines are scored on the same targets.
 -- Scores are computed in views by joining the realised observation: nothing is copied, so a revised
@@ -24,7 +24,9 @@ create table market.forecasts (
     version     text not null,
     kind        text not null check (kind in ('live', 'backtest')),
     issued_at   timestamptz not null,   -- when the forecast was made (simulated for backtests)
-    target_ts   timestamptz not null,   -- the observation timestamp being forecast
+    -- The observation timestamp being forecast. It may be before issued_at: a week that has ended but
+    -- whose figure is not published yet (e.g. US stocks for last Friday, published on Wednesday).
+    target_ts   timestamptz not null,
     horizon     integer not null check (horizon > 0),  -- in the model's horizon unit
     point       double precision not null
                 check (point <> 'NaN'::double precision
@@ -37,7 +39,6 @@ create table market.forecasts (
     -- What the forecast was made from (latest values used, weather forecast…), for traceability.
     inputs      jsonb not null default '{}'::jsonb,
     created_at  timestamptz not null default now(),
-    check (target_ts > issued_at),
     check ((lo90 is null) = (hi90 is null)),
     check (lo90 is null or (lo90 <= point and point <= hi90)),
     unique (model_id, version, kind, issued_at, target_ts)
@@ -64,6 +65,30 @@ $$;
 create trigger forecasts_live_immutable
     before update or delete on market.forecasts
     for each row execute function market.refuse_live_forecast_change();
+
+-- A live forecast must be stored before its outcome is published: forecasting a known value is refused.
+create function market.refuse_known_outcome() returns trigger
+    language plpgsql
+as $$
+begin
+    if new.kind = 'live' and exists (
+        select 1
+        from market.observations o
+        join market.series s on s.id = o.series_id
+        join market.forecast_models m on m.target_code = s.code
+        where m.id = new.model_id and o.ts = new.target_ts
+    ) then
+        raise exception 'the outcome of this forecast is already published (model %, target %)',
+            new.model_id, new.target_ts
+            using errcode = 'restrict_violation';
+    end if;
+    return new;
+end;
+$$;
+
+create trigger forecasts_live_before_outcome
+    before insert on market.forecasts
+    for each row execute function market.refuse_known_outcome();
 
 -- Forecasts with their realised value (null until the target observation is published).
 create view web.forecasts as
