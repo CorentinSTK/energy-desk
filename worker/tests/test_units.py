@@ -24,7 +24,8 @@ def test_mmbtu_per_mwh_matches_reference_value() -> None:
         (100.0, "p/therm", "£/MWh", 34.12141633),
         (1.0, "$/gal", "$/bbl", 42.0),
         (250.0, "¢/gal", "$/bbl", 105.0),
-        (1000.0, "mb", "Mm³", 158.987294928),
+        (1000.0, "kb", "thousand m³", 158.987294928),
+        (16526.0, "kb/d", "mb/d", 16.526),
         (1500.0, "GWh", "TWh", 1.5),
     ],
 )

@@ -24,7 +24,10 @@ _FACTORS: dict[tuple[str, str], float] = {
     ("$/bbl", "$/m³"): 1 / M3_PER_BARREL,
     ("$/gal", "$/bbl"): GALLONS_PER_BARREL,
     ("¢/gal", "$/bbl"): GALLONS_PER_BARREL / 100,
-    ("mb", "Mm³"): M3_PER_BARREL,  # thousand barrels → thousand m³
+    # Oil volumes: kb = thousand barrels (EIA "MBBL"), mb = million barrels (IEA/OPEC convention).
+    ("kb", "mb"): 1e-3,
+    ("kb/d", "mb/d"): 1e-3,
+    ("kb", "thousand m³"): M3_PER_BARREL,
     ("GWh", "TWh"): 1e-3,
     ("kWh/d", "GWh/d"): 1e-6,
 }
