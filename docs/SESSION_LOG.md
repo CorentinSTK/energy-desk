@@ -308,3 +308,65 @@ Known limitations: spot-spread P&L is a signal measure, not an executable strate
 replays the past; futures-based presets wait for history.
 
 Next: merge #34 and the pages PR; then M8 (polish and launch).
+
+## 2026-10-31 — M8 Polish and launch (live); M0–M8 complete
+
+Built and merged:
+- PR #36, `/methodology`:
+  - sections on principles, seasonal norms, derived series, freshness, home, forecasts, the Lab,
+    data licensing and known limits;
+  - the sources table is generated from the catalogue.
+- PR #37, monitoring without third-party accounts:
+  - `onRequestError` writes JSON logs;
+  - `worker.health` runs every 6 h in `health.yml` with the read-only role (ADR 0011);
+  - first run green: 10 pages and the data, "All good".
+- PR #38, Lighthouse and mobile:
+  - ECharts is loaded on demand and charts are created near the viewport;
+  - static market headers;
+  - lighter `/data` markup;
+  - accessibility fixes;
+  - a "no horizontal scroll at 390 px" e2e test on every page.
+- PR #39, `/about` and the rest:
+  - `/about` with a one-line author note (agreed with the user);
+  - a site-wide footer, `sitemap.xml`, and an Open Graph image generated at build time;
+  - fixed `/methodology` scrolling sideways on phones (found by the new mobile test);
+  - e2e tests are now robust to the hidden page copy that Next keeps (React Activity).
+- PR #35, Lab pages: merged after resolving a session-log conflict.
+- PR #40, cache keys: lookback windows (`daysAgo`) are rounded to midnight UTC.
+  - The timestamp to the millisecond was a cache key, so every request missed `use cache`.
+  - Locally, with a warm cache, market pages now stream in about 70 ms instead of 1.4–2.9 s.
+- This PR: README with screenshots (`npm run screenshots`), spec statuses, this entry.
+
+Measured on the live site (Lighthouse mobile, 31 Oct):
+- accessibility is 100 on all 12 pages;
+- performance:
+  - 98–100: home, gas, power, products, forecasts, Lab, methodology, about;
+  - 94: Lab backtest;
+  - 90–95: crude;
+  - 86–89: LNG;
+  - 88–89: `/data`.
+- Playwright on the live site: 126/126.
+
+Known limitations:
+- On Vercel, the dynamic part of every page still streams after about 3 s. This includes
+  `/methodology`, which locally takes 72 ms with a warm cache. So it is not the database and not
+  only the cache key. Likely suspects are function cold starts or a `use cache` store that is not
+  reused across invocations. Diagnosing it needs the Vercel function logs.
+- `/data` renders 318 rows in one table; pagination or grouping would lift it above 90.
+- The ENTSO-E token is still pending; ENTSO-E is to be added as a cross-check source when it arrives.
+
+Recap M0–M8 (28–31 Oct 2026):
+- M0: scaffold, design system, CI and deploy.
+- M1: data platform and `/data`.
+- M2: European gas and LNG.
+- M3: power in DE, FR and GB.
+- M4: crude and products.
+- M5: home map and Today in energy.
+- M6: forecast registry with three models and walk-forward backtests.
+- M7: Lab with the backtester and the simulator.
+- M8: methodology, about, monitoring, performance, mobile and README.
+
+Next:
+- diagnose the 3 s stream on Vercel;
+- the ENTSO-E cross-check;
+- then phase F (freight) or P2, as the user prefers.
