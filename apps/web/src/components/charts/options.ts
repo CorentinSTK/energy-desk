@@ -426,3 +426,47 @@ export function curveOption(t: ChartTokens, s: CurveInput): EChartsCoreOption {
     })),
   };
 }
+
+export interface HistogramInput {
+  /** Bin labels on the x-axis, low to high. */
+  labels: string[];
+  counts: number[];
+  /** Bins whose values are losses (drawn in the second palette colour). */
+  negative: boolean[];
+  /** What a count means, for the tooltip, e.g. "paths". */
+  countLabel: string;
+}
+
+/** Vertical bars of a distribution (e.g. simulated P&L), losses and gains in two colours. */
+export function histogramOption(t: ChartTokens, s: HistogramInput): EChartsCoreOption {
+  const base = baseOption(t);
+  return {
+    ...base,
+    tooltip: {
+      ...(base.tooltip as object),
+      axisPointer: { type: "shadow" },
+      formatter: (params: TooltipParam[]) => {
+        const i = params[0].dataIndex;
+        return `${s.labels[i]}${tooltipRow("", s.countLabel, formatNumber(s.counts[i], 0))}`;
+      },
+    },
+    grid: { left: 8, right: 16, top: 16, bottom: 8, containLabel: true },
+    xAxis: {
+      type: "category",
+      data: s.labels,
+      ...categoryLikeAxis(t),
+      axisLabel: { color: t.axis, hideOverlap: true },
+    },
+    yAxis: { ...valueAxis(t, 0), scale: false },
+    series: [
+      {
+        type: "bar",
+        barCategoryGap: "10%",
+        data: s.counts.map((count, i) => ({
+          value: count,
+          itemStyle: { color: s.negative[i] ? t.series[1] : t.series[0] },
+        })),
+      },
+    ],
+  };
+}

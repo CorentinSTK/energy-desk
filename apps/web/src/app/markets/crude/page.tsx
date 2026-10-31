@@ -4,6 +4,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 
 import { ErrorState } from "@/components/error-state";
+import { RelatedPresets } from "@/components/lab/related-presets";
 import { RelatedForecasts } from "@/components/forecasts/related-forecasts";
 import { ChartCardSkeleton, KpiCardSkeleton } from "@/components/loading-skeletons";
 import { MarketHeader, MarketKpis } from "@/components/market-header";
@@ -104,6 +105,7 @@ async function CrudeContent({
         .
       </p>
       <RelatedForecasts ids={["us_crude_stocks"]} />
+      <RelatedPresets ids={["brent_wti_mean_reversion", "brent_trend"]} />
     </>
   );
 }
