@@ -270,3 +270,17 @@ months (weekly) before a verdict; no load value on 25 Oct 2026 (clock change) in
 
 Next: merge #28, #29, the engine and pages PRs; DB migrate (007, 008); backfill `open_meteo` and `odre`;
 run the Forecast workflow in backtest mode for all models, then let the daily issue run; then M7 (Lab).
+
+### 2026-10-31 — M6 in production
+
+- Migrations 007 and 008 applied; `open_meteo` and `odre` (from 2015, after the "ND" fix in #32)
+  backfilled: ODRÉ 27,330 rows added, status ok.
+- Production backtests (2019 → 31 Oct 2026):
+  - EU storage: MAE 1.84 pts, +77% vs naive / +19% vs seasonal, coverage 89%.
+  - France demand: 19,985 forecasts, MAE 1.75 GW, +49% / +56%, coverage 91%.
+  - US crude: −3.6% / −0.9%, so it does not beat its baselines over this period. The site says so.
+- First live issue: the 22:30 UTC schedule started 3 h late (01:44 UTC on 31 Oct). Its 8 forecasts were
+  stamped 21:00 UTC on 31 Oct, a fixed time, instead of the real time. They also have no interval,
+  because they were issued before the production backtest existed. Live forecasts are immutable, so
+  these rows stay as stored and this note records the anomaly. Fixed for later issues: the real time of
+  issue is stored, there is one issue per model and day, and `--date` is only allowed for dry runs.
