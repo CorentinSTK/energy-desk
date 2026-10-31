@@ -3,7 +3,8 @@ import { describe, expect, it } from "vitest";
 import { runBacktest } from "./backtest";
 import { alignSignal, computeIndicator, isoWeek, type Points } from "./indicators";
 import { parseRule, PRESETS, type Rule, ruleQuery } from "./rules";
-import { mulberry32, regimeRuns, simulate } from "./simulate";
+import { histogram, mulberry32, regimeRuns, simulate } from "./simulate";
+import { dailyVolatility, parseSimulator, settingsProblem } from "./simulator-params";
 
 const day = (i: number) =>
   new Date(Date.UTC(2024, 0, 1) + i * 864e5).toISOString().slice(0, 19) + "Z";
@@ -148,6 +149,13 @@ describe("rules from the URL", () => {
     expect(rule.entry.threshold).toBe(2);
   });
 
+  it("reads emptied form fields as no limit", () => {
+    const { rule } = parseRule({ preset: "de_fr_mean_reversion", hold: "", stop: "", target: "3" });
+    expect(rule.maxHold).toBeNull();
+    expect(rule.stop).toBeNull();
+    expect(rule.target).toBe(3);
+  });
+
   it("round-trips through the URL", () => {
     for (const preset of PRESETS) {
       expect(parseRule({ preset: preset.id, ...ruleQuery(preset.rule) }).rule).toEqual(preset.rule);
@@ -194,5 +202,35 @@ describe("simulator", () => {
     expect(regimeRuns(series, "crisis")).toEqual([[2]]);
     expect(regimeRuns(series, "calm")).toEqual([[3]]);
     expect(regimeRuns(series, "full")).toEqual([[1, 2, 1, 3]]);
+  });
+});
+
+describe("histogram", () => {
+  it("puts every value in one bin, the maximum in the last", () => {
+    const bins = histogram([0, 1, 2, 3, 4], 2);
+    expect(bins.map((b) => b.count)).toEqual([2, 3]);
+    expect(histogram([], 5)).toEqual([]);
+    expect(histogram([1, 1], 5)).toEqual([{ from: 1, to: 1, count: 2 }]);
+  });
+});
+
+describe("simulator settings", () => {
+  const history: Points = pts(Array.from({ length: 300 }, (_, i) => 100 + (i % 2 ? 1 : -1)));
+
+  it("derive defaults from the series and bound the inputs", () => {
+    const s = parseSimulator({ series: "not_a_series", horizon: "9999", seed: "-5" }, history);
+    expect(s.series).toBe("brent");
+    expect(s.horizon).toBe(250);
+    expect(s.seed).toBe(1);
+    expect(s.entry).toBe(history.at(-1)![1]);
+    expect(s.stop).toBeLessThan(s.entry);
+    expect(s.target).toBeGreaterThan(s.entry);
+    expect(dailyVolatility(history)).toBeGreaterThan(1.9);
+  });
+
+  it("refuse a stop on the wrong side", () => {
+    const s = parseSimulator({ side: "short", entry: "100", stop: "95", target: "90" }, history);
+    expect(settingsProblem(s)).toMatch(/stop must be above/);
+    expect(settingsProblem({ ...s, stop: 105 })).toBeNull();
   });
 });

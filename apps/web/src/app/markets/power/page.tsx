@@ -4,6 +4,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 
 import { ErrorState } from "@/components/error-state";
+import { RelatedPresets } from "@/components/lab/related-presets";
 import { RelatedForecasts } from "@/components/forecasts/related-forecasts";
 import { ChartCardSkeleton, KpiCardSkeleton } from "@/components/loading-skeletons";
 import { MarketHeader } from "@/components/market-header";
@@ -114,6 +115,7 @@ async function PowerContent({
         .
       </p>
       <RelatedForecasts ids={["fr_power_demand"]} />
+      <RelatedPresets ids={["de_fr_mean_reversion"]} />
     </>
   );
 }

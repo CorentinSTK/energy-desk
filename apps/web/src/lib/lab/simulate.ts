@@ -170,3 +170,25 @@ export function simulate(input: SimulationInput): SimulationResult | null {
     meanDaysInTrade: filled ? daysInTrade / filled : null,
   };
 }
+
+export interface Bin {
+  from: number;
+  to: number;
+  count: number;
+}
+
+/** Equal-width bins between the minimum and maximum (the last bin includes the maximum). */
+export function histogram(values: number[], bins: number): Bin[] {
+  if (values.length === 0) return [];
+  const low = Math.min(...values);
+  const high = Math.max(...values);
+  if (low === high) return [{ from: low, to: high, count: values.length }];
+  const width = (high - low) / bins;
+  const out: Bin[] = Array.from({ length: bins }, (_, i) => ({
+    from: low + i * width,
+    to: low + (i + 1) * width,
+    count: 0,
+  }));
+  for (const v of values) out[Math.min(bins - 1, Math.floor((v - low) / width))].count += 1;
+  return out;
+}

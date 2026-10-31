@@ -338,8 +338,10 @@ Phase 2: day-ahead power price for 1–2 European zones (ENTSO-E) with load and 
 
 Two tools, both with honest outputs (costs, drawdowns, sample size, caveats).
 
-1. **Rule backtester** on spreads and outright series. Presets: WTI M1–M2 spread vs Cushing stocks,
-   Brent–WTI, 3-2-1 crack, Henry Hub vs storage surprise, TTF vs EU storage. The user sets entry/exit
+1. **Rule backtester** on spreads and outright series. Presets (M7, ADR 0010): DE–FR day-ahead spread
+   mean reversion, Brent–WTI mean reversion, 3-2-1 crack at a three-year low, diesel crack vs US
+   distillate stocks against their seasonal norm, Brent above its 100-day average. The spec's original
+   futures-spread and US gas storage presets wait for data with a usable history. The user sets entry/exit
    rules from a small, safe rule grammar (thresholds, z-scores, percentiles, crossovers) — never
    arbitrary code. Output: equity curve, drawdown, trade list, hit rate, average win/loss, Sharpe,
    turnover, cost sensitivity, and an explicit "in-sample" warning.
@@ -411,8 +413,8 @@ European markets come first: they are the focus and the most differentiating par
 - Final project name and domain. ("Energy Desk" is the working name.)
 - Which other European power zones in phase 2.
 - Whether to add a French/English language toggle.
-- **Lab presets (§7):** replace US-centric presets with European ones (TTF M1–M2 vs EU storage,
-  DE–FR day-ahead spread, Brent M1–M2) — to confirm at M7.
+- ~~Lab presets (§7)~~ — decided at M7 (2026-10-31): presets on long official series only (see §7 and
+  ADR 0010); TTF and Brent M1–M2 presets once the stored futures history is long enough.
 - Carbon (EUA): no confirmed free, redistributable daily price yet (needed for clean spark/dark spreads).
 - Freight & shipping: when to schedule the phase, and which free sources hold up (freight rates and bunker
   prices are licensed; chokepoint transits and computed voyage times are the likely free core).

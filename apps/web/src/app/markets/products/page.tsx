@@ -4,6 +4,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 
 import { ErrorState } from "@/components/error-state";
+import { RelatedPresets } from "@/components/lab/related-presets";
 import { ChartCardSkeleton, KpiCardSkeleton } from "@/components/loading-skeletons";
 import { MarketHeader } from "@/components/market-header";
 import { TabNav } from "@/components/markets/tab-nav";
@@ -104,6 +105,7 @@ async function ProductsContent({
         </Link>
         .
       </p>
+      <RelatedPresets ids={["crack_low_percentile", "diesel_crack_low_stocks"]} />
     </>
   );
 }
