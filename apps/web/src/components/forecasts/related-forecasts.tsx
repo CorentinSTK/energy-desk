@@ -12,10 +12,7 @@ export function RelatedForecasts({ ids }: { ids: string[] }) {
       {models.map((m, i) => (
         <span key={m.id}>
           {i > 0 && ", "}
-          <Link
-            href={`/forecasts/${m.id}`}
-            className="text-primary underline-offset-2 hover:underline"
-          >
+          <Link href={`/forecasts/${m.id}`} className="text-primary underline underline-offset-2">
             {m.name}
           </Link>
         </span>

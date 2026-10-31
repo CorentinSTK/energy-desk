@@ -38,7 +38,10 @@ test.describe("style guide", () => {
       for (const section of ["Colour tokens", "Primitives", "Chart cards", "States and notices"]) {
         await expect(panel.getByRole("heading", { name: section })).toBeVisible();
       }
-      // 4 rendered charts per theme (time series, seasonal, unofficial, stale)
+      // 4 rendered charts per theme (time series, seasonal, unofficial, stale). Charts are created
+      // only as they near the viewport, so bring each one into view first.
+      const charts = panel.locator('[role="img"][aria-label]:not(svg)');
+      for (const chart of await charts.all()) await chart.scrollIntoViewIfNeeded();
       await expect(panel.locator("canvas")).toHaveCount(4);
       await expect(
         panel.getByText("Yahoo Finance — unofficial, delayed, research only"),

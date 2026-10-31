@@ -190,7 +190,7 @@ async function ForecastDetail({
             </ul>
             <p className="text-text-secondary">
               Target data:{" "}
-              <Link href={model.href} className="text-primary underline-offset-2 hover:underline">
+              <Link href={model.href} className="text-primary underline underline-offset-2">
                 market page
               </Link>
               .
