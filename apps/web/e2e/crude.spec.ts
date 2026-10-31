@@ -9,7 +9,9 @@ test.describe("crude oil page", () => {
     page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
     await page.goto("/markets/crude");
     await expect(page.getByRole("heading", { level: 1, name: "Crude oil" })).toBeVisible();
-    await expect(page.getByText("Brent spot (EIA)", { exact: true })).toBeVisible();
+    await expect(
+      page.getByText("Brent spot (EIA)", { exact: true }).filter({ visible: true }),
+    ).toBeVisible();
     await expect(page.getByRole("heading", { name: "Where are crude prices?" })).toBeVisible();
     await expect(page.getByRole("navigation", { name: "Sections" })).toBeVisible();
     // Unofficial futures data always carries its label.

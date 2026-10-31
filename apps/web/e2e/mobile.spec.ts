@@ -17,6 +17,8 @@ const PAGES = [
   "/lab/backtest",
   "/lab/simulator",
   "/data",
+  "/methodology",
+  "/about",
 ];
 
 test.use({ viewport: { width: 390, height: 844 } });

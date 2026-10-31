@@ -11,6 +11,7 @@ import { DECLARED_GAPS } from "@/lib/data/declared-gaps";
 import { attempt } from "@/lib/data/page-context";
 import { formatNumber } from "@/lib/format";
 import { summariseSources } from "@/lib/methodology/sources";
+import { ADR_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Methodology — Energy Desk",
@@ -41,11 +42,9 @@ function Section({ id, title, children }: { id: string; title: string; children:
   );
 }
 
-const ADR_URL = "https://github.com/CorentinSTK/energy-desk/tree/main/docs/adr";
-
 function Adr({ n, title }: { n: string; title: string }) {
   return (
-    <a href={ADR_URL} className="text-primary underline-offset-2 hover:underline" title={title}>
+    <a href={ADR_URL} className="text-primary underline underline-offset-2" title={title}>
       ADR {n}
     </a>
   );
@@ -53,7 +52,7 @@ function Adr({ n, title }: { n: string; title: string }) {
 
 export default function MethodologyPage() {
   return (
-    <main className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-8 lg:grid-cols-[220px_minmax(0,1fr)]">
+    <main className="mx-auto grid w-full max-w-7xl grid-cols-[minmax(0,1fr)] gap-8 px-4 py-8 lg:grid-cols-[220px_minmax(0,1fr)]">
       <nav aria-label="On this page" className="lg:sticky lg:top-20 lg:self-start">
         <p className="mb-2 text-xs font-medium text-muted-foreground">On this page</p>
         <ol className="space-y-1 text-sm">
@@ -113,7 +112,7 @@ export default function MethodologyPage() {
             <li>
               Every chart states its source, unit, last date and how it is computed (the ⓘ button);
               every series is listed with its licence and freshness in the{" "}
-              <Link href="/data" className="text-primary underline-offset-2 hover:underline">
+              <Link href="/data" className="text-primary underline underline-offset-2">
                 data catalogue
               </Link>
               .
@@ -251,7 +250,7 @@ export default function MethodologyPage() {
             </li>
           </ul>
           <p>
-            <Link href="/forecasts" className="text-primary underline-offset-2 hover:underline">
+            <Link href="/forecasts" className="text-primary underline underline-offset-2">
               See the forecasts and their scores
             </Link>
             .
