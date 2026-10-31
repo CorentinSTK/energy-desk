@@ -14,6 +14,8 @@ const PAGES = [
   "/markets/products",
   "/forecasts",
   "/data",
+  "/methodology",
+  "/about",
 ];
 
 test.use({ viewport: { width: 390, height: 844 } });
