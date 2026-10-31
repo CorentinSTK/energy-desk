@@ -60,6 +60,7 @@ npm run build
 npm run test:e2e     # Playwright smoke tests (dev server locally; CI=1 uses the production build)
 PLAYWRIGHT_BASE_URL=https://energy-desk-two.vercel.app npm run test:e2e   # against the live site
 npm run format       # apply Prettier
+npm run screenshots  # README screenshots from the live site (BASE_URL=… to override)
 
 # worker (Python 3.12, pinned by uv)
 cd worker

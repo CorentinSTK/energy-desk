@@ -16,6 +16,7 @@
     "format": "npm run format -w web",
     "format:check": "npm run format:check -w web",
     "test": "npm run test -w web",
-    "test:e2e": "npm run test:e2e -w web"
+    "test:e2e": "npm run test:e2e -w web",
+    "screenshots": "npm run screenshots -w web"
   }
 }
