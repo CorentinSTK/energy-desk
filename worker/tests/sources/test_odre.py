@@ -35,6 +35,26 @@ def test_strings_are_numbers_and_nulls_are_missing() -> None:
     assert points["nucleaire"] == []
 
 
+def test_not_available_is_missing_for_that_column_only() -> None:
+    # 2015 consolidated data has one "ND" in the Germany-Belgium exchange.
+    points = parse_rows(
+        [
+            {
+                "date_heure": "2015-03-01T07:00:00+00:00",
+                "ech_comm_allemagne_belgique": "ND",
+                "consommation": 70000,
+            }
+        ]
+    )
+    assert points["ech_comm_allemagne_belgique"] == []
+    assert points["consommation"] == [(datetime(2015, 3, 1, 7, tzinfo=UTC), 70000.0)]
+
+
+def test_unexpected_text_fails_loudly() -> None:
+    with pytest.raises(ValueError, match="nucleaire at 2015-03-01"):
+        parse_rows([{"date_heure": "2015-03-01T07:00:00+00:00", "nucleaire": "n/a"}])
+
+
 def test_consolidated_value_wins_for_the_same_half_hour() -> None:
     ts = datetime(2026, 8, 31, 21, 30, tzinfo=UTC)
     consolidated = [(ts, 100.0)]
