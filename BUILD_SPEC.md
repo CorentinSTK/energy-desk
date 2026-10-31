@@ -377,6 +377,8 @@ Two tools, both with honest outputs (costs, drawdowns, sample size, caveats).
   in `ingest_runs` and surfaced on `/data`, never silently dropped.
 - Unit tests for every transform (seasonal norms, spreads, unit conversions, curve rebuild, scoring).
 - Playwright smoke tests for the main pages; Lighthouse ≥ 90 on performance and accessibility.
+  Measured at M8 (mobile, live site): accessibility 100 on every page; performance ≥ 90 except `/data`
+  (one 318-row table) and LNG (data streamed late on the host; see the session log).
 - CI on every push: lint, typecheck, tests, build. Main branch always deployable.
 - No secrets in the repo: `.env.example` documents every variable; real values live in Vercel and
   GitHub Actions secrets.
@@ -388,9 +390,9 @@ Two tools, both with honest outputs (costs, drawdowns, sample size, caveats).
 
 Work one milestone at a time. Each ends with a demo to the user and their approval before the next.
 
-| # | Milestone | Done when |
-|---|---|---|
 European markets come first: they are the focus and the most differentiating part for European desks.
+
+Status (31 Oct 2026): M0–M8 done and live. F and P2 not started.
 
 | # | Milestone | Done when |
 |---|---|---|
