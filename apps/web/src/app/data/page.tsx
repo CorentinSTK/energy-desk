@@ -163,14 +163,13 @@ function Summary({
   return (
     <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
       {stats.map((stat) => (
-        <Card key={stat.label} className="py-4">
-          <CardContent>
-            <dt className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-              {stat.label}
-            </dt>
-            <dd className="text-2xl font-semibold">{formatNumber(stat.value, 0)}</dd>
-          </CardContent>
-        </Card>
+        // A single div may group a dt and its dd inside a dl; a card's nested wrappers may not.
+        <div key={stat.label} className="rounded-xl border bg-card px-6 py-4 text-card-foreground">
+          <dt className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+            {stat.label}
+          </dt>
+          <dd className="text-2xl font-semibold">{formatNumber(stat.value, 0)}</dd>
+        </div>
       ))}
     </dl>
   );

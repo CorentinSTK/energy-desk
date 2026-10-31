@@ -14,7 +14,7 @@ export function RelatedForecasts({ ids }: { ids: string[] }) {
           {i > 0 && ", "}
           <Link
             href={`/forecasts/${m.id}`}
-            className="text-primary underline-offset-2 hover:underline"
+            className="text-primary underline underline-offset-2"
           >
             {m.name}
           </Link>

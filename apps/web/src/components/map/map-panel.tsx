@@ -128,7 +128,7 @@ export function MapPanel({
       {selection.note && <p className="text-sm text-text-secondary">{selection.note}</p>}
       <Link
         href={selection.href}
-        className="inline-block text-sm text-primary underline-offset-2 hover:underline"
+        className="inline-block text-sm text-primary underline underline-offset-2"
       >
         Open the market page →
       </Link>

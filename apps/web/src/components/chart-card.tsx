@@ -60,7 +60,7 @@ export function ChartCard({
         {demo && <DemoBanner className="mb-1 w-fit" />}
         <div className="flex items-start justify-between gap-2">
           {/* Chart titles are headings, so screen-reader users can jump from chart to chart. */}
-          <CardTitle role="heading" aria-level={3} className="text-base leading-snug">
+          <CardTitle role="heading" aria-level={2} className="text-base leading-snug">
             {title}
           </CardTitle>
           <MethodPopover subject={title}>{method}</MethodPopover>

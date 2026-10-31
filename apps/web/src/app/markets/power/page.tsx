@@ -107,7 +107,7 @@ async function PowerContent({
         Every series on this page, with its licence and freshness, is listed in the{" "}
         <Link
           href="/data?commodity=power"
-          className="text-primary underline-offset-2 hover:underline"
+          className="text-primary underline underline-offset-2"
         >
           data catalogue
         </Link>

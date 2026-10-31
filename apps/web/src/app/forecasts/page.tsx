@@ -182,7 +182,7 @@ function ModelCard({
         )}
         <Link
           href={`/forecasts/${model.id}`}
-          className="inline-block text-sm text-primary underline-offset-2 hover:underline"
+          className="inline-block text-sm text-primary underline underline-offset-2"
         >
           Method, history and every horizon →
         </Link>

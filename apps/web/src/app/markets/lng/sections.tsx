@@ -277,7 +277,7 @@ export function LngPricesTab() {
       />
       <p className="text-sm text-muted-foreground">
         See{" "}
-        <Link href="/markets/gas" className="text-primary underline-offset-2 hover:underline">
+        <Link href="/markets/gas" className="text-primary underline underline-offset-2">
           European natural gas
         </Link>{" "}
         for the official monthly benchmark and TTF curve indicators.

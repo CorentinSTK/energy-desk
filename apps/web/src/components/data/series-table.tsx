@@ -57,7 +57,7 @@ export function SeriesTable({ series, now, extractionDates }: SeriesTableProps) 
                 {s.licenseUrl ? (
                   <a
                     href={s.licenseUrl}
-                    className="text-primary underline-offset-2 hover:underline"
+                    className="text-primary underline underline-offset-2"
                     rel="noreferrer"
                     target="_blank"
                   >
