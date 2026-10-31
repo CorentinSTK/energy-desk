@@ -15,7 +15,7 @@ export const DECLARED_GAPS: DeclaredGap[] = [
   {
     title: "Daily European hub gas prices (TTF, NBP, THE, PEG)",
     reason:
-      "Exchange prices (ICE Endex, EEX) are licensed and not redistributed. Europe is covered by the IMF monthly benchmark; daily TTF indicators from unofficial futures data come in a later milestone.",
+      "Exchange prices (ICE Endex, EEX) are licensed and not redistributed. Europe is covered by the IMF monthly benchmark, and daily TTF indicators come from the unofficial NYMEX Dutch TTF contract (front month and M1–M2 spread, labelled). NBP, THE and PEG have no free daily price.",
     markets: ["gas"],
   },
   {

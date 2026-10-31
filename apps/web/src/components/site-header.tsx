@@ -10,6 +10,7 @@ const NAV = [
   { href: "/markets/products", label: "Products" },
   { href: "/forecasts", label: "Forecasts" },
   { href: "/data", label: "Data" },
+  { href: "/methodology", label: "Methodology" },
 ];
 
 /** Site-wide header: name, market links, theme toggle. The style guide is deliberately not linked. */
