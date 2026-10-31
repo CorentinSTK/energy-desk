@@ -70,15 +70,7 @@ export default function AboutPage() {
 
       <Section title="Author">
         <p>
-          I am {AUTHOR.name}, a Master in Finance student (financial markets) at ESSEC Business
-          School in Singapore, with an engineering degree in information systems from EPF. I am
-          currently an intern in commodity trading and quantitative analytics at Tradition in
-          Singapore, alongside crude oil and gasoline desks. Before that, I researched commodity
-          futures strategies at the ESSEC Hedge Fund, a student fund.
-        </p>
-        <p>
-          I built Energy Desk to learn the fundamentals behind energy prices, and to practise
-          handling market data the way a trading desk needs it.
+          Built by {AUTHOR.name}, Master in Finance student at ESSEC Business School, Singapore.
         </p>
         <ul className="flex flex-wrap gap-x-6 gap-y-2">
           <li>
