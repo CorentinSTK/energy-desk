@@ -34,6 +34,9 @@ test.describe("lab", () => {
   test("the simulator validates the stop side", async ({ page }) => {
     await page.goto("/lab/simulator?series=brent&side=long&entry=100&stop=110&target=120");
     // The CI fixture database has no Brent history: the page then says the simulator is unavailable.
+    await expect(
+      page.getByText(/the stop must be below the entry|The simulator is unavailable/),
+    ).toBeVisible();
     const unavailable = page.getByText("The simulator is unavailable");
     test.skip(await unavailable.isVisible(), "no Brent history in this database");
     await expect(page.getByText("the stop must be below the entry")).toBeVisible();
