@@ -3,6 +3,8 @@
  * read from the URL. Nothing a visitor types is ever evaluated as code.
  */
 
+import type { Commodity } from "@/lib/commodities";
+
 import { INDICATOR_KINDS, type Indicator, type IndicatorKind } from "./indicators";
 
 export interface Instrument {
@@ -17,6 +19,7 @@ export interface Instrument {
   lagDays: number;
   /** Can be the traded series (a price or a spread); otherwise signal only. */
   tradable: boolean;
+  commodity: Commodity;
 }
 
 /** Official series with long histories (BUILD_SPEC §7, ADR 0010). */
@@ -30,6 +33,7 @@ export const INSTRUMENTS: Instrument[] = [
     frequency: "daily",
     lagDays: 0,
     tradable: true,
+    commodity: "crude",
   },
   {
     id: "wti",
@@ -40,6 +44,7 @@ export const INSTRUMENTS: Instrument[] = [
     frequency: "daily",
     lagDays: 0,
     tradable: true,
+    commodity: "crude",
   },
   {
     id: "brent_wti",
@@ -50,6 +55,7 @@ export const INSTRUMENTS: Instrument[] = [
     frequency: "daily",
     lagDays: 0,
     tradable: true,
+    commodity: "crude",
   },
   {
     id: "crack_321",
@@ -60,6 +66,7 @@ export const INSTRUMENTS: Instrument[] = [
     frequency: "daily",
     lagDays: 0,
     tradable: true,
+    commodity: "products",
   },
   {
     id: "crack_diesel",
@@ -70,6 +77,7 @@ export const INSTRUMENTS: Instrument[] = [
     frequency: "daily",
     lagDays: 0,
     tradable: true,
+    commodity: "products",
   },
   {
     id: "de_fr",
@@ -80,6 +88,7 @@ export const INSTRUMENTS: Instrument[] = [
     frequency: "daily",
     lagDays: 0,
     tradable: true,
+    commodity: "power",
   },
   {
     id: "de_base",
@@ -90,6 +99,7 @@ export const INSTRUMENTS: Instrument[] = [
     frequency: "daily",
     lagDays: 0,
     tradable: true,
+    commodity: "power",
   },
   {
     id: "henry_hub",
@@ -100,6 +110,7 @@ export const INSTRUMENTS: Instrument[] = [
     frequency: "daily",
     lagDays: 0,
     tradable: true,
+    commodity: "natgas",
   },
   {
     id: "us_distillate_stocks",
@@ -110,6 +121,7 @@ export const INSTRUMENTS: Instrument[] = [
     frequency: "weekly",
     lagDays: 5,
     tradable: false,
+    commodity: "products",
   },
   {
     id: "us_crude_stocks",
@@ -120,6 +132,7 @@ export const INSTRUMENTS: Instrument[] = [
     frequency: "weekly",
     lagDays: 5,
     tradable: false,
+    commodity: "crude",
   },
   {
     id: "eu_storage",
@@ -130,6 +143,7 @@ export const INSTRUMENTS: Instrument[] = [
     frequency: "daily",
     lagDays: 1,
     tradable: false,
+    commodity: "natgas",
   },
 ];
 
@@ -304,9 +318,11 @@ export function parseRule(params: Params): { preset: Preset | undefined; rule: R
   const exitOp = choice<Comparator>(params, "xop", ["gt", "lt"]);
   const exitThreshold = number(params, "xth", LIMITS.threshold);
   const noExit = params.xop === "none";
-  const hold = params.hold === "none" ? null : number(params, "hold", LIMITS.maxHold);
-  const stop = params.stop === "none" ? null : number(params, "stop", LIMITS.stop);
-  const target = params.target === "none" ? null : number(params, "target", LIMITS.stop);
+  // "none" or an emptied form field means no limit; an absent parameter keeps the preset's value.
+  const isNone = (key: string) => params[key] === "none" || params[key] === "";
+  const hold = isNone("hold") ? null : number(params, "hold", LIMITS.maxHold);
+  const stop = isNone("stop") ? null : number(params, "stop", LIMITS.stop);
+  const target = isNone("target") ? null : number(params, "target", LIMITS.stop);
   return {
     preset: preset ?? (Object.keys(params).length === 0 ? PRESETS[0] : undefined),
     rule: {

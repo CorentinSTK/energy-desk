@@ -284,3 +284,27 @@ run the Forecast workflow in backtest mode for all models, then let the daily is
   because they were issued before the production backtest existed. Live forecasts are immutable, so
   these rows stay as stored and this note records the anomaly. Fixed for later issues: the real time of
   issue is stored, there is one issue per model and day, and `--date` is only allowed for dry runs.
+
+## 2026-10-31 — M7 Lab v1 (built; awaiting merge)
+
+Built (PRs #34 engine, pages):
+- `lib/lab`: indicators without look-ahead (weekly stocks used from publication), a safe typed rule
+  grammar read from the URL, backtests executed the day after the signal with costs, stops, targets and a
+  tuning/control split, and a seeded block-bootstrap simulator by regime with exits at observed levels.
+- `/lab`, `/lab/backtest` (5 presets, GET form, stats per period, cost sensitivity, P&L and drawdown,
+  signal and thresholds, trades) and `/lab/simulator` (series links, levels form, fill and
+  target/stop probabilities, P&L histogram). Footers name the official sources. Lab links on the power,
+  crude and products pages.
+- Brent–WTI preset, locally: 62 trades in 26.8 years. Control period (after Sep 2018): +54.9 $/bbl,
+  75% hit rate, Sharpe 0.43, max drawdown −22.6 $/bbl. The first trade was checked by hand against the
+  database.
+
+Found and fixed: the simulator first exited stops and targets at the exact level (it now uses the
+observed level, including gaps); an emptied form field brought back the preset's limit; changing the
+series in the simulator form would have kept another series' levels (series are now links); chart
+footers said "Energy Desk Lab" instead of the official source and its attribution.
+
+Known limitations: spot-spread P&L is a signal measure, not an executable strategy; the bootstrap
+replays the past; futures-based presets wait for history.
+
+Next: merge #34 and the pages PR; then M8 (polish and launch).

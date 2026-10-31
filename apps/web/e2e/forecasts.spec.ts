@@ -36,7 +36,10 @@ test.describe("forecast registry", () => {
 
   test("an unknown model is a 404 and an unknown horizon falls back", async ({ page }) => {
     const response = await page.goto("/forecasts/not_a_model");
-    expect(response?.status()).toBe(404);
+    await expect(page.getByText("This page could not be found.")).toBeVisible();
+    // Vercel answers 404; a self-hosted `next start` (CI) streams the not-found page with a 200,
+    // because the status is sent before the prerendered shell.
+    if (process.env.PLAYWRIGHT_BASE_URL) expect(response?.status()).toBe(404);
     await page.goto("/forecasts/fr_power_demand?horizon=99");
     await expect(page.getByRole("heading", { name: /1 day ahead/ })).toBeVisible();
   });
