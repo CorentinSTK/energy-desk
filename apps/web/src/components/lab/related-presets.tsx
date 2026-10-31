@@ -14,7 +14,7 @@ export function RelatedPresets({ ids }: { ids: string[] }) {
           {i > 0 && ", "}
           <Link
             href={`/lab/backtest?preset=${p.id}`}
-            className="text-primary underline-offset-2 hover:underline"
+            className="text-primary underline underline-offset-2"
           >
             {p.label}
           </Link>

@@ -13,6 +13,9 @@ const PAGES = [
   "/markets/crude",
   "/markets/products",
   "/forecasts",
+  "/lab",
+  "/lab/backtest",
+  "/lab/simulator",
   "/data",
 ];
 
