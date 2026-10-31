@@ -1,6 +1,12 @@
-import { expect, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
 
 // Runs against a database: the CI fixture (few series) or a local one with full history.
+
+// Next can keep a hidden copy of the page in the DOM (React Activity, after a navigation or while it
+// streams), so a field can match twice; only the visible one counts.
+const field = (page: Page, label: string, exact = false) =>
+  page.getByLabel(label, { exact }).filter({ visible: true });
+const winField = (page: Page) => field(page, "N", true);
 
 test.describe("lab", () => {
   test("the overview links both tools and every preset", async ({ page }) => {
@@ -17,18 +23,18 @@ test.describe("lab", () => {
     page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
     await page.goto("/lab/backtest?preset=brent_wti_mean_reversion");
     await expect(page.getByRole("heading", { level: 1, name: "Rule backtester" })).toBeVisible();
-    await expect(page.getByLabel("N", { exact: true })).toHaveValue("120");
-    await page.getByLabel("N", { exact: true }).fill("60");
+    await expect(winField(page)).toHaveValue("120");
+    await winField(page).fill("60");
     await page.getByRole("button", { name: "Run backtest" }).click();
     await expect(page).toHaveURL(/win=60/);
-    await expect(page.getByLabel("N", { exact: true })).toHaveValue("60");
+    await expect(winField(page)).toHaveValue("60");
     expect(errors).toEqual([]);
   });
 
   test("invalid parameters fall back to safe defaults", async ({ page }) => {
     await page.goto("/lab/backtest?traded=%3Cscript%3E&win=999999&ind=eval");
-    await expect(page.getByLabel("N", { exact: true })).toHaveValue("60");
-    await expect(page.getByLabel("Traded series")).toHaveValue("de_fr");
+    await expect(winField(page)).toHaveValue("60");
+    await expect(field(page, "Traded series")).toHaveValue("de_fr");
   });
 
   test("the simulator validates the stop side", async ({ page }) => {
