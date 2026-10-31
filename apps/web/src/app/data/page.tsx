@@ -115,7 +115,8 @@ async function Catalog({ searchParams }: { searchParams: PageProps<"/data">["sea
           </Card>
         )}
       </section>
-      <section className="space-y-3">
+      {/* Below the fold and long (hundreds of runs): laid out only when scrolled near. */}
+      <section className="space-y-3 [contain-intrinsic-size:auto_1200px] [content-visibility:auto]">
         <h2 className="text-lg font-semibold">Ingestion runs, last 30 days</h2>
         {visibleRuns.length > 0 ? (
           <RunsTable runs={visibleRuns} />
