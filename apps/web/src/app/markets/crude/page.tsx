@@ -7,7 +7,7 @@ import { ErrorState } from "@/components/error-state";
 import { RelatedPresets } from "@/components/lab/related-presets";
 import { RelatedForecasts } from "@/components/forecasts/related-forecasts";
 import { ChartCardSkeleton, KpiCardSkeleton } from "@/components/loading-skeletons";
-import { MarketHeader } from "@/components/market-header";
+import { MarketHeader, MarketKpis } from "@/components/market-header";
 import { TabNav } from "@/components/markets/tab-nav";
 import { Card, CardContent } from "@/components/ui/card";
 import { isDatabaseConfigured } from "@/lib/data/db";
@@ -35,6 +35,11 @@ const KPI_COUNT = 4;
 export default function CrudePage({ searchParams }: PageProps<"/markets/crude">) {
   return (
     <main className="mx-auto w-full max-w-7xl space-y-6 px-4 py-8">
+      <MarketHeader
+        commodity="crude"
+        title="Crude oil"
+        description="Where are crude prices, is the curve tight, and are stocks high or low for the season?"
+      />
       <Suspense fallback={<CrudeSkeleton />}>
         <CrudeContent searchParams={searchParams} />
       </Suspense>
@@ -71,11 +76,7 @@ async function CrudeContent({
 
   return (
     <>
-      <MarketHeader
-        commodity="crude"
-        title="Crude oil"
-        description="Where are crude prices, is the curve tight, and are stocks high or low for the season?"
-      >
+      <MarketKpis>
         <Suspense
           fallback={Array.from({ length: KPI_COUNT }, (_, i) => (
             <KpiCardSkeleton key={i} />
@@ -83,7 +84,7 @@ async function CrudeContent({
         >
           <CrudeKpis ctx={ctx} />
         </Suspense>
-      </MarketHeader>
+      </MarketKpis>
 
       <Suspense fallback={<ChartCardSkeleton height={320} />}>
         <MainPriceChart ctx={ctx} />
@@ -98,10 +99,7 @@ async function CrudeContent({
 
       <p className="text-sm text-muted-foreground">
         Every series on this page, with its licence and freshness, is listed in the{" "}
-        <Link
-          href="/data?commodity=crude"
-          className="text-primary underline-offset-2 hover:underline"
-        >
+        <Link href="/data?commodity=crude" className="text-primary underline underline-offset-2">
           data catalogue
         </Link>
         .

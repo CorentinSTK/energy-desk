@@ -1,35 +1,48 @@
 "use client";
 
 /**
- * Thin wrapper over echarts/core (ADR 0002). Registers only the modules we use, so the bundle stays
- * small, and rebuilds the option from design tokens whenever the theme changes.
+ * Thin wrapper over echarts/core (ADR 0002). Registers only the modules we use, and rebuilds the
+ * option from design tokens whenever the theme changes.
+ *
+ * Performance (M8, Lighthouse): ECharts is loaded with a dynamic import, in its own chunk, the first
+ * time a chart is about to be seen, and each chart is created only when its container comes near the
+ * viewport. Pages without charts no longer download it, and charts below the fold no longer block the
+ * main thread at load. The container keeps its height, so nothing shifts when a chart appears.
  */
 
-import { BarChart, LineChart } from "echarts/charts";
-import {
-  DataZoomComponent,
-  GridComponent,
-  LegendComponent,
-  MarkLineComponent,
-  TooltipComponent,
-} from "echarts/components";
-import { type ECharts, type EChartsCoreOption, init, use as registerModules } from "echarts/core";
-import { CanvasRenderer } from "echarts/renderers";
+import type { ECharts, EChartsCoreOption } from "echarts/core";
 import { useTheme } from "next-themes";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { type ChartTokens, readChartTokens } from "./chart-tokens";
 
-registerModules([
-  LineChart,
-  BarChart,
-  GridComponent,
-  TooltipComponent,
-  LegendComponent,
-  DataZoomComponent,
-  MarkLineComponent,
-  CanvasRenderer,
-]);
+/** Start creating a chart this far before it scrolls into view. */
+const VISIBILITY_MARGIN = "200px";
+
+let echartsModule: Promise<typeof import("echarts/core")> | null = null;
+
+/** ECharts with our modules registered, loaded once for the whole page. */
+function loadEcharts(): Promise<typeof import("echarts/core")> {
+  echartsModule ??= Promise.all([
+    import("echarts/core"),
+    import("echarts/charts"),
+    import("echarts/components"),
+    import("echarts/renderers"),
+  ]).then(([core, charts, components, renderers]) => {
+    core.use([
+      charts.LineChart,
+      charts.BarChart,
+      components.GridComponent,
+      components.TooltipComponent,
+      components.LegendComponent,
+      components.DataZoomComponent,
+      components.MarkLineComponent,
+      renderers.CanvasRenderer,
+    ]);
+    return core;
+  });
+  return echartsModule;
+}
 
 interface EChartProps {
   /** Builds the option from resolved tokens. Must be stable (useCallback) to avoid needless redraws. */
@@ -41,29 +54,42 @@ interface EChartProps {
 
 export function EChart({ build, height, ariaLabel }: EChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const chartRef = useRef<ECharts | null>(null);
+  const [chart, setChart] = useState<ECharts | null>(null);
   const { resolvedTheme } = useTheme();
 
   useEffect(() => {
     const element = containerRef.current;
     if (!element) return;
-    const chart = init(element, null, { renderer: "canvas" });
-    chartRef.current = chart;
-    const observer = new ResizeObserver(() => chart.resize());
-    observer.observe(element);
+    let instance: ECharts | null = null;
+    let cancelled = false;
+    const resize = new ResizeObserver(() => instance?.resize());
+    const visible = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        visible.disconnect();
+        void loadEcharts().then((echarts) => {
+          if (cancelled) return;
+          instance = echarts.init(element, null, { renderer: "canvas" });
+          resize.observe(element);
+          setChart(instance);
+        });
+      },
+      { rootMargin: VISIBILITY_MARGIN },
+    );
+    visible.observe(element);
     return () => {
-      observer.disconnect();
-      chart.dispose();
-      chartRef.current = null;
+      cancelled = true;
+      visible.disconnect();
+      resize.disconnect();
+      instance?.dispose();
     };
   }, []);
 
   useEffect(() => {
     const element = containerRef.current;
-    const chart = chartRef.current;
     if (!element || !chart) return;
     chart.setOption(build(readChartTokens(element)), { notMerge: true });
-  }, [build, resolvedTheme]);
+  }, [build, chart, resolvedTheme]);
 
   return (
     <div

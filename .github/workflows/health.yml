@@ -1,0 +1,32 @@
+name: Health
+
+# Every 6 hours: the live site's key pages answer without an error state, no series is stale by the
+# site's own rule, the latest ingestion run of each source did not fail, and a live forecast was
+# issued in the last 36 hours. A failure fails this workflow, and GitHub emails the owner (ADR 0011).
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: worker
+    env:
+      # The site's read-only role (web_reader): the check can read the web views, nothing else.
+      DATABASE_URL_READONLY: ${{ secrets.DATABASE_URL_READONLY }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.2 # no floating major tag is published
+        with:
+          enable-cache: true
+          cache-dependency-glob: worker/uv.lock
+      - run: uv sync --locked --no-dev
+      - name: Check the live site and its data
+        run: uv run --no-dev python -m worker.health

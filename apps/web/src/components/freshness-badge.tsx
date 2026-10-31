@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/format";
 import type { FreshnessStatus } from "@/lib/freshness";
 import { cn } from "@/lib/utils";
@@ -22,9 +21,17 @@ export function FreshnessBadge({ status, lastObservation, className }: Freshness
     lastObservation === undefined ? undefined : `Last observation ${formatDate(lastObservation)}`;
 
   return (
-    <Badge variant="outline" className={cn("gap-1.5 font-normal", className)} title={title}>
+    // Same look as the outline Badge, without its interactive-state classes: this badge is never
+    // focusable, and the /data table renders it on every row (page weight, Lighthouse).
+    <span
+      className={cn(
+        "inline-flex h-5 items-center gap-1.5 rounded-4xl border px-2 text-xs whitespace-nowrap",
+        className,
+      )}
+      title={title}
+    >
       <span className={cn("size-1.5 rounded-full", dot)} aria-hidden />
       {label}
-    </Badge>
+    </span>
   );
 }

@@ -9,9 +9,6 @@ import psycopg
 from worker.forecast.core import Forecast, Model
 from worker.forecast.data import History, Series
 
-# Live forecasts are stamped at this UTC time of the issue date (the workflow runs in the evening).
-ISSUE_TIME = time(21, 0)
-
 
 def load_history(conn: psycopg.Connection, codes: Iterable[str]) -> History:
     series: dict[str, Series] = {}
@@ -42,12 +39,16 @@ def _timestamp(day: date, at: time = time(0, 0)) -> datetime:
     return datetime.combine(day, at, tzinfo=UTC)
 
 
-def _row(model: Model, kind: str, f: Forecast) -> tuple[object, ...]:
+def _row(
+    model: Model, kind: str, f: Forecast, issued_at: datetime | None = None
+) -> tuple[object, ...]:
+    """Backtests are stamped at midnight of their simulated issue date; live forecasts at the real
+    time they were made (`issued_at`)."""
     return (
         model.id,
         model.version,
         kind,
-        _timestamp(f.issued, ISSUE_TIME if kind == "live" else time(0, 0)),
+        issued_at or _timestamp(f.issued),
         _timestamp(f.target),
         f.horizon,
         f.point,
@@ -77,11 +78,24 @@ def replace_backtest(conn: psycopg.Connection, model: Model, forecasts: Sequence
     return len(forecasts)
 
 
-def insert_live(conn: psycopg.Connection, model: Model, forecasts: Sequence[Forecast]) -> int:
-    """Store live forecasts. A forecast already issued for the same day and target is kept as is."""
+def issued_live_on(conn: psycopg.Connection, model: Model, day: date) -> bool:
+    """Whether this model version already issued live forecasts on `day` (UTC)."""
+    row = conn.execute(
+        "select exists (select 1 from market.forecasts where model_id = %s and version = %s"
+        " and kind = 'live' and (issued_at at time zone 'UTC')::date = %s)",
+        (model.id, model.version, day),
+    ).fetchone()
+    return bool(row and row[0])
+
+
+def insert_live(
+    conn: psycopg.Connection, model: Model, forecasts: Sequence[Forecast], issued_at: datetime
+) -> int:
+    """Store live forecasts with the real time they were made. One issue per model and day: the
+    caller checks `issued_live_on` first, so a re-run never adds a second set."""
     with conn.cursor() as cur:
-        cur.executemany(INSERT, [_row(model, "live", f) for f in forecasts])
-        return cur.rowcount if cur.rowcount >= 0 else len(forecasts)
+        cur.executemany(INSERT, [_row(model, "live", f, issued_at) for f in forecasts])
+        return len(forecasts)
 
 
 def backtest_errors(conn: psycopg.Connection, model: Model) -> dict[int, list[float]]:

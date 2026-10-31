@@ -70,9 +70,16 @@ def run(args: argparse.Namespace) -> int:
                 if not args.dry_run:
                     registry.replace_backtest(conn, model, forecasts)
             else:
-                forecasts = issue(conn, model, history, args.date or datetime.now(UTC).date())
+                now = datetime.now(UTC)
+                issued = args.date or now.date()
+                if registry.issued_live_on(conn, model, issued):
+                    print(
+                        f"[{model.id} v{model.version}] already issued on {issued}: nothing added"
+                    )
+                    continue
+                forecasts = issue(conn, model, history, issued)
                 if not args.dry_run:
-                    registry.insert_live(conn, model, forecasts)
+                    registry.insert_live(conn, model, forecasts, issued_at=now)
             print_forecasts(model, forecasts)
             if not args.dry_run:
                 conn.commit()
@@ -116,11 +123,19 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--issue", action="store_true", help="issue live forecasts")
     mode.add_argument("--backtest", action="store_true", help="run the walk-forward backtest")
-    parser.add_argument("--date", type=date.fromisoformat, help="issue date (default: today, UTC)")
+    parser.add_argument(
+        "--date",
+        type=date.fromisoformat,
+        help="issue date for --dry-run tests (default: today, UTC)",
+    )
     parser.add_argument("--since", type=date.fromisoformat, default=date(2019, 1, 1))
     parser.add_argument("--until", type=date.fromisoformat)
     parser.add_argument("--dry-run", action="store_true", help="print, write nothing")
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    if args.date and args.issue and not args.dry_run:
+        # A live forecast is made now: storing one for another date would misdate the registry.
+        parser.error("--date with --issue is only allowed with --dry-run")
+    return args
 
 
 if __name__ == "__main__":

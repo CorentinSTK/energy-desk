@@ -11,6 +11,7 @@ const NAV = [
   { href: "/forecasts", label: "Forecasts" },
   { href: "/lab", label: "Lab" },
   { href: "/data", label: "Data" },
+  { href: "/methodology", label: "Methodology" },
 ];
 
 /** Site-wide header: name, market links, theme toggle. The style guide is deliberately not linked. */
