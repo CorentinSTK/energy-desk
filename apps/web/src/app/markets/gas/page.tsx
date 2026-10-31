@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import { ErrorState } from "@/components/error-state";
 import { RelatedForecasts } from "@/components/forecasts/related-forecasts";
 import { ChartCardSkeleton, KpiCardSkeleton } from "@/components/loading-skeletons";
-import { MarketHeader } from "@/components/market-header";
+import { MarketHeader, MarketKpis } from "@/components/market-header";
 import { TabNav } from "@/components/markets/tab-nav";
 import { Card, CardContent } from "@/components/ui/card";
 import { isDatabaseConfigured } from "@/lib/data/db";
@@ -35,6 +35,11 @@ const KPI_COUNT = 4;
 export default function GasPage({ searchParams }: PageProps<"/markets/gas">) {
   return (
     <main className="mx-auto w-full max-w-7xl space-y-6 px-4 py-8">
+      <MarketHeader
+        commodity="natgas"
+        title="European natural gas"
+        description="Are EU gas stocks tight for the season, where is gas flowing in, and what does the prompt curve say?"
+      />
       <Suspense fallback={<GasSkeleton />}>
         <GasContent searchParams={searchParams} />
       </Suspense>
@@ -72,11 +77,7 @@ async function GasContent({
 
   return (
     <>
-      <MarketHeader
-        commodity="natgas"
-        title="European natural gas"
-        description="Are EU gas stocks tight for the season, where is gas flowing in, and what does the prompt curve say?"
-      >
+      <MarketKpis>
         <Suspense
           fallback={Array.from({ length: KPI_COUNT }, (_, i) => (
             <KpiCardSkeleton key={i} />
@@ -84,7 +85,7 @@ async function GasContent({
         >
           <GasKpis ctx={ctx} />
         </Suspense>
-      </MarketHeader>
+      </MarketKpis>
 
       <Suspense fallback={<ChartCardSkeleton height={320} />}>
         <MainStorageChart ctx={ctx} />
@@ -99,10 +100,7 @@ async function GasContent({
 
       <p className="text-sm text-muted-foreground">
         Every series on this page, with its licence and freshness, is listed in the{" "}
-        <Link
-          href="/data?commodity=natgas"
-          className="text-primary underline underline-offset-2"
-        >
+        <Link href="/data?commodity=natgas" className="text-primary underline underline-offset-2">
           data catalogue
         </Link>
         .

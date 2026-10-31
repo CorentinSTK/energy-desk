@@ -5,7 +5,7 @@ import { Suspense } from "react";
 
 import { ErrorState } from "@/components/error-state";
 import { ChartCardSkeleton, KpiCardSkeleton } from "@/components/loading-skeletons";
-import { MarketHeader } from "@/components/market-header";
+import { MarketHeader, MarketKpis } from "@/components/market-header";
 import { TabNav } from "@/components/markets/tab-nav";
 import { Card, CardContent } from "@/components/ui/card";
 import { isDatabaseConfigured } from "@/lib/data/db";
@@ -32,6 +32,11 @@ const KPI_COUNT = 3;
 export default function LngPage({ searchParams }: PageProps<"/markets/lng">) {
   return (
     <main className="mx-auto w-full max-w-7xl space-y-6 px-4 py-8">
+      <MarketHeader
+        commodity="lng"
+        title="European LNG"
+        description="Is Europe regasifying more or less LNG than usual, and how full are the terminal tanks?"
+      />
       <Suspense fallback={<LngSkeleton />}>
         <LngContent searchParams={searchParams} />
       </Suspense>
@@ -68,11 +73,7 @@ async function LngContent({
 
   return (
     <>
-      <MarketHeader
-        commodity="lng"
-        title="European LNG"
-        description="Is Europe regasifying more or less LNG than usual, and how full are the terminal tanks?"
-      >
+      <MarketKpis>
         <Suspense
           fallback={Array.from({ length: KPI_COUNT }, (_, i) => (
             <KpiCardSkeleton key={i} />
@@ -80,7 +81,7 @@ async function LngContent({
         >
           <LngKpis ctx={ctx} />
         </Suspense>
-      </MarketHeader>
+      </MarketKpis>
 
       <Suspense key={area} fallback={<ChartCardSkeleton height={320} />}>
         <MainSendOutChart ctx={ctx} area={area} />
@@ -95,10 +96,7 @@ async function LngContent({
 
       <p className="text-sm text-muted-foreground">
         Every series on this page, with its licence and freshness, is listed in the{" "}
-        <Link
-          href="/data?commodity=lng"
-          className="text-primary underline underline-offset-2"
-        >
+        <Link href="/data?commodity=lng" className="text-primary underline underline-offset-2">
           data catalogue
         </Link>
         .
