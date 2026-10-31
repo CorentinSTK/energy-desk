@@ -42,9 +42,17 @@ export async function attempt<T>(label: string, query: Promise<T>): Promise<T | 
   }
 }
 
-/** ISO timestamp `days` before `now`, for query start dates. */
+/**
+ * Start of a lookback window: midnight UTC, `days` days before `now`, as an ISO timestamp.
+ *
+ * Rounded to the day on purpose. The result is an argument of cached queries (`use cache`), so it
+ * is part of their cache key: a timestamp to the millisecond would make every request a cache miss
+ * and send every chart back to the database. The window may start up to a day earlier than
+ * `now − days`; it only bounds what is fetched and drawn.
+ */
 export function daysAgo(now: Date, days: number): string {
-  return new Date(now.getTime() - days * 24 * 60 * 60 * 1000).toISOString();
+  const day = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  return new Date(day - days * 24 * 60 * 60 * 1000).toISOString();
 }
 
 /** Catalogue entries for these codes, in order, skipping unknown codes. */
