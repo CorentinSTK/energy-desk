@@ -15,7 +15,9 @@ test.describe("crude oil page", () => {
     await expect(page.getByRole("heading", { name: "Where are crude prices?" })).toBeVisible();
     await expect(page.getByRole("navigation", { name: "Sections" })).toBeVisible();
     // Unofficial futures data always carries its label.
-    await expect(page.getByText("Brent front month (NYMEX BZ)", { exact: true })).toBeVisible();
+    await expect(
+      page.getByText("Brent front month (NYMEX BZ)", { exact: true }).filter({ visible: true }),
+    ).toBeVisible();
     expect(errors).toEqual([]);
   });
 
