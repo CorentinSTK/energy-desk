@@ -3,6 +3,7 @@ import "server-only";
 import { extractionDates } from "@/lib/data/attribution";
 import { type CatalogSeries, getRecentRuns, getSeriesCatalog } from "@/lib/data/catalog";
 import { describeDatabaseError } from "@/lib/data/errors";
+import { instanceAgeSeconds, logTiming, timed } from "@/lib/data/timing";
 
 /** What every market page needs besides its own series: catalogue, footers, current year. */
 export interface PageContext {
@@ -16,8 +17,12 @@ export interface PageContext {
 
 /** Catalogue and runs for footers and freshness. Null when the database is unreachable. */
 export async function loadContext(now: Date, page: string): Promise<PageContext | null> {
+  logTiming("instance_age", { page, seconds: instanceAgeSeconds() });
   try {
-    const [catalog, runs] = await Promise.all([getSeriesCatalog(), getRecentRuns()]);
+    const [catalog, runs] = await timed(
+      `${page} context`,
+      Promise.all([getSeriesCatalog(), getRecentRuns()]),
+    );
     const year = now.getUTCFullYear();
     return {
       series: new Map(catalog.map((s) => [s.code, s])),
@@ -35,7 +40,7 @@ export async function loadContext(now: Date, page: string): Promise<PageContext 
 /** Run a query; log and return null on failure so one card fails, not the page. */
 export async function attempt<T>(label: string, query: Promise<T>): Promise<T | null> {
   try {
-    return await query;
+    return await timed(label, query);
   } catch (error) {
     console.error(`[data] ${label} failed: ${describeDatabaseError(error)}`);
     return null;
