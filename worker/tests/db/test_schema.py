@@ -5,6 +5,8 @@ from datetime import UTC, datetime, timedelta
 import psycopg
 import pytest
 
+from worker.store import refresh_coverage
+
 SERIES = {
     "code": "test.daily",
     "name": "Test daily series",
@@ -70,6 +72,7 @@ def test_catalog_reports_coverage_and_gaps(conn: psycopg.Connection) -> None:
     series_id = insert_series(conn)
     # Days 0-4, an Easter-sized jump (5 days: not a gap), then a 10-day hole (a gap).
     insert_observations(conn, series_id, [0, 1, 2, 3, 4, 9, 19, 20])
+    refresh_coverage(conn)
     row = conn.execute(
         "select observation_count, gap_count, largest_interval_days, last_observation"
         " from web.series_catalog where code = %s",
@@ -98,6 +101,7 @@ def test_intraday_gaps_of_a_few_periods_are_reported(
             "insert into market.observations (series_id, ts, value) values (%s, %s, 50)",
             [(series_id, start + step * i) for i in steps],
         )
+    refresh_coverage(conn)
     row = conn.execute(
         "select gap_count from web.series_catalog where code = %s", (f"test.{frequency}",)
     ).fetchone()
@@ -108,6 +112,7 @@ def test_series_threshold_overrides_the_frequency_default(conn: psycopg.Connecti
     # A calendar-day series (power): one missing day is a gap, where business-day series allow 5.
     series_id = insert_series(conn, code="test.every_day", gap_threshold_days=1)
     insert_observations(conn, series_id, [0, 1, 2, 4, 5])
+    refresh_coverage(conn)
     row = conn.execute(
         "select gap_count from web.series_catalog where code = 'test.every_day'"
     ).fetchone()
@@ -116,11 +121,60 @@ def test_series_threshold_overrides_the_frequency_default(conn: psycopg.Connecti
 
 def test_catalog_lists_series_without_observations(conn: psycopg.Connection) -> None:
     insert_series(conn, code="test.empty")
+    refresh_coverage(conn)
     row = conn.execute(
         "select observation_count, last_observation from web.series_catalog"
         " where code = 'test.empty'"
     ).fetchone()
     assert row == (0, None)
+
+
+# The catalogue's figures as 004 computed them on every read, kept here as the reference for 009.
+LIVE_COVERAGE = """
+with intervals as (
+    select o.series_id, o.ts,
+           extract(epoch from o.ts - lag(o.ts) over (partition by o.series_id order by o.ts))
+               / 86400.0 as days_since_previous
+    from market.observations o
+)
+select s.code, count(i.ts), min(i.ts), max(i.ts),
+       count(*) filter (where i.days_since_previous
+           > coalesce(s.gap_threshold_days, web.gap_threshold_days(s.frequency))),
+       max(i.days_since_previous)
+from market.series s
+left join intervals i on i.series_id = s.id
+where s.is_active
+group by s.code
+order by s.code
+"""
+
+
+def test_precomputed_coverage_matches_the_live_calculation(conn: psycopg.Connection) -> None:
+    daily = insert_series(conn)
+    insert_observations(conn, daily, [0, 1, 2, 3, 4, 9, 19, 20])
+    every_day = insert_series(conn, code="test.every_day", gap_threshold_days=1)
+    insert_observations(conn, every_day, [0, 1, 2, 4, 5, 30])
+    weekly = insert_series(conn, code="test.weekly", frequency="weekly")
+    insert_observations(conn, weekly, [0, 7, 14, 35])
+    insert_series(conn, code="test.empty")
+    refresh_coverage(conn)
+
+    catalog = conn.execute(
+        "select code, observation_count, first_observation, last_observation, gap_count,"
+        " largest_interval_days from web.series_catalog order by code"
+    ).fetchall()
+    assert catalog == conn.execute(LIVE_COVERAGE).fetchall()
+
+
+def test_catalog_changes_only_when_coverage_is_refreshed(conn: psycopg.Connection) -> None:
+    series_id = insert_series(conn)
+    insert_observations(conn, series_id, [0, 1])
+    refresh_coverage(conn)
+    insert_observations(conn, series_id, [2])
+    count = "select observation_count from web.series_catalog where code = %s"
+    assert conn.execute(count, (SERIES["code"],)).fetchone() == (2,)
+    refresh_coverage(conn)
+    assert conn.execute(count, (SERIES["code"],)).fetchone() == (3,)
 
 
 def test_web_reader_can_read_views_only(conn: psycopg.Connection) -> None:
