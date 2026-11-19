@@ -299,6 +299,10 @@ complete local delivery days (ADR 0006). Keep raw API payloads out of the databa
 where queries need them. Series published every calendar day set `gap_threshold_days: 1` so a single
 missing day is reported as a gap (migration 004).
 
+The catalogue's coverage figures (observation count, first and last dates, gaps) are precomputed in the
+materialized view `series_coverage`, refreshed by the worker at the end of every ingestion run, so pages
+never scan `observations` to build the catalogue (migration 009, ADR 0012).
+
 `futures_contracts` (Yahoo data) is **not granted to the public read-only role**. The site reads only
 derived views (spreads, curve structure, percentiles, z-scores) built from it (ADR 0003).
 Supabase free projects pause after about a week without activity; the daily ingestion keeps them active.
