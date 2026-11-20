@@ -1,0 +1,303 @@
+# IMF PortWatch — daily transit calls through maritime chokepoints, from AIS vessel signals.
+# Service: Daily_Chokepoints_Data (ArcGIS, owner IMF-portwatch_imf_dataviz), checked live 2026-11-20:
+# one row per chokepoint and day since 2019-01-01, about five days of publication lag; `source_ref`
+# is "<PortWatch chokepoint id>|<field>". A transit spanning several days is counted once.
+# Licence: IMF Copyright and Usage terms (linked from the ArcGIS item and the HDX datasets). Reuse
+# and publication with attribution; commercial use and automated downloading need IMF permission,
+# requested by the owner before production ingestion (ADR 0013).
+# Plausible ranges are generous physical bounds (Malacca, the busiest, sees about 240 ships a day).
+source: portwatch
+licence:
+  name: IMF Copyright and Usage — reuse with attribution; automated access by permission
+  url: https://www.imf.org/en/about/copyright-and-terms
+  attribution: "Source: International Monetary Fund, PortWatch (portwatch.imf.org)."
+licence_checked: 2026-11-20
+series:
+  - code: portwatch.hormuz.transits
+    name: Strait of Hormuz transits, all vessels
+    commodity: freight
+    region: Strait of Hormuz
+    unit: "vessels/d"
+    frequency: daily
+    source_ref: "chokepoint6|n_total"
+    description: "Ships crossing the chokepoint during the day, all vessel types (AIS transit calls)."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 1000
+  - code: portwatch.hormuz.tanker_transits
+    name: Strait of Hormuz tanker transits
+    commodity: freight
+    region: Strait of Hormuz
+    unit: "vessels/d"
+    frequency: daily
+    source_ref: "chokepoint6|n_tanker"
+    description: "Tankers crossing the chokepoint during the day (AIS transit calls)."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 500
+  - code: portwatch.hormuz.tanker_tonnes
+    name: Strait of Hormuz tanker cargo, IMF estimate
+    commodity: freight
+    region: Strait of Hormuz
+    unit: "t/d"
+    frequency: daily
+    source_ref: "chokepoint6|capacity_tanker"
+    description: "Estimated cargo carried by tankers crossing during the day: IMF model of each ship's payload times its deadweight tonnage. A model estimate, not a measured volume."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 30000000
+  - code: portwatch.bab_el_mandeb.transits
+    name: Bab el-Mandeb Strait transits, all vessels
+    commodity: freight
+    region: Bab el-Mandeb Strait
+    unit: "vessels/d"
+    frequency: daily
+    source_ref: "chokepoint4|n_total"
+    description: "Ships crossing the chokepoint during the day, all vessel types (AIS transit calls)."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 1000
+  - code: portwatch.bab_el_mandeb.tanker_transits
+    name: Bab el-Mandeb Strait tanker transits
+    commodity: freight
+    region: Bab el-Mandeb Strait
+    unit: "vessels/d"
+    frequency: daily
+    source_ref: "chokepoint4|n_tanker"
+    description: "Tankers crossing the chokepoint during the day (AIS transit calls)."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 500
+  - code: portwatch.bab_el_mandeb.tanker_tonnes
+    name: Bab el-Mandeb Strait tanker cargo, IMF estimate
+    commodity: freight
+    region: Bab el-Mandeb Strait
+    unit: "t/d"
+    frequency: daily
+    source_ref: "chokepoint4|capacity_tanker"
+    description: "Estimated cargo carried by tankers crossing during the day: IMF model of each ship's payload times its deadweight tonnage. A model estimate, not a measured volume."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 30000000
+  - code: portwatch.suez.transits
+    name: Suez Canal transits, all vessels
+    commodity: freight
+    region: Suez Canal
+    unit: "vessels/d"
+    frequency: daily
+    source_ref: "chokepoint1|n_total"
+    description: "Ships crossing the chokepoint during the day, all vessel types (AIS transit calls)."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 1000
+  - code: portwatch.suez.tanker_transits
+    name: Suez Canal tanker transits
+    commodity: freight
+    region: Suez Canal
+    unit: "vessels/d"
+    frequency: daily
+    source_ref: "chokepoint1|n_tanker"
+    description: "Tankers crossing the chokepoint during the day (AIS transit calls)."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 500
+  - code: portwatch.suez.tanker_tonnes
+    name: Suez Canal tanker cargo, IMF estimate
+    commodity: freight
+    region: Suez Canal
+    unit: "t/d"
+    frequency: daily
+    source_ref: "chokepoint1|capacity_tanker"
+    description: "Estimated cargo carried by tankers crossing during the day: IMF model of each ship's payload times its deadweight tonnage. A model estimate, not a measured volume."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 30000000
+  - code: portwatch.cape.transits
+    name: Cape of Good Hope transits, all vessels
+    commodity: freight
+    region: Cape of Good Hope
+    unit: "vessels/d"
+    frequency: daily
+    source_ref: "chokepoint7|n_total"
+    description: "Ships crossing the chokepoint during the day, all vessel types (AIS transit calls)."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 1000
+  - code: portwatch.cape.tanker_transits
+    name: Cape of Good Hope tanker transits
+    commodity: freight
+    region: Cape of Good Hope
+    unit: "vessels/d"
+    frequency: daily
+    source_ref: "chokepoint7|n_tanker"
+    description: "Tankers crossing the chokepoint during the day (AIS transit calls)."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 500
+  - code: portwatch.cape.tanker_tonnes
+    name: Cape of Good Hope tanker cargo, IMF estimate
+    commodity: freight
+    region: Cape of Good Hope
+    unit: "t/d"
+    frequency: daily
+    source_ref: "chokepoint7|capacity_tanker"
+    description: "Estimated cargo carried by tankers crossing during the day: IMF model of each ship's payload times its deadweight tonnage. A model estimate, not a measured volume."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 30000000
+  - code: portwatch.malacca.transits
+    name: Malacca Strait transits, all vessels
+    commodity: freight
+    region: Malacca Strait
+    unit: "vessels/d"
+    frequency: daily
+    source_ref: "chokepoint5|n_total"
+    description: "Ships crossing the chokepoint during the day, all vessel types (AIS transit calls)."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 1000
+  - code: portwatch.malacca.tanker_transits
+    name: Malacca Strait tanker transits
+    commodity: freight
+    region: Malacca Strait
+    unit: "vessels/d"
+    frequency: daily
+    source_ref: "chokepoint5|n_tanker"
+    description: "Tankers crossing the chokepoint during the day (AIS transit calls)."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 500
+  - code: portwatch.malacca.tanker_tonnes
+    name: Malacca Strait tanker cargo, IMF estimate
+    commodity: freight
+    region: Malacca Strait
+    unit: "t/d"
+    frequency: daily
+    source_ref: "chokepoint5|capacity_tanker"
+    description: "Estimated cargo carried by tankers crossing during the day: IMF model of each ship's payload times its deadweight tonnage. A model estimate, not a measured volume."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 30000000
+  - code: portwatch.panama.transits
+    name: Panama Canal transits, all vessels
+    commodity: freight
+    region: Panama Canal
+    unit: "vessels/d"
+    frequency: daily
+    source_ref: "chokepoint2|n_total"
+    description: "Ships crossing the chokepoint during the day, all vessel types (AIS transit calls)."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 1000
+  - code: portwatch.panama.tanker_transits
+    name: Panama Canal tanker transits
+    commodity: freight
+    region: Panama Canal
+    unit: "vessels/d"
+    frequency: daily
+    source_ref: "chokepoint2|n_tanker"
+    description: "Tankers crossing the chokepoint during the day (AIS transit calls)."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 500
+  - code: portwatch.panama.tanker_tonnes
+    name: Panama Canal tanker cargo, IMF estimate
+    commodity: freight
+    region: Panama Canal
+    unit: "t/d"
+    frequency: daily
+    source_ref: "chokepoint2|capacity_tanker"
+    description: "Estimated cargo carried by tankers crossing during the day: IMF model of each ship's payload times its deadweight tonnage. A model estimate, not a measured volume."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 30000000
+  - code: portwatch.bosporus.transits
+    name: Bosporus Strait transits, all vessels
+    commodity: freight
+    region: Bosporus Strait
+    unit: "vessels/d"
+    frequency: daily
+    source_ref: "chokepoint3|n_total"
+    description: "Ships crossing the chokepoint during the day, all vessel types (AIS transit calls)."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 1000
+  - code: portwatch.bosporus.tanker_transits
+    name: Bosporus Strait tanker transits
+    commodity: freight
+    region: Bosporus Strait
+    unit: "vessels/d"
+    frequency: daily
+    source_ref: "chokepoint3|n_tanker"
+    description: "Tankers crossing the chokepoint during the day (AIS transit calls)."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 500
+  - code: portwatch.bosporus.tanker_tonnes
+    name: Bosporus Strait tanker cargo, IMF estimate
+    commodity: freight
+    region: Bosporus Strait
+    unit: "t/d"
+    frequency: daily
+    source_ref: "chokepoint3|capacity_tanker"
+    description: "Estimated cargo carried by tankers crossing during the day: IMF model of each ship's payload times its deadweight tonnage. A model estimate, not a measured volume."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 30000000
+  - code: portwatch.gibraltar.transits
+    name: Gibraltar Strait transits, all vessels
+    commodity: freight
+    region: Gibraltar Strait
+    unit: "vessels/d"
+    frequency: daily
+    source_ref: "chokepoint8|n_total"
+    description: "Ships crossing the chokepoint during the day, all vessel types (AIS transit calls)."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 1000
+  - code: portwatch.gibraltar.tanker_transits
+    name: Gibraltar Strait tanker transits
+    commodity: freight
+    region: Gibraltar Strait
+    unit: "vessels/d"
+    frequency: daily
+    source_ref: "chokepoint8|n_tanker"
+    description: "Tankers crossing the chokepoint during the day (AIS transit calls)."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 500
+  - code: portwatch.gibraltar.tanker_tonnes
+    name: Gibraltar Strait tanker cargo, IMF estimate
+    commodity: freight
+    region: Gibraltar Strait
+    unit: "t/d"
+    frequency: daily
+    source_ref: "chokepoint8|capacity_tanker"
+    description: "Estimated cargo carried by tankers crossing during the day: IMF model of each ship's payload times its deadweight tonnage. A model estimate, not a measured volume."
+    publication_lag_days: 5
+    gap_threshold_days: 1
+    plausible_min: 0
+    plausible_max: 30000000

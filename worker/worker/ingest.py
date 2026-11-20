@@ -26,6 +26,7 @@ from worker.sources.fred import FredSource
 from worker.sources.gie import GieAgsiSource, GieAlsiSource
 from worker.sources.odre import OdreSource
 from worker.sources.open_meteo import OpenMeteoSource
+from worker.sources.portwatch import PortWatchSource
 from worker.sources.smard import SmardSource
 from worker.sources.yahoo import YahooSource
 
@@ -41,6 +42,7 @@ SOURCES: dict[str, Callable[[], Source]] = {
     "gie_alsi": GieAlsiSource,
     "odre": OdreSource,
     "open_meteo": OpenMeteoSource,
+    "portwatch": PortWatchSource,
     "smard": SmardSource,
     "yahoo": YahooSource,
 }
