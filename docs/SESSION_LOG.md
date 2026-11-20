@@ -407,3 +407,27 @@ Still open:
 - The ENTSO-E token.
 - The Vercel CLI re-adds `.env*` to `.gitignore` when it renews its token. Revert it each time,
   because it would hide `.env.example` files.
+
+## 2026-11-20 — Home page snapshots precomputed; /data paginated
+
+- PR #46, migration 010:
+  - the 006 snapshot calculation is moved unchanged to `market.compute_series_snapshot`, which the site
+    cannot execute;
+  - its result for every series is stored in `market.series_snapshots`;
+  - `web.series_snapshot(codes)` reads the stored rows;
+  - the worker's `refresh_summaries` refreshes the coverage, then the snapshots.
+  - Tests: stored rows equal the calculation; rows change only on refresh; `web_reader` can read them
+    but not compute.
+  - Production: DB migrate, then Ingest `gie_agsi` ok at 14:34 UTC.
+  - No `slow_data` line since then. Home page from Singapore: median about 1.05 s over 8 visits
+    (0.5–2.9 s); it was about 2 s after #43 and about 4 s before. The rest is the map render, the
+    network and occasional new instances.
+- PR #47, `/data` pagination:
+  - 50 series per page;
+  - the page number lives in the URL with the filters, and changing a filter goes back to page 1;
+  - a page past the end shows the last page;
+  - `parseFilters` bounds the page (1–1000, digits only);
+  - `paginate` and the links are unit-tested;
+  - e2e: a pagination test, and the catalogue test no longer depends on which page a code lands on.
+  - The HTML goes from 1.66 MB to 430 KB (409 active series, 9 pages). Lighthouse on a local
+    production build: 100/100, 3 runs out of 3 (TBT about 50 ms, from about 400).

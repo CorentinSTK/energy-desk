@@ -381,8 +381,8 @@ Two tools, both with honest outputs (costs, drawdowns, sample size, caveats).
   in `ingest_runs` and surfaced on `/data`, never silently dropped.
 - Unit tests for every transform (seasonal norms, spreads, unit conversions, curve rebuild, scoring).
 - Playwright smoke tests for the main pages; Lighthouse ≥ 90 on performance and accessibility.
-  Measured at M8 (mobile, live site): accessibility 100 on every page; performance ≥ 90 except `/data`
-  (one 318-row table) and LNG (data streamed late on the host; see the session log).
+  Measured at M8 (mobile, live site): accessibility 100 on every page; performance ≥ 90 once the
+  catalogue was precomputed (ADR 0012) and `/data` paginated (50 series per page, 100 locally).
 - CI on every push: lint, typecheck, tests, build. Main branch always deployable.
 - No secrets in the repo: `.env.example` documents every variable; real values live in Vercel and
   GitHub Actions secrets.
