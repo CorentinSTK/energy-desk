@@ -1,0 +1,212 @@
+{
+  "generatedBy": "worker/scripts/gen_routes.py (searoute 1.6.0, Eurostat maritime network)",
+  "knots": {
+    "crude": 13,
+    "lng": 17
+  },
+  "routes": [
+    {
+      "id": "crude_gulf_china",
+      "label": "Gulf crude to China",
+      "cargo": "crude",
+      "origin": {
+        "name": "Jubail",
+        "standsFor": "Ras Tanura (Saudi crude)",
+        "lon": 49.671,
+        "lat": 27.029
+      },
+      "destination": {
+        "name": "Ningbo",
+        "standsFor": null,
+        "lon": 121.553,
+        "lat": 29.867
+      },
+      "variants": [
+        {
+          "via": "Direct",
+          "nm": 5861,
+          "days": 18.8,
+          "passages": [
+            "malacca",
+            "ormuz"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "crude_gulf_europe",
+      "label": "Gulf crude to Europe",
+      "cargo": "crude",
+      "origin": {
+        "name": "Jubail",
+        "standsFor": "Ras Tanura (Saudi crude)",
+        "lon": 49.671,
+        "lat": 27.029
+      },
+      "destination": {
+        "name": "Rotterdam",
+        "standsFor": null,
+        "lon": 4.293,
+        "lat": 51.927
+      },
+      "variants": [
+        {
+          "via": "Suez Canal",
+          "nm": 6537,
+          "days": 21.0,
+          "passages": [
+            "babalmandab",
+            "gibraltar",
+            "ormuz",
+            "suez"
+          ]
+        },
+        {
+          "via": "Cape of Good Hope",
+          "nm": 11320,
+          "days": 36.3,
+          "passages": [
+            "ormuz",
+            "south_africa"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "crude_usgc_europe",
+      "label": "US Gulf crude to Europe",
+      "cargo": "crude",
+      "origin": {
+        "name": "Houston",
+        "standsFor": null,
+        "lon": -95.202,
+        "lat": 29.739
+      },
+      "destination": {
+        "name": "Rotterdam",
+        "standsFor": null,
+        "lon": 4.293,
+        "lat": 51.927
+      },
+      "variants": [
+        {
+          "via": "Direct",
+          "nm": 5056,
+          "days": 16.2,
+          "passages": []
+        }
+      ]
+    },
+    {
+      "id": "lng_qatar_europe",
+      "label": "Qatari LNG to Europe",
+      "cargo": "lng",
+      "origin": {
+        "name": "Doha",
+        "standsFor": "Ras Laffan (Qatari LNG)",
+        "lon": 51.556,
+        "lat": 25.298
+      },
+      "destination": {
+        "name": "Rotterdam",
+        "standsFor": null,
+        "lon": 4.293,
+        "lat": 51.927
+      },
+      "variants": [
+        {
+          "via": "Suez Canal",
+          "nm": 6450,
+          "days": 15.8,
+          "passages": [
+            "babalmandab",
+            "gibraltar",
+            "ormuz",
+            "suez"
+          ]
+        },
+        {
+          "via": "Cape of Good Hope",
+          "nm": 11233,
+          "days": 27.5,
+          "passages": [
+            "ormuz",
+            "south_africa"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lng_us_europe",
+      "label": "US LNG to Europe",
+      "cargo": "lng",
+      "origin": {
+        "name": "Port Arthur",
+        "standsFor": "Sabine Pass (US LNG)",
+        "lon": -93.957,
+        "lat": 29.843
+      },
+      "destination": {
+        "name": "Rotterdam",
+        "standsFor": null,
+        "lon": 4.293,
+        "lat": 51.927
+      },
+      "variants": [
+        {
+          "via": "Direct",
+          "nm": 4995,
+          "days": 12.2,
+          "passages": []
+        }
+      ]
+    },
+    {
+      "id": "lng_us_japan",
+      "label": "US LNG to Japan",
+      "cargo": "lng",
+      "origin": {
+        "name": "Port Arthur",
+        "standsFor": "Sabine Pass (US LNG)",
+        "lon": -93.957,
+        "lat": 29.843
+      },
+      "destination": {
+        "name": "Tokyo",
+        "standsFor": null,
+        "lon": 139.788,
+        "lat": 35.625
+      },
+      "variants": [
+        {
+          "via": "Panama Canal",
+          "nm": 9333,
+          "days": 22.9,
+          "passages": [
+            "panama"
+          ]
+        },
+        {
+          "via": "Suez Canal",
+          "nm": 14651,
+          "days": 35.9,
+          "passages": [
+            "babalmandab",
+            "gibraltar",
+            "malacca",
+            "suez"
+          ]
+        },
+        {
+          "via": "Cape of Good Hope",
+          "nm": 15852,
+          "days": 38.9,
+          "passages": [
+            "south_africa",
+            "sunda"
+          ]
+        }
+      ]
+    }
+  ]
+}

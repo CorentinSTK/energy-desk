@@ -72,6 +72,7 @@ uv run python -m worker.ingest --source gie_agsi --backfill   # full history (wr
 uv run python -m worker.crosscheck power   # SMARD vs Energy-Charts day-ahead prices, last 7 days
 uv run python scripts/gen_ec_wob_catalog.py   # regenerate catalog/ec_wob.yaml (never edit it by hand)
 uv run python -m scripts.gen_gie_catalog      # regenerate the GIE blocks (storage countries, LNG terminals)
+uv run --group routes python -m scripts.gen_routes   # regenerate apps/web/src/lib/freight/routes.json (ADR 0013)
 uv run python -m worker.migrate --status   # then without --status to apply
 # database tests need a disposable Postgres: TEST_DATABASE_URL=postgresql://postgres@localhost:54329/postgres
 ```
