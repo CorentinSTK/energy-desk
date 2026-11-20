@@ -102,13 +102,16 @@ def upsert_observations(
     return max(cursor.rowcount, 0)
 
 
-def refresh_coverage(conn: psycopg.Connection) -> None:
-    """Recompute the catalogue's coverage figures (counts, first and last dates, gaps; ADR 0012).
+def refresh_summaries(conn: psycopg.Connection) -> None:
+    """Recompute what the site reads precomputed (ADR 0012): the catalogue's coverage (counts,
+    first and last dates, gaps), then the latest-value snapshots (move z-score, percentile, seasonal
+    gap), which list the catalogue's series.
 
-    `concurrently` keeps the previous figures readable by the site while the new ones are computed.
+    `concurrently` keeps the previous rows readable by the site while the new ones are computed.
     Call it after observations change, in its own transaction.
     """
     conn.execute("refresh materialized view concurrently market.series_coverage")
+    conn.execute("refresh materialized view concurrently market.series_snapshots")
 
 
 def start_run(conn: psycopg.Connection, source: str) -> int:
