@@ -7,6 +7,7 @@ import pytest
 
 from tests.db.test_schema import insert_series
 from tests.db.test_seasonal import insert_values
+from worker.store import refresh_summaries
 
 COLUMNS = (
     "last_value, prev_value, move_z, move_count, percentile_5y, history_count,"
@@ -15,6 +16,7 @@ COLUMNS = (
 
 
 def snapshot(conn: psycopg.Connection, code: str) -> dict[str, object]:
+    refresh_summaries(conn)  # the site reads stored snapshots (migration 010)
     row = conn.execute(
         f"select {COLUMNS} from web.series_snapshot(%s) where code = %s", ([code], code)
     ).fetchone()
@@ -101,5 +103,38 @@ def test_series_without_observations_are_left_out(conn: psycopg.Connection) -> N
 def test_web_reader_can_call_it(conn: psycopg.Connection) -> None:
     series_id = insert_series(conn, code="test.reader")
     insert_values(conn, series_id, {date(2026, 1, 1): 1.0})
+    refresh_summaries(conn)
     conn.execute("set local role web_reader")
-    assert snapshot(conn, "test.reader")["last_value"] == 1.0
+    row = conn.execute("select last_value from web.series_snapshot(array['test.reader'])")
+    assert row.fetchone() == (1.0,)
+    # The calculation itself is not exposed: the site only reads stored rows.
+    with pytest.raises(psycopg.errors.InsufficientPrivilege):
+        conn.execute("select * from market.compute_series_snapshot(array['test.reader'])")
+
+
+def test_stored_snapshots_match_the_calculation(conn: psycopg.Connection) -> None:
+    for code, step in (("test.daily_a", 1), ("test.daily_b", 3)):
+        series_id = insert_series(conn, code=code)
+        start = date(2024, 1, 1)
+        insert_values(
+            conn, series_id, {start + timedelta(days=i): float((i * step) % 7) for i in range(800)}
+        )
+    refresh_summaries(conn)
+    codes = ["test.daily_a", "test.daily_b"]
+    stored = conn.execute("select * from web.series_snapshot(%s)", (codes,)).fetchall()
+    computed = conn.execute(
+        "select * from market.compute_series_snapshot(%s) order by code", (codes,)
+    ).fetchall()
+    assert len(stored) == 2
+    assert stored == computed
+
+
+def test_snapshots_change_only_when_refreshed(conn: psycopg.Connection) -> None:
+    series_id = insert_series(conn, code="test.later")
+    insert_values(conn, series_id, {date(2026, 1, 1): 1.0})
+    refresh_summaries(conn)
+    insert_values(conn, series_id, {date(2026, 1, 2): 2.0})
+    latest = "select last_value from web.series_snapshot(array['test.later'])"
+    assert conn.execute(latest).fetchone() == (1.0,)
+    refresh_summaries(conn)
+    assert conn.execute(latest).fetchone() == (2.0,)
