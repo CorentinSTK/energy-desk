@@ -92,18 +92,19 @@ CI runs lint, typecheck, unit tests (Vitest and pytest), the build and Playwrigh
 desktop and phone widths, including a "no horizontal scroll" check on every page.
 
 Lighthouse (mobile) on the live site, 31 Oct 2026: accessibility is 100 on every page, and
-performance is 90 to 100 on most pages. Two exceptions:
-- **`/data`** (88–89) renders all 318 series in one table.
-- **LNG** (86–89) waits for its data to stream in. This wait is being investigated (see
-  [Known limits](#known-limits)).
+performance is 90 to 100 on most pages. The exception is **`/data`** (88–89), which renders all 318
+series in one table.
+
+Since 20 Nov 2026 (migration 009, [ADR 0012](docs/adr/0012-precomputed-catalogue-coverage.md)), the
+series catalogue's coverage is precomputed after each ingestion run. Pages used to wait about 3 s for
+their data; they now stream it in under a second.
 
 ## Known limits
 
 - European positioning (ICE COT) and exchange settlements are not shown, for licensing reasons.
 - Live forecast scores need weeks (daily models) to months (weekly) before a verdict.
-- On the live site, the data part of each page currently streams after about 3 s, even though the
-  same build serves it in about 70 ms locally. The cause, specific to the hosting, is being
-  investigated.
+- On Vercel, Next.js's `use cache` rarely hits, so most queries reach the database on each visit.
+  They are fast (tens of ms); the home page still takes about 2 s, mostly for the map's snapshot query.
 
 ## Credits
 

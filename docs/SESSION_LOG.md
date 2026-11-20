@@ -370,3 +370,40 @@ Next:
 - diagnose the 3 s stream on Vercel;
 - the ENTSO-E cross-check;
 - then phase F (freight) or P2, as the user prefers.
+
+## 2026-11-20 — The 3 s data delay on the live site: found and fixed
+
+Finding the cause:
+- PR #42 added timing logs. The Vercel CLI was linked (read-only use) to read them.
+- The function runs in `fra1` and stays warm between visits (instance age 0, 8, then 15 s), so it
+  was not a cold start or the region.
+- Series queries took 2–50 ms. The page context took about 2.5 s on every visit:
+  `web.series_catalog` scanned every observation with a window function on each read (4.9–12 s
+  from Singapore).
+
+Fixed:
+- PR #43, migration 009 and ADR 0012: coverage now lives in the materialized view
+  `market.series_coverage`. The worker refreshes it after each run, and a failed refresh marks the
+  run partial.
+  - A test checks the figures against the old live calculation.
+  - DB migrate and one Ingest (`gie_agsi`, ok) were run in production.
+- PR #44: Next.js 16.4.3 → 16.4.6 for GHSA-mfr8-8qww-v76h and GHSA-vc7v-qv4w-wrv8 (moderate,
+  root-param cache leaks; the site has no root params). The production audit is clean. More e2e
+  text locators are now visible-only, because of the hidden page copy.
+- PR #45: logs are reduced to `slow_data` lines (loads over 500 ms).
+
+Measured live, warm, from Singapore:
+- the page context: 2,500 ms → 29 ms;
+- LNG: 3.1 s → 0.8 s;
+- gas: 3.0 s → 0.7 s;
+- power: 3.2 s → 0.6 s;
+- methodology: 3.2 s → 0.4 s;
+- home: 4.0 s → about 2 s (`web.series_snapshot` about 500 ms, plus the map render).
+
+Still open:
+- `use cache` rarely hits on Vercel. Cheap now, but not understood.
+- Home page snapshot query cost.
+- `/data` Lighthouse 88–89.
+- The ENTSO-E token.
+- The Vercel CLI re-adds `.env*` to `.gitignore` when it renews its token. Revert it each time,
+  because it would hide `.env.example` files.
