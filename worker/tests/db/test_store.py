@@ -76,7 +76,7 @@ def test_full_run_writes_rows_and_logs_the_run(
         conn.execute("delete from market.observations")
         conn.execute("delete from market.ingest_runs")
         conn.execute("delete from market.series")
-        store.refresh_coverage(conn)
+        store.refresh_summaries(conn)
         conn.commit()
 
 
@@ -84,16 +84,16 @@ def test_a_failed_coverage_refresh_marks_the_run_partial(
     database_url: str, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setenv("DATABASE_URL", database_url)
-    real_refresh = store.refresh_coverage
+    real_refresh = store.refresh_summaries
 
     def fail(conn: psycopg.Connection) -> None:
         raise psycopg.errors.LockNotAvailable("lock timeout")
 
-    monkeypatch.setattr(store, "refresh_coverage", fail)
+    monkeypatch.setattr(store, "refresh_summaries", fail)
     summary = runner.run(FakeSource(), dry_run=False, now=NOW)
     assert summary.rows_written == 2  # the data itself is written and committed
     assert summary.status == "partial"
-    assert "catalogue coverage not refreshed" in (summary.error_text() or "")
+    assert "catalogue summaries not refreshed" in (summary.error_text() or "")
 
     with psycopg.connect(database_url) as conn:
         conn.execute("delete from market.observations")
