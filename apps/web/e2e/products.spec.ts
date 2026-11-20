@@ -9,7 +9,9 @@ test.describe("refined products page", () => {
     page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
     await page.goto("/markets/products");
     await expect(page.getByRole("heading", { level: 1, name: "Refined products" })).toBeVisible();
-    await expect(page.getByText("US Gulf Coast 3-2-1 crack", { exact: true })).toBeVisible();
+    await expect(
+      page.getByText("US Gulf Coast 3-2-1 crack", { exact: true }).filter({ visible: true }),
+    ).toBeVisible();
     await expect(page.getByRole("heading", { name: "How profitable is refining?" })).toBeVisible();
     await expect(page.getByRole("navigation", { name: "Sections" })).toBeVisible();
     expect(errors).toEqual([]);

@@ -45,7 +45,9 @@ test.describe("lab", () => {
     ).toBeVisible();
     const unavailable = page.getByText("The simulator is unavailable");
     test.skip(await unavailable.isVisible(), "no Brent history in this database");
-    await expect(page.getByText("the stop must be below the entry")).toBeVisible();
+    await expect(
+      page.getByText("the stop must be below the entry").filter({ visible: true }),
+    ).toBeVisible();
   });
 
   test("has no horizontal page scroll", async ({ page }) => {
