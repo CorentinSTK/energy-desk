@@ -3,8 +3,8 @@
 # one row per chokepoint and day since 2019-01-01, about five days of publication lag; `source_ref`
 # is "<PortWatch chokepoint id>|<field>". A transit spanning several days is counted once.
 # Licence: IMF Copyright and Usage terms (linked from the ArcGIS item and the HDX datasets). Reuse
-# and publication with attribution; commercial use and automated downloading need IMF permission,
-# requested by the owner before production ingestion (ADR 0013).
+# and publication with attribution; commercial use and automated downloading need IMF permission.
+# Requested by the owner; ingested meanwhile by the owner's decision (ADR 0013).
 # Plausible ranges are generous physical bounds (Malacca, the busiest, sees about 240 ships a day).
 source: portwatch
 licence:
