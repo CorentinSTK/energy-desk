@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 
 import { FilterBar } from "@/components/data/filter-bar";
+import { Pagination } from "@/components/data/pagination";
 import { RunsTable } from "@/components/data/runs-table";
 import { SeriesTable } from "@/components/data/series-table";
 import { DataGapNotice } from "@/components/data-gap-notice";
@@ -15,7 +16,7 @@ import { getRecentRuns, getSeriesCatalog } from "@/lib/data/catalog";
 import { isDatabaseConfigured } from "@/lib/data/db";
 import { describeDatabaseError } from "@/lib/data/errors";
 import { DECLARED_GAPS } from "@/lib/data/declared-gaps";
-import { parseFilters } from "@/lib/data/filters";
+import { paginate, parseFilters } from "@/lib/data/filters";
 import { formatNumber } from "@/lib/format";
 import { freshnessStatus, type FreshnessStatus } from "@/lib/freshness";
 
@@ -90,6 +91,7 @@ async function Catalog({ searchParams }: { searchParams: PageProps<"/data">["sea
       (!filters.commodity || s.commodity === filters.commodity) &&
       (!filters.source || s.source === filters.source),
   );
+  const shown = paginate(series, filters.page);
   const visibleRuns = runs.filter((r) => !filters.source || r.source === filters.source);
 
   return (
@@ -103,7 +105,13 @@ async function Catalog({ searchParams }: { searchParams: PageProps<"/data">["sea
         <h2 className="text-lg font-semibold">Series</h2>
         <FilterBar filters={filters} />
         {series.length > 0 ? (
-          <SeriesTable series={series} now={now} extractionDates={extractionDates(runs)} />
+          <>
+            <Pagination filters={filters} page={shown} />
+            <SeriesTable series={shown.items} now={now} extractionDates={extractionDates(runs)} />
+            {shown.pageCount > 1 && (
+              <Pagination filters={filters} page={shown} label="Catalogue pages, bottom" />
+            )}
+          </>
         ) : (
           <Card>
             <CardContent>

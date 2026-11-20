@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 
 const FX_LABEL = "FX";
 
-function Chip({
+export function Chip({
   href,
   active,
   children,

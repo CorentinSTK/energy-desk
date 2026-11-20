@@ -11,7 +11,10 @@ test.describe("data catalogue", () => {
     await expect(page.getByRole("heading", { level: 1, name: "Data catalogue" })).toBeVisible();
     const seriesTable = page.getByRole("table").first();
     await expect(seriesTable.locator("tbody tr").first()).toBeVisible();
-    await expect(seriesTable.getByText("fx.eurusd")).toBeVisible();
+    // Series codes such as fx.eurusd (which page a code lands on depends on the database's size).
+    await expect(seriesTable.locator("tbody tr td:first-child .font-mono").first()).toHaveText(
+      /^[a-z0-9_]+\.[a-z0-9_.]+$/,
+    );
     // Every row shows a freshness badge or a dash.
     await expect(seriesTable.getByText(/^(Fresh|Delayed|Stale)$/).first()).toBeVisible();
     await expect(page.getByRole("heading", { name: "Ingestion runs, last 30 days" })).toBeVisible();
@@ -38,6 +41,20 @@ test.describe("data catalogue", () => {
   test("unknown filter values are ignored", async ({ page }) => {
     await page.goto("/data?commodity=%27%3Bdrop&source=nope");
     await expect(page.getByRole("table").first().locator("tbody tr").first()).toBeVisible();
+  });
+
+  test("is paginated, and a page past the end shows the last one", async ({ page }) => {
+    await page.goto("/data?page=999");
+    await expect(
+      page.getByText(/^Showing \d[\d,]*–\d[\d,]* of \d[\d,]* series$/).first(),
+    ).toBeVisible();
+    await expect(page.getByRole("table").first().locator("tbody tr").first()).toBeVisible();
+    const pages = page.getByRole("navigation", { name: "Catalogue pages", exact: true });
+    if ((await pages.count()) > 0) {
+      // A full database spans several pages: the page links keep the filters and change the URL.
+      await pages.getByRole("link", { name: "Page 2", exact: true }).click();
+      await expect(page).toHaveURL(/\/data\?page=2$/);
+    }
   });
 
   test("has no horizontal page scroll", async ({ page }) => {
