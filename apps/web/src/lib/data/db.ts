@@ -2,8 +2,6 @@ import "server-only";
 
 import postgres from "postgres";
 
-import { logTiming } from "./timing";
-
 /**
  * Read-only database client for server components (ADR 0005).
  *
@@ -33,17 +31,11 @@ let client: postgres.Sql | undefined;
 export function db(): postgres.Sql {
   const url = process.env.DATABASE_URL_READONLY;
   if (!url) throw new DatabaseNotConfiguredError();
-  if (client) return client;
-  logTiming("db_client_created", {});
-  client = postgres(url, {
+  client ??= postgres(url, {
     prepare: false,
     max: 3,
     idle_timeout: 20,
     connect_timeout: 10,
-    // One line per query that reaches the database, i.e. a `use cache` miss (timing.ts).
-    debug: (_connection, query) => {
-      logTiming("db_query", { query: query.replace(/\s+/g, " ").trim().slice(0, 80) });
-    },
   });
   return client;
 }
