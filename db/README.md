@@ -19,9 +19,13 @@ Layout (ADR 0005):
 - `web`: what the site reads through the `web_reader` role: `series_catalog`, `ingest_runs_recent`,
   `observations`, and the function `seasonal_daily(code, year)` (5-year min, max and mean by calendar day).
 - `ops`: migration bookkeeping.
-- `market.series_coverage` (materialized view): per-series observation count, first and last dates and
-  gaps, refreshed by the worker after every ingestion run and read through `web.series_catalog`
-  (ADR 0012). Code that writes observations must call `store.refresh_coverage`.
+- Precomputed summaries (materialized views, ADR 0012), refreshed by the worker after every ingestion
+  run with `store.refresh_summaries`; code that writes observations must call it:
+  - `market.series_coverage`: per-series observation count, first and last dates and gaps, read
+    through `web.series_catalog` (migration 009);
+  - `market.series_snapshots`: latest value, move z-score, 5-year percentile and seasonal gap of every
+    series, read through `web.series_snapshot(codes)` (migration 010). The calculation is
+    `market.compute_series_snapshot`, not readable by the site.
 
 None of these schemas is exposed by the Supabase API, and Row Level Security is enabled on every table.
 

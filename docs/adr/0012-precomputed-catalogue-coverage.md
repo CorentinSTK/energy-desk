@@ -42,3 +42,16 @@ instance slow.
 - Each run spends a few seconds on the refresh, a few times a day.
 - Any new code path that writes observations must call `store.refresh_coverage`. The runner is the
   only one today. The CI fixture, which inserts rows directly, refreshes once at the end.
+
+## Extension (2026-11-20, migration 010)
+
+The home page's `web.series_snapshot(codes)` computed each series' move z-score, 5-year percentile
+and seasonal gap on every call: about 23 ms per series, about 500 ms per home page view. These
+measures also depend only on stored observations, so they follow the same pattern:
+- The 006 calculation is moved, unchanged, to `market.compute_series_snapshot`. It is not executable
+  by the site.
+- `market.series_snapshots` stores its result for every catalogue series.
+- `web.series_snapshot` keeps its signature and reads the stored rows through `web.series_snapshots`.
+- `store.refresh_coverage` became `store.refresh_summaries`. It refreshes the coverage first, then
+  the snapshots, which list the catalogue's series. A run spends about 10 s more on it.
+- A database test checks that the stored rows equal the calculation.
