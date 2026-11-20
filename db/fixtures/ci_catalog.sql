@@ -30,3 +30,7 @@ values
     ('ecb', now() - interval '2 hours', now() - interval '2 hours', 'ok', 30, 0, null),
     ('gie_agsi', now() - interval '1 hour', now() - interval '1 hour', 'partial', 20, 1,
      'CI fixture — rejected rows example');
+
+-- The worker refreshes the catalogue's coverage after each run (ADR 0012); this fixture writes
+-- observations directly, so it refreshes it once.
+refresh materialized view market.series_coverage;

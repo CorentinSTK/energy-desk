@@ -60,6 +60,11 @@ def test_full_run_writes_rows_and_logs_the_run(
         ).fetchone() or (None, None, None)
         assert (status, written) == ("partial", 1)
         assert error and "fx.eurgbp" in error
+        # The run refreshed the catalogue's coverage (ADR 0012).
+        catalog = conn.execute(
+            "select observation_count from web.series_catalog where code = 'fx.eurusd'"
+        ).fetchone()
+        assert catalog == (1,)
 
         # Second run: incremental start = last observation minus the lookback window.
         source = FakeSource()
@@ -71,6 +76,30 @@ def test_full_run_writes_rows_and_logs_the_run(
         conn.execute("delete from market.observations")
         conn.execute("delete from market.ingest_runs")
         conn.execute("delete from market.series")
+        store.refresh_coverage(conn)
+        conn.commit()
+
+
+def test_a_failed_coverage_refresh_marks_the_run_partial(
+    database_url: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("DATABASE_URL", database_url)
+    real_refresh = store.refresh_coverage
+
+    def fail(conn: psycopg.Connection) -> None:
+        raise psycopg.errors.LockNotAvailable("lock timeout")
+
+    monkeypatch.setattr(store, "refresh_coverage", fail)
+    summary = runner.run(FakeSource(), dry_run=False, now=NOW)
+    assert summary.rows_written == 2  # the data itself is written and committed
+    assert summary.status == "partial"
+    assert "catalogue coverage not refreshed" in (summary.error_text() or "")
+
+    with psycopg.connect(database_url) as conn:
+        conn.execute("delete from market.observations")
+        conn.execute("delete from market.ingest_runs")
+        conn.execute("delete from market.series")
+        real_refresh(conn)
         conn.commit()
 
 

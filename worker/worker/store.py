@@ -102,6 +102,15 @@ def upsert_observations(
     return max(cursor.rowcount, 0)
 
 
+def refresh_coverage(conn: psycopg.Connection) -> None:
+    """Recompute the catalogue's coverage figures (counts, first and last dates, gaps; ADR 0012).
+
+    `concurrently` keeps the previous figures readable by the site while the new ones are computed.
+    Call it after observations change, in its own transaction.
+    """
+    conn.execute("refresh materialized view concurrently market.series_coverage")
+
+
 def start_run(conn: psycopg.Connection, source: str) -> int:
     row = conn.execute(
         "insert into market.ingest_runs (source, status) values (%s, 'running') returning id",

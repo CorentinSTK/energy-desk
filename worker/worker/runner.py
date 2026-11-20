@@ -138,6 +138,8 @@ def run(
             conn.rollback()
             summary.status = "failed"
             summary.errors["database"] = f"{type(error).__name__}: {error}"
+        if summary.status != "failed":
+            refresh_coverage(conn, summary)
         store.finish_run(
             conn,
             run_id,
@@ -148,6 +150,18 @@ def run(
         )
         conn.commit()
     return summary
+
+
+def refresh_coverage(conn: psycopg.Connection, summary: RunSummary) -> None:
+    """Update the catalogue's coverage after a write. The data is already committed, so a failure
+    here marks the run partial (the catalogue lags) instead of failed."""
+    try:
+        store.refresh_coverage(conn)
+        conn.commit()
+    except psycopg.Error as error:
+        conn.rollback()
+        summary.status = "partial"
+        summary.errors["coverage"] = f"catalogue coverage not refreshed: {type(error).__name__}"
 
 
 def _flatten(summary: RunSummary) -> list[Observation]:
