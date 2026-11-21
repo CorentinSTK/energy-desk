@@ -4,6 +4,7 @@ import { ChartCard } from "@/components/chart-card";
 import { SeasonalChart } from "@/components/charts/seasonal-chart";
 import { TimeSeriesChart } from "@/components/charts/time-series-chart";
 import { DataGapNotice } from "@/components/data-gap-notice";
+import { FreightLink } from "@/components/freight/freight-link";
 import { KpiCard } from "@/components/kpi-card";
 import { changeOverDays, compareWithSeason, latest, sharePercent } from "@/lib/analytics";
 import { chartInfo } from "@/lib/data/chart-info";
@@ -288,10 +289,13 @@ export function LngPricesTab() {
 
 export function LngFlowsTab() {
   return (
-    <DataGapNotice
-      title="LNG imports by origin are not shown"
-      reason="Cargo-level data (origin, vessel, destination) comes from licensed ship-tracking services. Send-out into the grid is shown under Balance & stocks."
-    />
+    <div className="grid gap-3">
+      <DataGapNotice
+        title="LNG imports by origin are not shown"
+        reason="Cargo-level data (origin, vessel, destination) comes from licensed ship-tracking services. Send-out into the grid is shown under Balance & stocks."
+      />
+      <FreightLink cargo="LNG" />
+    </div>
   );
 }
 

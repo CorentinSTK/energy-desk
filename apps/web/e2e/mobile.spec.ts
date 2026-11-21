@@ -12,6 +12,8 @@ const PAGES = [
   "/markets/power",
   "/markets/crude",
   "/markets/products",
+  "/markets/freight",
+  "/markets/freight?tab=routes",
   "/forecasts",
   "/lab",
   "/lab/backtest",

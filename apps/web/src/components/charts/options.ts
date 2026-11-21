@@ -247,6 +247,8 @@ export interface MultiLineInput {
   decimals: number;
   /** Stack the series as areas. Only for distinct quantities whose sum means something. */
   stacked?: boolean;
+  /** Dated events drawn as labelled vertical lines (e.g. a source's disruption notices). */
+  events?: { date: string; label: string }[];
 }
 
 /** Several series on one axis (same unit), categorical colours, legend on top. */
@@ -283,10 +285,11 @@ export function multiLineOption(t: ChartTokens, s: MultiLineInput): EChartsCoreO
     xAxis: { type: "time", ...categoryLikeAxis(t) },
     yAxis: valueAxis(t, s.decimals),
     dataZoom: [{ type: "inside", throttle: 50 }],
-    series: s.series.map((line) => ({
+    series: s.series.map((line, index) => ({
       name: line.name,
       type: "line",
       data: line.data,
+      ...(index === 0 && s.events?.length && { markLine: eventLines(t, s.events) }),
       showSymbol: false,
       connectNulls: false,
       sampling: "lttb",
@@ -309,6 +312,17 @@ export function multiLineOption(t: ChartTokens, s: MultiLineInput): EChartsCoreO
         },
       }),
     })),
+  };
+}
+
+/** Vertical dashed lines with a short label at the top, one per event date. */
+function eventLines(t: ChartTokens, events: { date: string; label: string }[]) {
+  return {
+    silent: true,
+    symbol: "none",
+    lineStyle: { color: t.textSecondary, type: "dashed", width: 1 },
+    label: { formatter: "{b}", position: "insideEndTop", color: t.textSecondary, fontSize: 11 },
+    data: events.map((e) => ({ name: e.label, xAxis: e.date })),
   };
 }
 

@@ -49,6 +49,7 @@
   --color-lng: var(--c-lng);
   --color-lpg: var(--c-lpg);
   --color-power: var(--c-power);
+  --color-freight: var(--c-freight);
 
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);

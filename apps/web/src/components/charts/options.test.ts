@@ -29,6 +29,7 @@ const tokens: ChartTokens = {
     lng: "#dd0000",
     lpg: "#ee0000",
     power: "#ff0000",
+    freight: "#ff1100",
   },
 };
 
@@ -224,5 +225,21 @@ describe("curveOption", () => {
     expect(series).toHaveLength(2);
     expect(series[1].data[1]).toBeNull();
     expect(series[1].connectNulls).toBe(false);
+  });
+});
+
+describe("multiLineOption events", () => {
+  it("draws each event as a labelled vertical line on the first series only", () => {
+    const option = multiLineOption(tokens, {
+      series: [
+        { name: "A", data: [["2026-03-01T00:00:00Z", 1]] },
+        { name: "B", data: [["2026-03-01T00:00:00Z", 2]] },
+      ],
+      unit: "vessels/d",
+      decimals: 1,
+      events: [{ date: "2026-03-01", label: "HORMUZ-26" }],
+    }) as { series: { markLine?: { data: { name: string; xAxis: string }[] } }[] };
+    expect(option.series[0].markLine?.data).toEqual([{ name: "HORMUZ-26", xAxis: "2026-03-01" }]);
+    expect(option.series[1].markLine).toBeUndefined();
   });
 });

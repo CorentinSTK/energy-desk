@@ -10,6 +10,7 @@ const PATHS = [
   "/markets/power",
   "/markets/crude",
   "/markets/products",
+  "/markets/freight",
   "/forecasts",
   "/lab",
   "/lab/backtest",

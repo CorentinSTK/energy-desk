@@ -3,7 +3,7 @@
  * Class names are written out in full so Tailwind can find them when scanning the source.
  */
 
-export type Commodity = "crude" | "products" | "natgas" | "lng" | "lpg" | "power";
+export type Commodity = "crude" | "products" | "natgas" | "lng" | "lpg" | "power" | "freight";
 
 interface CommodityStyle {
   label: string;
@@ -30,4 +30,10 @@ export const COMMODITIES: Record<Commodity, CommodityStyle> = {
   lng: { label: "LNG", cssVar: "--c-lng", textClass: "text-lng", bgClass: "bg-lng" },
   lpg: { label: "LPG", cssVar: "--c-lpg", textClass: "text-lpg", bgClass: "bg-lpg" },
   power: { label: "Power", cssVar: "--c-power", textClass: "text-power", bgClass: "bg-power" },
+  freight: {
+    label: "Freight & shipping",
+    cssVar: "--c-freight",
+    textClass: "text-freight",
+    bgClass: "bg-freight",
+  },
 };

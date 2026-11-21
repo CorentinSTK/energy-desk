@@ -3,6 +3,7 @@ import { CurveChart } from "@/components/charts/curve-chart";
 import { MultiLineChart } from "@/components/charts/multi-line-chart";
 import { TimeSeriesChart } from "@/components/charts/time-series-chart";
 import { DataGapNotice } from "@/components/data-gap-notice";
+import { FreightLink } from "@/components/freight/freight-link";
 import { KpiCard } from "@/components/kpi-card";
 import { CotPanel } from "@/components/markets/cot-panel";
 import { LinesCard } from "@/components/markets/lines-card";
@@ -520,6 +521,7 @@ export function BalanceTab({ ctx }: { ctx: PageContext }) {
 export function FlowsTab({ ctx }: { ctx: PageContext }) {
   return (
     <div className="grid gap-4">
+      <FreightLink cargo="oil" />
       <LinesCard
         ctx={ctx}
         title="Is the US importing or exporting more crude?"
