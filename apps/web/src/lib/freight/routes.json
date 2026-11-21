@@ -11,7 +11,7 @@
       "cargo": "crude",
       "origin": {
         "name": "Jubail",
-        "standsFor": "Ras Tanura (Saudi crude)",
+        "standsFor": "Ras Tanura",
         "lon": 49.671,
         "lat": 27.029
       },
@@ -39,7 +39,7 @@
       "cargo": "crude",
       "origin": {
         "name": "Jubail",
-        "standsFor": "Ras Tanura (Saudi crude)",
+        "standsFor": "Ras Tanura",
         "lon": 49.671,
         "lat": 27.029
       },
@@ -103,7 +103,7 @@
       "cargo": "lng",
       "origin": {
         "name": "Doha",
-        "standsFor": "Ras Laffan (Qatari LNG)",
+        "standsFor": "Ras Laffan",
         "lon": 51.556,
         "lat": 25.298
       },
@@ -142,7 +142,7 @@
       "cargo": "lng",
       "origin": {
         "name": "Port Arthur",
-        "standsFor": "Sabine Pass (US LNG)",
+        "standsFor": "Sabine Pass",
         "lon": -93.957,
         "lat": 29.843
       },
@@ -167,7 +167,7 @@
       "cargo": "lng",
       "origin": {
         "name": "Port Arthur",
-        "standsFor": "Sabine Pass (US LNG)",
+        "standsFor": "Sabine Pass",
         "lon": -93.957,
         "lat": 29.843
       },

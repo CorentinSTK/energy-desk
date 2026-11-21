@@ -29,11 +29,11 @@ ALWAYS_CLOSED = ["northwest"]
 
 # [lon, lat] from Natural Earth ne_10m_ports; `stands_for` names the terminal it approximates.
 PORTS: dict[str, dict[str, Any]] = {
-    "jubail": {"name": "Jubail", "stands_for": "Ras Tanura (Saudi crude)", "at": [49.671, 27.029]},
-    "doha": {"name": "Doha", "stands_for": "Ras Laffan (Qatari LNG)", "at": [51.556, 25.298]},
+    "jubail": {"name": "Jubail", "stands_for": "Ras Tanura", "at": [49.671, 27.029]},
+    "doha": {"name": "Doha", "stands_for": "Ras Laffan", "at": [51.556, 25.298]},
     "port_arthur": {
         "name": "Port Arthur",
-        "stands_for": "Sabine Pass (US LNG)",
+        "stands_for": "Sabine Pass",
         "at": [-93.957, 29.843],
     },
     "houston": {"name": "Houston", "stands_for": None, "at": [-95.202, 29.739]},

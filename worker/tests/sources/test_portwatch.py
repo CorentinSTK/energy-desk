@@ -58,6 +58,7 @@ def test_events_keep_only_catalogue_chokepoints_and_open_ends() -> None:
     events = parse_events([HORMUZ_EVENT, port_strike], {"chokepoint6", "chokepoint1"})
     assert len(events) == 1
     event = events[0]
+    assert event.code == "HORMUZ-26"
     assert event.name == "Trade Disruptions in the Strait of Hormuz"
     assert event.chokepoints == ("chokepoint6",)
     assert event.starts_on == date(2026, 3, 1)
