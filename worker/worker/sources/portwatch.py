@@ -10,7 +10,7 @@ Both come from PortWatch's public ArcGIS services (checked live on 2026-11-20):
 
 ArcGIS returns at most 2,000 rows per query and sets `exceededTransferLimit` when more remain, so
 queries page with `resultOffset`. Errors come back as HTTP 200 with an `error` object.
-Licence: IMF terms, automated access by permission (ADR 0013).
+Licence: IMF terms; automated access was requested from the IMF and is used meanwhile (ADR 0013).
 """
 
 import html
