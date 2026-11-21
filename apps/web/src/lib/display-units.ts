@@ -11,6 +11,8 @@ const RESCALE: Record<string, { unit: string; factor: number }> = {
   kb: { unit: "mb", factor: 1e-3 },
   // EC Weekly Oil Bulletin: euros per 1,000 litres → per litre, as shown at the pump.
   "€/1000 L": { unit: "€/L", factor: 1e-3 },
+  // IMF PortWatch tanker cargo estimates: tonnes → million tonnes per day.
+  "t/d": { unit: "Mt/d", factor: 1e-6 },
 };
 
 export function displayUnit(sourceUnit: string): { unit: string; factor: number } {

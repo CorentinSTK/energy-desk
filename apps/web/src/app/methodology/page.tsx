@@ -27,6 +27,7 @@ const SECTIONS = [
   { id: "home", title: "Home map and Today in energy" },
   { id: "forecasts", title: "Forecasts" },
   { id: "lab", title: "Lab" },
+  { id: "freight", title: "Freight and chokepoints" },
   { id: "licensing", title: "Data licensing" },
   { id: "limits", title: "Known limits" },
 ] as const;
@@ -279,6 +280,35 @@ export default function MethodologyPage() {
               The simulator replays blocks of the series&apos; own daily changes (full history,
               crisis or calm periods) with a fixed seed: it cannot produce moves larger than those
               in its sample.
+            </li>
+          </ul>
+        </Section>
+
+        <Section id="freight" title="Freight and chokepoints">
+          <ul className="list-disc space-y-1 pl-5">
+            <li>
+              Transits come from IMF PortWatch, which counts ships crossing each chokepoint from AIS
+              vessel signals (a crossing spanning several days counts once). Tanker cargo is an IMF
+              model estimate (estimated payload times deadweight tonnage), labelled as such.
+              PortWatch publishes about five days behind (
+              <Adr n="0013" title="Freight sources and the PortWatch permission" />
+              ).
+            </li>
+            <li>
+              Daily counts are read as 7-day means over consecutive days; a window with a missing
+              day gives no mean. The norm is the mean of the same calendar days in the five previous
+              years.
+            </li>
+            <li>
+              Disruption events (e.g. HORMUZ-26) are shown as PortWatch publishes them: name, dates
+              and alert level, with no interpretation added.
+            </li>
+            <li>
+              Distances are computed, not observed: shortest sea paths on the Eurostat maritime
+              network (searoute) between Natural Earth ports, checked to cross the passage each
+              variant names. Days at sea assume 13 knots for crude tankers and 17 for LNG carriers,
+              with no port time or weather margin. Freight rates and bunker prices are licensed and
+              not shown.
             </li>
           </ul>
         </Section>

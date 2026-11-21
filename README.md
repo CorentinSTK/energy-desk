@@ -14,6 +14,10 @@ a stored observation. Missing data is shown as missing, never estimated.
   refined products. Each page answers a few desk questions, such as whether storage is tight for the
   season, where power is flowing, or whether a crack spread is unusually low. Each chart comes with a
   one-line takeaway, its source and its freshness.
+- **Freight & shipping:** daily tanker transits through eight chokepoints (Hormuz, Bab el-Mandeb,
+  Suez, Cape of Good Hope, Malacca, Panama, Bosporus, Gibraltar) from IMF PortWatch, with the
+  disruption events PortWatch publishes, and computed distances and days at sea via Suez, Panama or
+  the Cape.
 - **Home:** a map of Europe (gas storage, power prices, diesel at the pump) and a world oil view, with
   a short "Today in energy" generated from fixed rules.
 - **Forecasts:** three models (EU gas storage in 30 days, French daily power demand, US crude stocks).
@@ -36,7 +40,7 @@ a stored observation. Missing data is shown as missing, never estimated.
 ## Data principles
 
 - **Official, free sources only:** GIE AGSI+ and ALSI, ENTSOG, SMARD, RTE éCO2mix (ODRÉ), Elexon, EIA,
-  the European Commission Weekly Oil Bulletin, CFTC, FRED, the ECB and Open-Meteo. Yahoo Finance
+  the European Commission Weekly Oil Bulletin, CFTC, FRED, the ECB, Open-Meteo and IMF PortWatch. Yahoo Finance
   futures appear only as derived indicators, always labelled "unofficial, delayed, research only".
 - **Nothing is fabricated or filled in.** Gaps stay visible. Licensed data (ICE, CME, EEX, EPEX,
   Platts, Argus) is not used, and the corresponding views are shown as declared gaps.

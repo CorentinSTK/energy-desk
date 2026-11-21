@@ -188,6 +188,10 @@ study when the phase starts, each source to be verified live and for licence:
   margin, port time), never copied from licensed route tables.
 - Freight rates themselves (Baltic Exchange TD/TC routes, Worldscale, Clarksons SIW) are licensed: shown as
   a declared gap unless a free, redistributable source exists. Bunker prices likewise.
+- Built (Nov 2026, ADR 0013): IMF PortWatch daily transits for eight chokepoints (transits, tanker
+  transits, IMF tanker-tonnage estimates) and its disruption events; six benchmark routes computed with
+  searoute between Natural Earth ports. PortWatch is used by the owner's decision while the IMF's
+  permission for automated access is pending.
 
 **Phase 2:** LPG (Mont Belvieu propane spot, US propane stocks `WPRSTUS1`, EIA); other European power zones
 (ENTSO-E); non-European markets: US gas storage and US LNG exports (EIA), US power (EIA-930), Japan power
@@ -396,7 +400,7 @@ Work one milestone at a time. Each ends with a demo to the user and their approv
 
 European markets come first: they are the focus and the most differentiating part for European desks.
 
-Status (31 Oct 2026): M0–M8 done and live. F and P2 not started.
+Status (21 Nov 2026): M0–M8 done and live. F built (PortWatch transits, computed routes; ADR 0013). P2 not started.
 
 | # | Milestone | Done when |
 |---|---|---|
@@ -422,8 +426,9 @@ Status (31 Oct 2026): M0–M8 done and live. F and P2 not started.
 - ~~Lab presets (§7)~~ — decided at M7 (2026-10-31): presets on long official series only (see §7 and
   ADR 0010); TTF and Brent M1–M2 presets once the stored futures history is long enough.
 - Carbon (EUA): no confirmed free, redistributable daily price yet (needed for clean spark/dark spreads).
-- Freight & shipping: when to schedule the phase, and which free sources hold up (freight rates and bunker
-  prices are licensed; chokepoint transits and computed voyage times are the likely free core).
+- ~~Freight & shipping~~: decided at F (2026-11-20): IMF PortWatch transits and computed voyage times;
+  freight rates and bunker prices remain declared gaps (ADR 0013). Pending: the IMF's answer on automated
+  access.
 
 
 Decided on 2026-10-28 (see ADRs 0001–0004): Europe focus; public repository; Python 3.12; Frankfurt region;

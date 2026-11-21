@@ -40,7 +40,11 @@ test.describe("home page", () => {
     await page.goto("/?view=world&focus=choke-hormuz");
     const panel = page.getByRole("region", { name: "Details: Strait of Hormuz" });
     await expect(panel).toBeVisible();
-    await expect(panel.getByText(/freight and shipping phase/)).toBeVisible();
+    // Chokepoints carry PortWatch tanker transits and link to that chokepoint on the freight page.
+    await expect(panel.getByRole("link", { name: "Open the market page →" })).toHaveAttribute(
+      "href",
+      "/markets/freight?strait=hormuz",
+    );
     await panel.getByRole("link", { name: "Close" }).click();
     await expect(page).toHaveURL(/\/\?view=world$/);
   });

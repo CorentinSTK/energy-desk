@@ -9,6 +9,7 @@ from worker.sources.portwatch import PortWatchSource, ShippingEvent
 
 HORMUZ = ShippingEvent(
     event_id="10000004",
+    code="HORMUZ-26",
     name="Trade Disruptions in the Strait of Hormuz",
     description=None,
     alert_level="RED",
@@ -29,9 +30,11 @@ def test_events_are_upserted_as_published(conn: psycopg.Connection) -> None:
     ended = ShippingEvent(**{**HORMUZ.__dict__, "ends_on": date(2026, 12, 1)})
     persist(conn, ended)
     rows = conn.execute(
-        "select name, chokepoints, starts_on, ends_on from web.shipping_events"
+        "select code, name, chokepoints, starts_on, ends_on from web.shipping_events"
     ).fetchall()
-    assert rows == [(HORMUZ.name, ["chokepoint6"], date(2026, 3, 1), date(2026, 12, 1))]
+    assert rows == [
+        ("HORMUZ-26", HORMUZ.name, ["chokepoint6"], date(2026, 3, 1), date(2026, 12, 1))
+    ]
 
 
 def test_web_reader_reads_events_but_cannot_write(conn: psycopg.Connection) -> None:

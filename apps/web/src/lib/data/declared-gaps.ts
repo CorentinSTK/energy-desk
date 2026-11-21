@@ -3,7 +3,7 @@
  * estimate). Shown on /data. Update this list when a source is added or a gap is closed.
  */
 
-export type GapMarket = "gas" | "lng" | "crude" | "products" | "power";
+export type GapMarket = "gas" | "lng" | "crude" | "products" | "power" | "freight";
 
 export interface DeclaredGap {
   title: string;
@@ -110,5 +110,23 @@ export const DECLARED_GAPS: DeclaredGap[] = [
     title: "EUA carbon price",
     reason: "No free, redistributable daily source confirmed yet.",
     markets: ["power"],
+  },
+  {
+    title: "Tanker and LNG carrier freight rates",
+    reason:
+      "Route assessments (Baltic Exchange TD and TC routes, Worldscale flat rates, Clarksons time-charter rates) are licensed and not redistributed. The freight page shows what is free: transits through the chokepoints (IMF PortWatch) and computed distances and days at sea.",
+    markets: ["freight"],
+  },
+  {
+    title: "Bunker fuel prices",
+    reason:
+      "Marine fuel prices (VLSFO, HSFO, LNG bunkers at Singapore, Rotterdam, Fujairah) are licensed price assessments. Without them, voyage costs are not computed: only distances and days at sea are shown.",
+    markets: ["freight"],
+  },
+  {
+    title: "Vessel-level tracking (cargo origin, destination, ship names)",
+    reason:
+      "Raw AIS positions and cargo-level trade flows come from licensed ship-tracking services. PortWatch publishes daily counts per chokepoint, derived from AIS, which is what the freight page shows.",
+    markets: ["freight", "lng", "crude"],
   },
 ];

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ChartCard } from "@/components/chart-card";
 import { BarChart } from "@/components/charts/bar-chart";
 import { DataGapNotice } from "@/components/data-gap-notice";
+import { FreightLink } from "@/components/freight/freight-link";
 import { KpiCard } from "@/components/kpi-card";
 import { CotPanel } from "@/components/markets/cot-panel";
 import { LinesCard } from "@/components/markets/lines-card";
@@ -493,6 +494,7 @@ export function BalanceTab({ ctx }: { ctx: PageContext }) {
 export function FlowsTab({ ctx }: { ctx: PageContext }) {
   return (
     <div className="grid gap-4">
+      <FreightLink cargo="oil" />
       <LinesCard
         ctx={ctx}
         title="How much fuel is the US exporting?"

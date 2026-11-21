@@ -81,6 +81,7 @@ def parse_rows(rows: list[dict[str, Any]], spec: SeriesSpec) -> list[Observation
 @dataclass(frozen=True)
 class ShippingEvent:
     event_id: str
+    code: str | None  # PortWatch `eventname`, e.g. "HORMUZ-26"
     name: str
     description: str | None
     alert_level: str | None
@@ -114,6 +115,7 @@ def parse_events(rows: list[dict[str, Any]], chokepoints: set[str]) -> list[Ship
         events.append(
             ShippingEvent(
                 event_id=str(row["eventid"]),
+                code=_plain_text(row.get("eventname")),
                 name=_plain_text(row.get("htmlname")) or str(row.get("eventname")),
                 description=_plain_text(row.get("htmldescription")),
                 alert_level=row.get("alertlevel") or None,
@@ -169,10 +171,11 @@ class PortWatchSource(Source):
             cur.executemany(
                 """
                 insert into market.shipping_events
-                    (event_id, name, description, alert_level, chokepoints, starts_on, ends_on)
-                values (%s, %s, %s, %s, %s, %s, %s)
+                    (event_id, code, name, description, alert_level, chokepoints, starts_on,
+                     ends_on)
+                values (%s, %s, %s, %s, %s, %s, %s, %s)
                 on conflict (event_id) do update set
-                    name = excluded.name, description = excluded.description,
+                    code = excluded.code, name = excluded.name, description = excluded.description,
                     alert_level = excluded.alert_level, chokepoints = excluded.chokepoints,
                     starts_on = excluded.starts_on, ends_on = excluded.ends_on,
                     ingested_at = now()
@@ -180,6 +183,7 @@ class PortWatchSource(Source):
                 [
                     (
                         e.event_id,
+                        e.code,
                         e.name,
                         e.description,
                         e.alert_level,

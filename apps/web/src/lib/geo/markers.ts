@@ -241,35 +241,51 @@ export const WORLD_MARKERS: MarkerDef[] = [
   },
   ...(
     [
-      ["hormuz", "Strait of Hormuz", 27.141, 56.204, `${NE_PORT} Bandar Abbas, on the strait`],
+      [
+        "hormuz",
+        "hormuz",
+        "Strait of Hormuz",
+        27.141,
+        56.204,
+        `${NE_PORT} Bandar Abbas, on the strait`,
+      ],
       [
         "bab-el-mandeb",
+        "bab_el_mandeb",
         "Bab el-Mandeb",
         12.87,
         43.45,
         "Centroid of the Natural Earth Bab el Mandeb area",
       ],
-      ["suez", "Suez Canal", 30.005, 32.55, `${NE_PLACE} Suez, southern end of the canal`],
+      ["suez", "suez", "Suez Canal", 30.005, 32.55, `${NE_PLACE} Suez, southern end of the canal`],
       [
+        "malacca",
         "malacca",
         "Strait of Malacca",
         4.9,
         99.3,
         "Centroid of the Natural Earth Strait of Malacca area",
       ],
-      ["panama", "Panama Canal", 9.373, -79.885, `${NE_PORT} Colon, northern end of the canal`],
+      [
+        "panama",
+        "panama",
+        "Panama Canal",
+        9.373,
+        -79.885,
+        `${NE_PORT} Colon, northern end of the canal`,
+      ],
     ] as const
-  ).map(([id, label, lat, lon, position]): MarkerDef => ({
+  ).map(([id, chokepoint, label, lat, lon, position]): MarkerDef => ({
     id: `choke-${id}`,
     kind: "chokepoint",
     label,
     lat,
     lon,
     position,
-    series: null,
-    href: "/markets/crude?tab=flows",
+    // Daily tanker transits (IMF PortWatch); the marker links to that chokepoint's detail.
+    series: `portwatch.${chokepoint}.tanker_transits`,
+    href: `/markets/freight?strait=${chokepoint}`,
     view: "world",
-    note: "Transit data comes in the freight and shipping phase; nothing is shown until then.",
   })),
 ];
 

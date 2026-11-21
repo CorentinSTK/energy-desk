@@ -16,12 +16,13 @@ export function MultiLineChart({
   unit,
   decimals,
   stacked,
+  events,
   height,
   ariaLabel,
 }: MultiLineChartProps) {
   const build = useCallback(
-    (t: ChartTokens) => multiLineOption(t, { series, unit, decimals, stacked }),
-    [series, unit, decimals, stacked],
+    (t: ChartTokens) => multiLineOption(t, { series, unit, decimals, stacked, events }),
+    [series, unit, decimals, stacked, events],
   );
   return <EChart build={build} height={height} ariaLabel={ariaLabel} />;
 }
