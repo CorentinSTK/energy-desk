@@ -34,12 +34,14 @@ Freight rates (Baltic Exchange TD/TC routes, Worldscale, Clarksons) and bunker p
   - Tonnage is always labelled as an IMF estimate.
   - Disruption events are stored as published in `market.shipping_events`, and never interpreted
     beyond their text.
-- **Ask before ingesting.** The owner emails IMF-PortWatch@IMF.ORG to ask permission for this use:
+- **Ingest, and ask in parallel.** The owner decided (2026-11-20) to use the data without waiting for
+  the IMF's answer. The reasons: the site is a free, non-commercial personal project, the IMF's data
+  terms allow publication with attribution, and the volume is minimal:
   - one query per chokepoint per day;
   - a one-time history download of about 23,000 rows.
-  The source is built and testable by dry run in the meantime. It is not added to the scheduled
-  workflows or backfilled in production until the IMF agrees. If they refuse, or prefer another
-  access route, this ADR is revised.
+  The permission request to IMF-PortWatch@IMF.ORG is sent anyway, as their terms ask for automated
+  access. If the IMF objects or prefers another access route, the source is removed from the
+  scheduled workflow (one line in `ingest.yml`), and this ADR is revised.
 - Attribution under every chart: "Source: International Monetary Fund, PortWatch".
 - Freight rates and bunker prices are **declared gaps** on the freight page.
 
@@ -60,8 +62,8 @@ Freight rates (Baltic Exchange TD/TC routes, Worldscale, Clarksons) and bunker p
 
 ## Consequences
 
-- Until permission arrives, the freight page can show only what needs no PortWatch data (computed
-  routes, declared gaps). Chokepoint charts say the data is pending the source's permission.
+- The use rests on the owner's reading of the IMF terms until the IMF answers; this is the one
+  source on the site used before its provider confirmed the access method.
 - PortWatch counts are model outputs from AIS signals, not customs or port records. AIS gaps (for
   example jamming or switched-off transponders) lower the counts. The page says so.
 - About five days of publication lag: freshness uses `publication_lag_days: 5`.
