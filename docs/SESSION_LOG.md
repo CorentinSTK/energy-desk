@@ -431,3 +431,38 @@ Still open:
   - e2e: a pagination test, and the catalogue test no longer depends on which page a code lands on.
   - The HTML goes from 1.66 MB to 430 KB (409 active series, 9 pages). Lighthouse on a local
     production build: 100/100, 3 runs out of 3 (TBT about 50 ms, from about 400).
+
+## 2026-11-21 — Phase F, freight and shipping (built)
+
+- **Sources checked live (20 Nov).** IMF PortWatch publishes daily transits for 28 chokepoints since
+  2019, about five days behind, plus a database of disruption events.
+  - Licence: IMF terms. Publication with attribution is allowed; automated access needs
+    permission.
+  - The owner decided to use the data while the permission request is pending (ADR 0013).
+  - PortWatch documents HORMUZ-26 (from 1 Mar 2026, ongoing, RED): Hormuz tanker transits are
+    about 0.4 a day against a 51 a day norm. The Cape of Good Hope is +37%.
+- **PR #48 (step 1):**
+  - migration 011: the `freight` category and `market.shipping_events`;
+  - `portwatch` source and catalogue: 8 chokepoints × 3 series.
+  - Dry run spot-checked against the API.
+- **PR #49 (step 2):** routes generated with searoute. The passage check caught a mislabel: without
+  Panama, the shortest US → Japan route runs through Suez, not around the Cape.
+- **PR #50:** PortWatch scheduled with the 14:15 UTC ingest group.
+- **This PR (step 3):**
+  - migration 012: short event codes, used as chart labels;
+  - `/markets/freight`:
+    - KPIs: 7-day mean against the 5-year norm;
+    - main chart: weekly 7-day means over 2 years, with event lines;
+    - tabs: chokepoints (seasonal chart and table), routes, gaps;
+  - home chokepoint markers now carry tanker transits;
+  - links from the crude, products and LNG pages;
+  - methodology section, declared gaps (freight rates, bunkers, vessel-level tracking);
+  - nav, sitemap, Health and the mobile e2e test.
+- **Measured locally, on a local DB with the PortWatch history:**
+  - Lighthouse: performance 87–94 (high run-to-run variance), accessibility 100;
+  - HTML 150 KB, after moving the two-year chart to weekly points and rounding for transport;
+  - before that change: 8 daily lines, a 500 ms long task in ECharts.
+- **Pending:**
+  - production: DB migrate (011, 012), then a PortWatch backfill;
+  - the IMF's answer;
+  - Lighthouse on the live page.

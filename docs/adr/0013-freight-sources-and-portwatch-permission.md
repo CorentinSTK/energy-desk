@@ -43,6 +43,21 @@ Freight rates (Baltic Exchange TD/TC routes, Worldscale, Clarksons) and bunker p
 - Attribution under every chart: "Source: International Monetary Fund, PortWatch".
 - Freight rates and bunker prices are **declared gaps** on the freight page.
 
+- **Routes are computed, not copied** (`worker/scripts/gen_routes.py` generates
+  `apps/web/src/lib/freight/routes.json`, never edited by hand):
+  - shortest sea paths on the Eurostat maritime network with `searoute` (Apache-2.0), in a separate
+    `routes` dependency group that the daily worker does not install;
+  - Natural Earth ports; Ras Tanura, Ras Laffan and Sabine Pass are not in Natural Earth, so Jubail,
+    Doha and Port Arthur stand in, as the page names;
+  - each variant must cross the passage its label names, and Cape variants must avoid Suez and
+    Panama. This caught a real mislabel: without Panama, the shortest US Gulf → Japan route runs
+    through Suez, not around the Cape;
+  - days at sea at 13 knots (crude tankers) and 17 knots (LNG carriers), laden, with no port time,
+    canal waiting or weather margin.
+- **Display:** daily counts are shown as 7-day means over consecutive days, one point per week on
+  the two-year chart. A window with a missing day gives no mean. The norm is the same calendar days
+  of the five previous years.
+
 ## Consequences
 
 - Until permission arrives, the freight page can show only what needs no PortWatch data (computed
