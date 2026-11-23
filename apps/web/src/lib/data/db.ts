@@ -36,8 +36,21 @@ export function db(): postgres.Sql {
     max: 3,
     idle_timeout: 20,
     connect_timeout: 10,
+    // Recycle connections: a serverless instance is frozen between requests, and a connection
+    // can die during the freeze without the client noticing.
+    max_lifetime: 5 * 60,
   });
   return client;
+}
+
+/**
+ * Drop the pool so the next query reconnects. Called when a query times out: its connection is
+ * probably dead (frozen instance), and every query queued behind it would wait forever.
+ */
+export function resetDb(): void {
+  const old = client;
+  client = undefined;
+  void old?.end({ timeout: 0 }).catch(() => undefined);
 }
 
 /**
