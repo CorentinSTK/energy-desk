@@ -33,7 +33,11 @@ export function db(): postgres.Sql {
   if (!url) throw new DatabaseNotConfiguredError();
   client ??= postgres(url, {
     prepare: false,
-    max: 3,
+    // 10, not 3: with 3, a page firing many cached queries at once (the freight page, about 30)
+    // starved the pool on a fresh instance. One query waited for a connection that never came
+    // free, holding the page open until Vercel's 300 s limit. The Supabase pooler (transaction
+    // mode) multiplexes these client connections, so 10 per instance is cheap.
+    max: 10,
     idle_timeout: 20,
     connect_timeout: 10,
     // Recycle connections: a serverless instance is frozen between requests, and a connection

@@ -9,7 +9,7 @@ import { KpiCard } from "@/components/kpi-card";
 import { chartInfo } from "@/lib/data/chart-info";
 import { DECLARED_GAPS } from "@/lib/data/declared-gaps";
 import { attempt, daysAgo, type PageContext, seriesOf } from "@/lib/data/page-context";
-import { getPoints, getSeasonal } from "@/lib/data/series";
+import { getPoints, getPointsMany, getSeasonal } from "@/lib/data/series";
 import { getShippingEvents, type ShippingEvent } from "@/lib/data/shipping-events";
 import { rescale } from "@/lib/display-units";
 import {
@@ -168,29 +168,37 @@ export async function ChokepointsTab({ ctx, strait }: { ctx: PageContext; strait
   const choke = CHOKEPOINTS.find((c) => c.id === strait) ?? CHOKEPOINTS[0];
   const code = transitCode(strait, "tanker_transits");
   const recent = daysAgo(ctx.now, RECENT_DAYS);
-  const [seasonal, events, rows] = await Promise.all([
+  const tableCodes = CHOKEPOINTS.flatMap((c) =>
+    (["transits", "tanker_transits", "tanker_tonnes"] as const).map((k) => transitCode(c.id, k)),
+  );
+  // One query for the table's 24 series rather than 24 concurrent ones.
+  const [seasonal, events, recentPoints, norms] = await Promise.all([
     attempt(`${strait} seasonal`, getSeasonal(code, ctx.year)),
     attempt("shipping events", getShippingEvents()),
+    attempt("chokepoint table", getPointsMany(tableCodes, recent)),
     Promise.all(
-      CHOKEPOINTS.map(async (c) => {
-        const [all, tankers, tonnes, norm] = await Promise.all([
-          attempt(`${c.id} transits`, getPoints(transitCode(c.id, "transits"), recent)),
-          attempt(`${c.id} tankers`, getPoints(transitCode(c.id, "tanker_transits"), recent)),
-          attempt(`${c.id} tonnes`, getPoints(transitCode(c.id, "tanker_tonnes"), recent)),
-          attempt(
-            `${c.id} tankers seasonal`,
-            getSeasonal(transitCode(c.id, "tanker_transits"), ctx.year),
-          ),
-        ]);
-        return {
-          choke: c,
-          allMean: all ? (rollingMean(all).at(-1)?.[1] ?? null) : null,
-          tankers: tankers && norm ? weekVsSeason(tankers, norm) : null,
-          tonnesMean: tonnes ? (rollingMean(rescale(tonnes, "t/d")).at(-1)?.[1] ?? null) : null,
-        };
-      }),
+      CHOKEPOINTS.map((c) =>
+        attempt(
+          `${c.id} tankers seasonal`,
+          getSeasonal(transitCode(c.id, "tanker_transits"), ctx.year),
+        ),
+      ),
     ),
   ]);
+  const rows = CHOKEPOINTS.map((c, i) => {
+    const pick = (k: "transits" | "tanker_transits" | "tanker_tonnes") =>
+      recentPoints?.get(transitCode(c.id, k)) ?? null;
+    const all = pick("transits");
+    const tankers = pick("tanker_transits");
+    const tonnes = pick("tanker_tonnes");
+    const norm = norms[i];
+    return {
+      choke: c,
+      allMean: all ? (rollingMean(all).at(-1)?.[1] ?? null) : null,
+      tankers: tankers && norm ? weekVsSeason(tankers, norm) : null,
+      tonnesMean: tonnes ? (rollingMean(rescale(tonnes, "t/d")).at(-1)?.[1] ?? null) : null,
+    };
+  });
   const ongoing = eventsFor(events, [choke.portwatchId], ctx.now.toISOString());
 
   return (
