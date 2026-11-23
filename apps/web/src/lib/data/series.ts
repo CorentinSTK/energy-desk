@@ -30,6 +30,24 @@ export async function getPoints(code: string, fromIso: string): Promise<Points> 
   return rows.map((r) => [r.ts as string, Number(r.value)]);
 }
 
+/** Observations of several series since `fromIso`, in one query (for tables of many series). */
+export async function getPointsMany(
+  codes: string[],
+  fromIso: string,
+): Promise<Map<string, Points>> {
+  "use cache";
+  cacheLife("hours");
+  const rows = await db()`
+    select code, to_char(ts at time zone 'UTC', ${ISO_UTC}) as ts, value
+    from web.observations
+    where code = any(${codes}) and ts >= ${fromIso}::timestamptz
+    order by code, ts
+  `;
+  const byCode = new Map<string, Points>(codes.map((c) => [c, []]));
+  for (const r of rows) byCode.get(r.code as string)?.push([r.ts as string, Number(r.value)]);
+  return byCode;
+}
+
 const num = (v: unknown) => (v === null ? null : Number(v));
 
 function toSeasonalRows(rows: Record<string, unknown>[]): SeasonalRow[] {
