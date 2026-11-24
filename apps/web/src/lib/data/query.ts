@@ -2,7 +2,7 @@ import "server-only";
 
 import type postgres from "postgres";
 
-import { db, resetDb } from "./db";
+import { db, poolTimings, resetDb } from "./db";
 import { QueryTimeoutError, withTimeout } from "./timing";
 
 /** Time limit for one attempt of one SQL query. Two attempts fit inside the page-level TIMEOUT_MS. */
@@ -24,11 +24,20 @@ const ATTEMPTS = 2;
  */
 export async function query<R>(label: string, run: (sql: postgres.Sql) => Promise<R>): Promise<R> {
   for (let attempt = 1; ; attempt++) {
+    // Logged before the query: every call here is a cache miss, since it runs only when the
+    // cached function executes. Pool age and idle time show whether hangs follow a pause.
+    const timings = poolTimings();
+    const start = performance.now();
     try {
-      return await withTimeout(label, run(db()), ATTEMPT_MS);
+      const rows = await withTimeout(label, run(db()), ATTEMPT_MS);
+      const ms = Math.round(performance.now() - start);
+      console.log(JSON.stringify({ event: "db_query", label, attempt, ms, ...timings }));
+      return rows;
     } catch (error) {
       if (!(error instanceof QueryTimeoutError)) throw error;
-      console.log(JSON.stringify({ event: "query_timeout", label, attempt, ms: ATTEMPT_MS }));
+      console.log(
+        JSON.stringify({ event: "query_timeout", label, attempt, ms: ATTEMPT_MS, ...timings }),
+      );
       resetDb();
       if (attempt >= ATTEMPTS) throw error;
     }

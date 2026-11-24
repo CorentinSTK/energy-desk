@@ -27,10 +27,24 @@ export function isDatabaseConfigured(): boolean {
 }
 
 let client: postgres.Sql | undefined;
+let clientCreatedAt = 0;
+let lastUsedAt = 0;
+
+/** Pool age and time since its last query, in ms, for the `db_query` log (no query data). */
+export function poolTimings(): { poolAgeMs: number; idleMs: number } {
+  const now = Date.now();
+  const timings = {
+    poolAgeMs: client ? now - clientCreatedAt : 0,
+    idleMs: client && lastUsedAt ? now - lastUsedAt : 0,
+  };
+  lastUsedAt = now;
+  return timings;
+}
 
 export function db(): postgres.Sql {
   const url = process.env.DATABASE_URL_READONLY;
   if (!url) throw new DatabaseNotConfiguredError();
+  if (!client) clientCreatedAt = Date.now();
   client ??= postgres(url, {
     prepare: false,
     // 10, not 3: with 3, a page firing many cached queries at once (the freight page, about 30)
@@ -60,6 +74,7 @@ const RESET_GRACE_S = 5;
 export function resetDb(): void {
   const old = client;
   client = undefined;
+  lastUsedAt = 0;
   void old?.end({ timeout: RESET_GRACE_S }).catch(() => undefined);
 }
 
