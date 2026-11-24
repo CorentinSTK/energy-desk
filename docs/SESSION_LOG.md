@@ -495,3 +495,24 @@ Still open:
   is unknown; a connection may stall while it opens. It is contained (10 s, error card, logged).
   - Possible next step if it recurs: retry a timed-out query once on a fresh connection, without
     ending the pool. A pool reset also cut sibling queries, which ruled out the first attempt.
+
+## 2026-11-25 — Phase F closed: live checks and a cache-level timeout fix
+
+- #54 merged (session log for phase F).
+- Lighthouse on the live freight page, 3 runs:
+  - performance 89–92, accessibility 100;
+  - LCP 2.4 s, TBT 270–380 ms, CLS 0.
+- Health and Ingest green on every run since #53.
+- Found live: the chokepoint table failed on about one request in two.
+  - Symptoms: the response took 10.3 s, and every cell showed "—" with no error state.
+  - Only the table was affected (`getPointsMany`). Other cards, other strait tabs and other pages
+    were fine. It did not reproduce locally.
+  - Cause: Next's per-instance dedup of `use cache` invocations. A generation that never finishes
+    blocks every later read of its key on that instance. The 10 s limit sat outside the cache and
+    could not end it. Why the query hung is not established (Vercel logs not read).
+- Fix (ADR 0014):
+  - each SQL query is limited to 4 s inside its cached function, with one retry on a fresh pool;
+  - pool resets now leave 5 s for queries in flight;
+  - the table shows the error state on failure.
+- Checked with a local proxy that freezes the DB: error card during the freeze, normal load right
+  after.
