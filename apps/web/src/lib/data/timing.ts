@@ -17,31 +17,55 @@ const SLOW_MS = 500;
 export const TIMEOUT_MS = 10_000;
 
 export class QueryTimeoutError extends Error {
-  constructor(label: string) {
-    super(`${label} did not finish within ${TIMEOUT_MS} ms`);
+  constructor(label: string, limitMs: number = TIMEOUT_MS) {
+    super(`${label} did not finish within ${limitMs} ms`);
     this.name = "QueryTimeoutError";
   }
 }
 
-/** Await `promise` with a time limit; log it if slow or timed out. */
-export async function timed<T>(
+/**
+ * Reject with QueryTimeoutError if `promise` has not settled after `limitMs`; `onTimeout` runs first.
+ * The underlying work is not cancelled, only abandoned.
+ */
+export async function withTimeout<T>(
   label: string,
   promise: Promise<T>,
-  limitMs = TIMEOUT_MS,
+  limitMs: number,
+  onTimeout: () => void = () => undefined,
 ): Promise<T> {
-  const start = performance.now();
   let timer: ReturnType<typeof setTimeout> | undefined;
   const timeout = new Promise<never>((_, reject) => {
     timer = setTimeout(() => {
-      console.log(JSON.stringify({ event: "query_timeout", label, ms: limitMs }));
-      resetDb();
-      reject(new QueryTimeoutError(label));
+      onTimeout();
+      reject(new QueryTimeoutError(label, limitMs));
     }, limitMs);
   });
   try {
     return await Promise.race([promise, timeout]);
   } finally {
     clearTimeout(timer);
+  }
+}
+
+/**
+ * Await a page-level data load with a time limit; log it if slow or timed out.
+ *
+ * A safety net only: each SQL query already has its own, shorter limit inside the cached function
+ * (`query` in query.ts). This limit sits outside the `use cache` boundary, so on its own it cannot
+ * free a cache entry whose generation hangs.
+ */
+export async function timed<T>(
+  label: string,
+  promise: Promise<T>,
+  limitMs = TIMEOUT_MS,
+): Promise<T> {
+  const start = performance.now();
+  try {
+    return await withTimeout(label, promise, limitMs, () => {
+      console.log(JSON.stringify({ event: "query_timeout", label, ms: limitMs }));
+      resetDb();
+    });
+  } finally {
     const ms = Math.round(performance.now() - start);
     if (ms > SLOW_MS && ms < limitMs)
       console.log(JSON.stringify({ event: "slow_data", label, ms }));

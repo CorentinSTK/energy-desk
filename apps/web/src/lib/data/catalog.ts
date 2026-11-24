@@ -4,7 +4,8 @@ import { cacheLife } from "next/cache";
 
 import type { Frequency } from "@/lib/freshness";
 
-import { db, ISO_UTC } from "./db";
+import { ISO_UTC } from "./db";
+import { query } from "./query";
 
 /** One row of `web.series_catalog` (migration 001). Timestamps are ISO strings, UTC. */
 export interface CatalogSeries {
@@ -47,7 +48,9 @@ export interface IngestRun {
 export async function getSeriesCatalog(): Promise<CatalogSeries[]> {
   "use cache";
   cacheLife("hours");
-  const rows = await db()`
+  const rows = await query(
+    "getSeriesCatalog",
+    (sql) => sql`
     select code, name, commodity, region, unit, frequency, source, source_ref, description,
            is_unofficial, price_kind, license, license_url, attribution, publication_lag_days,
            observation_count,
@@ -56,7 +59,8 @@ export async function getSeriesCatalog(): Promise<CatalogSeries[]> {
            gap_count, largest_interval_days
     from web.series_catalog
     order by commodity, source, code
-  `;
+  `,
+  );
   return rows.map((r) => ({
     code: r.code,
     name: r.name,
@@ -84,14 +88,17 @@ export async function getSeriesCatalog(): Promise<CatalogSeries[]> {
 export async function getRecentRuns(limit = 50): Promise<IngestRun[]> {
   "use cache";
   cacheLife("hours");
-  const rows = await db()`
+  const rows = await query(
+    "getRecentRuns",
+    (sql) => sql`
     select id, source,
            to_char(started_at at time zone 'UTC', ${ISO_UTC}) as started_at,
            to_char(finished_at at time zone 'UTC', ${ISO_UTC}) as finished_at,
            status, rows_written, rows_rejected, error
     from web.ingest_runs_recent
     limit ${limit}
-  `;
+  `,
+  );
   return rows.map((r) => ({
     id: Number(r.id),
     source: r.source,

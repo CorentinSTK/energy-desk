@@ -2,7 +2,8 @@ import "server-only";
 
 import { cacheLife } from "next/cache";
 
-import { db, ISO_UTC } from "./db";
+import { ISO_UTC } from "./db";
+import { query } from "./query";
 
 /** One series summarised by web.series_snapshot (migration 006). Null = not enough data. */
 export interface Snapshot {
@@ -30,14 +31,17 @@ const num = (v: unknown) => (v === null || v === undefined ? null : Number(v));
 export async function getSnapshots(codes: string[]): Promise<Map<string, Snapshot>> {
   "use cache";
   cacheLife("hours");
-  const rows = await db()`
+  const rows = await query(
+    "getSnapshots",
+    (sql) => sql`
     select code, frequency,
            to_char(last_ts at time zone 'UTC', ${ISO_UTC}) as last_ts, last_value,
            to_char(prev_ts at time zone 'UTC', ${ISO_UTC}) as prev_ts, prev_value,
            move_z, percentile_5y, history_count, seasonal_mean, seasonal_years,
            seasonal_deviation_pct
     from web.series_snapshot(${codes}::text[])
-  `;
+  `,
+  );
   return new Map(
     rows.map((r) => [
       r.code as string,
