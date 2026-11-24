@@ -466,3 +466,32 @@ Still open:
   - production: DB migrate (011, 012), then a PortWatch backfill;
   - the IMF's answer;
   - Lighthouse on the live page.
+
+## 2026-11-23 — Phase F in production; stuck pages fixed
+
+- Production:
+  - #48–#51 merged;
+  - DB migrate applied 011 and 012. A first Ingest run before the migration failed harmlessly on the
+    `freight` category check;
+  - PortWatch backfill ok: 69,027 rows, 24 series up to 15 Nov, 3 events (HORMUZ-26, RED SEA
+    TENSIONS, RESTRICTIONS PANAMA CANAL).
+- After the rollout, Health failed with ReadTimeout on the gas and freight pages. Vercel logs showed
+  `Task timed out after 300 seconds` on most pages: the content streamed in under a second, but the
+  response never closed.
+  - #52: every data load is limited to 10 s. On a timeout, the card shows its error state, the page
+    completes, the pool is reset and `query_timeout` is logged. Connections are recycled every
+    5 minutes.
+  - #53: on fresh local servers against the production DB, one load always hung. A trace showed the
+    query started and never finished.
+    - Ruled out: the query itself (0.3 ms), its plan, and postgres.js on its own (33 parallel
+      queries are fine). Disabling pipelining changed nothing.
+    - The block always hit the freight tab's first new query.
+    - With a pool of 10 instead of 3, there were no timeouts on fresh servers. The chokepoint table
+      now loads 24 series in one query.
+- Checked live after #53:
+  - all pages finish in 0.9–1.9 s, including freight on its first visit;
+  - Health: All good (11 pages and the data).
+- Still open: one `query_timeout` in about 20 minutes of traffic, on the chokepoint table. The cause
+  is unknown; a connection may stall while it opens. It is contained (10 s, error card, logged).
+  - Possible next step if it recurs: retry a timed-out query once on a fresh connection, without
+    ending the pool. A pool reset also cut sibling queries, which ruled out the first attempt.
