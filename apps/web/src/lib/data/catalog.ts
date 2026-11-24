@@ -46,7 +46,7 @@ export interface IngestRun {
 // Data changes a few times a day: cache for an hour (Next.js `hours` profile).
 
 export async function getSeriesCatalog(): Promise<CatalogSeries[]> {
-  "use cache";
+  "use cache: remote";
   cacheLife("hours");
   const rows = await query(
     "getSeriesCatalog",
@@ -86,7 +86,7 @@ export async function getSeriesCatalog(): Promise<CatalogSeries[]> {
 }
 
 export async function getRecentRuns(limit = 50): Promise<IngestRun[]> {
-  "use cache";
+  "use cache: remote";
   cacheLife("hours");
   const rows = await query(
     "getRecentRuns",
