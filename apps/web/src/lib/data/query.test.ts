@@ -3,7 +3,11 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 vi.mock("server-only", () => ({}));
 const resetDb = vi.fn();
 const fakeSql = {};
-vi.mock("./db", () => ({ db: () => fakeSql, resetDb }));
+vi.mock("./db", () => ({
+  db: () => fakeSql,
+  poolTimings: () => ({ poolAgeMs: 0, idleMs: 0 }),
+  resetDb,
+}));
 
 const { QueryTimeoutError } = await import("./timing");
 const { ATTEMPT_MS, query } = await import("./query");
