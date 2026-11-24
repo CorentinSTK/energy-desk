@@ -4,6 +4,7 @@ import { ChartCard } from "@/components/chart-card";
 import { MultiLineChart } from "@/components/charts/multi-line-chart";
 import { SeasonalChart } from "@/components/charts/seasonal-chart";
 import { DataGapNotice } from "@/components/data-gap-notice";
+import { ErrorState } from "@/components/error-state";
 import { SourceEventNotice } from "@/components/freight/source-event-notice";
 import { KpiCard } from "@/components/kpi-card";
 import { chartInfo } from "@/lib/data/chart-info";
@@ -268,39 +269,43 @@ export async function ChokepointsTab({ ctx, strait }: { ctx: PageContext; strait
         )}
       </ChartCard>
 
-      <div className="overflow-x-auto rounded-lg border">
-        <table className="w-full min-w-[640px] text-sm">
-          <caption className="sr-only">
-            Chokepoints, latest 7-day means of transits and tanker cargo
-          </caption>
-          <thead className="bg-muted/50 text-left text-xs text-muted-foreground">
-            <tr>
-              <th className="px-3 py-2 font-medium">Chokepoint</th>
-              <th className="px-3 py-2 text-right font-medium">All vessels (per day)</th>
-              <th className="px-3 py-2 text-right font-medium">Tankers (per day)</th>
-              <th className="px-3 py-2 text-right font-medium">Tankers vs {ctx.rangeLabel}</th>
-              <th className="px-3 py-2 text-right font-medium">
-                Tanker cargo, IMF estimate (Mt/d)
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y">
-            {rows.map((r) => (
-              <tr key={r.choke.id}>
-                <td className="px-3 py-2">{r.choke.label}</td>
-                <td className="px-3 py-2 text-right">{formatNumber(r.allMean, 1)}</td>
-                <td className="px-3 py-2 text-right">{formatNumber(r.tankers?.value, 1)}</td>
-                <td className="px-3 py-2 text-right">
-                  {r.tankers?.deviationPct == null
-                    ? "—"
-                    : `${formatChange(r.tankers.deviationPct, 0)}%`}
-                </td>
-                <td className="px-3 py-2 text-right">{formatNumber(r.tonnesMean, 2)}</td>
+      {recentPoints === null ? (
+        <ErrorState />
+      ) : (
+        <div className="overflow-x-auto rounded-lg border">
+          <table className="w-full min-w-[640px] text-sm">
+            <caption className="sr-only">
+              Chokepoints, latest 7-day means of transits and tanker cargo
+            </caption>
+            <thead className="bg-muted/50 text-left text-xs text-muted-foreground">
+              <tr>
+                <th className="px-3 py-2 font-medium">Chokepoint</th>
+                <th className="px-3 py-2 text-right font-medium">All vessels (per day)</th>
+                <th className="px-3 py-2 text-right font-medium">Tankers (per day)</th>
+                <th className="px-3 py-2 text-right font-medium">Tankers vs {ctx.rangeLabel}</th>
+                <th className="px-3 py-2 text-right font-medium">
+                  Tanker cargo, IMF estimate (Mt/d)
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody className="divide-y">
+              {rows.map((r) => (
+                <tr key={r.choke.id}>
+                  <td className="px-3 py-2">{r.choke.label}</td>
+                  <td className="px-3 py-2 text-right">{formatNumber(r.allMean, 1)}</td>
+                  <td className="px-3 py-2 text-right">{formatNumber(r.tankers?.value, 1)}</td>
+                  <td className="px-3 py-2 text-right">
+                    {r.tankers?.deviationPct == null
+                      ? "—"
+                      : `${formatChange(r.tankers.deviationPct, 0)}%`}
+                  </td>
+                  <td className="px-3 py-2 text-right">{formatNumber(r.tonnesMean, 2)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
       <p className="text-xs text-muted-foreground">
         7-day means to the latest published day. Tanker cargo is an IMF model estimate (each
         ship&apos;s estimated payload times its deadweight tonnage), not a measured volume.

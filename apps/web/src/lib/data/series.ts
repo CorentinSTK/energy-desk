@@ -2,7 +2,8 @@ import "server-only";
 
 import { cacheLife } from "next/cache";
 
-import { db, ISO_UTC } from "./db";
+import { ISO_UTC } from "./db";
+import { query } from "./query";
 
 /** [ISO date (UTC), value] pairs, oldest first. */
 export type Points = [string, number][];
@@ -21,12 +22,15 @@ export interface SeasonalRow {
 export async function getPoints(code: string, fromIso: string): Promise<Points> {
   "use cache";
   cacheLife("hours");
-  const rows = await db()`
+  const rows = await query(
+    "getPoints",
+    (sql) => sql`
     select to_char(ts at time zone 'UTC', ${ISO_UTC}) as ts, value
     from web.observations
     where code = ${code} and ts >= ${fromIso}::timestamptz
     order by ts
-  `;
+  `,
+  );
   return rows.map((r) => [r.ts as string, Number(r.value)]);
 }
 
@@ -37,12 +41,15 @@ export async function getPointsMany(
 ): Promise<Map<string, Points>> {
   "use cache";
   cacheLife("hours");
-  const rows = await db()`
+  const rows = await query(
+    "getPointsMany",
+    (sql) => sql`
     select code, to_char(ts at time zone 'UTC', ${ISO_UTC}) as ts, value
     from web.observations
     where code = any(${codes}) and ts >= ${fromIso}::timestamptz
     order by code, ts
-  `;
+  `,
+  );
   const byCode = new Map<string, Points>(codes.map((c) => [c, []]));
   for (const r of rows) byCode.get(r.code as string)?.push([r.ts as string, Number(r.value)]);
   return byCode;
@@ -65,11 +72,14 @@ function toSeasonalRows(rows: Record<string, unknown>[]): SeasonalRow[] {
 export async function getSeasonal(code: string, year: number): Promise<SeasonalRow[]> {
   "use cache";
   cacheLife("hours");
-  const rows = await db()`
+  const rows = await query(
+    "getSeasonal",
+    (sql) => sql`
     select to_char(day, 'YYYY-MM-DD') as day, min_value, max_value, mean_value, years_count,
            current_value
     from web.seasonal_daily(${code}, ${year})
-  `;
+  `,
+  );
   return toSeasonalRows(rows);
 }
 
@@ -80,10 +90,13 @@ export async function getSeasonal(code: string, year: number): Promise<SeasonalR
 export async function getSeasonalWeekly(code: string, year: number): Promise<SeasonalRow[]> {
   "use cache";
   cacheLife("hours");
-  const rows = await db()`
+  const rows = await query(
+    "getSeasonalWeekly",
+    (sql) => sql`
     select to_char(day, 'YYYY-MM-DD') as day, min_value, max_value, mean_value, years_count,
            current_value
     from web.seasonal_weekly(${code}, ${year})
-  `;
+  `,
+  );
   return toSeasonalRows(rows);
 }

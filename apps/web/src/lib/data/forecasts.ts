@@ -2,7 +2,8 @@ import "server-only";
 
 import { cacheLife } from "next/cache";
 
-import { db, ISO_UTC } from "./db";
+import { ISO_UTC } from "./db";
+import { query } from "./query";
 
 export type ForecastKind = "live" | "backtest";
 
@@ -44,13 +45,16 @@ const num = (v: unknown) => (v === null || v === undefined ? null : Number(v));
 export async function getScores(modelId: string): Promise<ForecastScore[]> {
   "use cache";
   cacheLife("hours");
-  const rows = await db()`
+  const rows = await query(
+    "getScores",
+    (sql) => sql`
     select model_id, version, kind, horizon, n, mae, rmse, bias, mae_naive, mae_seasonal,
            skill_naive, skill_seasonal, coverage90, n_intervals
     from web.forecast_scores
     where model_id = ${modelId}
     order by kind, horizon
-  `;
+  `,
+  );
   return rows.map((r) => ({
     modelId: r.model_id as string,
     version: r.version as string,
@@ -78,7 +82,9 @@ export async function getForecasts(
 ): Promise<ForecastRow[]> {
   "use cache";
   cacheLife("hours");
-  const rows = await db()`
+  const rows = await query(
+    "getForecasts",
+    (sql) => sql`
     select to_char(issued_at at time zone 'UTC', ${ISO_UTC}) as issued_at,
            to_char(target_ts at time zone 'UTC', ${ISO_UTC}) as target_ts,
            horizon, point, lo90, hi90, realised,
@@ -89,7 +95,8 @@ export async function getForecasts(
     where model_id = ${modelId} and kind = ${kind} and horizon = ${horizon}
       and target_ts >= ${fromIso}::timestamptz
     order by target_ts, issued_at
-  `;
+  `,
+  );
   return rows.map(toRow);
 }
 
@@ -97,7 +104,9 @@ export async function getForecasts(
 export async function getLatestLive(modelId: string): Promise<ForecastRow[]> {
   "use cache";
   cacheLife("hours");
-  const rows = await db()`
+  const rows = await query(
+    "getLatestLive",
+    (sql) => sql`
     select to_char(issued_at at time zone 'UTC', ${ISO_UTC}) as issued_at,
            to_char(target_ts at time zone 'UTC', ${ISO_UTC}) as target_ts,
            horizon, point, lo90, hi90, realised,
@@ -109,7 +118,8 @@ export async function getLatestLive(modelId: string): Promise<ForecastRow[]> {
       and issued_at = (select max(issued_at) from web.forecasts
                        where model_id = ${modelId} and kind = 'live')
     order by horizon
-  `;
+  `,
+  );
   return rows.map(toRow);
 }
 

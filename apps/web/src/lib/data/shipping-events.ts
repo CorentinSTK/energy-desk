@@ -2,7 +2,7 @@ import "server-only";
 
 import { cacheLife } from "next/cache";
 
-import { db } from "./db";
+import { query } from "./query";
 
 /** A disruption event as published by IMF PortWatch (web.shipping_events, migration 011). */
 export interface ShippingEvent {
@@ -23,12 +23,15 @@ export interface ShippingEvent {
 export async function getShippingEvents(): Promise<ShippingEvent[]> {
   "use cache";
   cacheLife("hours");
-  const rows = await db()`
+  const rows = await query(
+    "getShippingEvents",
+    (sql) => sql`
     select event_id, code, name, description, alert_level, chokepoints,
            to_char(starts_on, 'YYYY-MM-DD') as starts_on, to_char(ends_on, 'YYYY-MM-DD') as ends_on
     from web.shipping_events
     order by starts_on
-  `;
+  `,
+  );
   return rows.map((r) => ({
     eventId: r.event_id,
     code: r.code,

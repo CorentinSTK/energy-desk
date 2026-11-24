@@ -47,14 +47,20 @@ export function db(): postgres.Sql {
   return client;
 }
 
+/** Seconds the old pool gets to finish queries in flight after a reset, before its sockets close. */
+const RESET_GRACE_S = 5;
+
 /**
- * Drop the pool so the next query reconnects. Called when a query times out: its connection is
+ * Swap in a new pool so the next query reconnects. Called when a query times out: its connection is
  * probably dead (frozen instance), and every query queued behind it would wait forever.
+ *
+ * The old pool is ended with a grace period, not at once: closing it immediately also failed the
+ * healthy queries running beside the hung one.
  */
 export function resetDb(): void {
   const old = client;
   client = undefined;
-  void old?.end({ timeout: 0 }).catch(() => undefined);
+  void old?.end({ timeout: RESET_GRACE_S }).catch(() => undefined);
 }
 
 /**
