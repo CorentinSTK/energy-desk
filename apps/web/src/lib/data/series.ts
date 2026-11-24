@@ -20,7 +20,7 @@ export interface SeasonalRow {
 
 /** Observations of one series since `fromIso` (inclusive), from web.observations. */
 export async function getPoints(code: string, fromIso: string): Promise<Points> {
-  "use cache";
+  "use cache: remote";
   cacheLife("hours");
   const rows = await query(
     "getPoints",
@@ -39,7 +39,7 @@ export async function getPointsMany(
   codes: string[],
   fromIso: string,
 ): Promise<Map<string, Points>> {
-  "use cache";
+  "use cache: remote";
   cacheLife("hours");
   const rows = await query(
     "getPointsMany",
@@ -70,7 +70,7 @@ function toSeasonalRows(rows: Record<string, unknown>[]): SeasonalRow[] {
 
 /** Five-year seasonal comparison for a daily series (web.seasonal_daily, migration 002). */
 export async function getSeasonal(code: string, year: number): Promise<SeasonalRow[]> {
-  "use cache";
+  "use cache: remote";
   cacheLife("hours");
   const rows = await query(
     "getSeasonal",
@@ -88,7 +88,7 @@ export async function getSeasonal(code: string, year: number): Promise<SeasonalR
  * 005). `day` is the Monday of the week in 2001; `year` is an ISO year.
  */
 export async function getSeasonalWeekly(code: string, year: number): Promise<SeasonalRow[]> {
-  "use cache";
+  "use cache: remote";
   cacheLife("hours");
   const rows = await query(
     "getSeasonalWeekly",

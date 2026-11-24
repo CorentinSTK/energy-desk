@@ -21,7 +21,7 @@ export interface ShippingEvent {
 }
 
 export async function getShippingEvents(): Promise<ShippingEvent[]> {
-  "use cache";
+  "use cache: remote";
   cacheLife("hours");
   const rows = await query(
     "getShippingEvents",

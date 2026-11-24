@@ -29,7 +29,7 @@ const num = (v: unknown) => (v === null || v === undefined ? null : Number(v));
 
 /** Latest-value measures for several series at once, keyed by code. Series without data are absent. */
 export async function getSnapshots(codes: string[]): Promise<Map<string, Snapshot>> {
-  "use cache";
+  "use cache: remote";
   cacheLife("hours");
   const rows = await query(
     "getSnapshots",

@@ -43,7 +43,7 @@ export interface ForecastRow {
 const num = (v: unknown) => (v === null || v === undefined ? null : Number(v));
 
 export async function getScores(modelId: string): Promise<ForecastScore[]> {
-  "use cache";
+  "use cache: remote";
   cacheLife("hours");
   const rows = await query(
     "getScores",
@@ -80,7 +80,7 @@ export async function getForecasts(
   horizon: number,
   fromIso: string,
 ): Promise<ForecastRow[]> {
-  "use cache";
+  "use cache: remote";
   cacheLife("hours");
   const rows = await query(
     "getForecasts",
@@ -102,7 +102,7 @@ export async function getForecasts(
 
 /** The latest live forecasts of a model (every horizon of the last issue date). */
 export async function getLatestLive(modelId: string): Promise<ForecastRow[]> {
-  "use cache";
+  "use cache: remote";
   cacheLife("hours");
   const rows = await query(
     "getLatestLive",
