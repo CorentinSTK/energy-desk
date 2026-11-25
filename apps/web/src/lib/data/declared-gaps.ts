@@ -126,7 +126,7 @@ export const DECLARED_GAPS: DeclaredGap[] = [
   {
     title: "Propane and butane futures",
     reason:
-      "NYMEX and ICE propane futures are licensed exchange data, and no free official source publishes them. Only spot prices are shown.",
+      "NYMEX and ICE propane futures prices are licensed exchange data, and no free official source publishes them. Only spot prices are shown; positioning (CFTC) is in the Positioning tab.",
     markets: ["lpg"],
   },
   {

@@ -262,3 +262,87 @@ series:
     publication_lag_days: 3
     plausible_min: 0
     plausible_max: 1500000
+  - code: cftc.propane.open_interest
+    name: Propane, Mont Belvieu (NYMEX) — open interest
+    commodity: lpg
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 42,000 GALLONS)"
+    frequency: weekly
+    source_ref: "06665O|open_interest_all"
+    description: NYMEX Mont Belvieu propane (OPIS) futures, contract market code 06665O (reported as "MT BELVIEU LDH PROPANE (OPIS)" until 2022, then "PROPANE"). Total open interest (futures only), contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 1500000
+  - code: cftc.propane.managed_money_long
+    name: Propane, Mont Belvieu (NYMEX) — managed money long
+    commodity: lpg
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 42,000 GALLONS)"
+    frequency: weekly
+    source_ref: "06665O|m_money_positions_long_all"
+    description: NYMEX Mont Belvieu propane (OPIS) futures, contract market code 06665O (reported as "MT BELVIEU LDH PROPANE (OPIS)" until 2022, then "PROPANE"). Long positions of managed money (CTAs, hedge funds, other money managers), contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 1500000
+  - code: cftc.propane.managed_money_short
+    name: Propane, Mont Belvieu (NYMEX) — managed money short
+    commodity: lpg
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 42,000 GALLONS)"
+    frequency: weekly
+    source_ref: "06665O|m_money_positions_short_all"
+    description: NYMEX Mont Belvieu propane (OPIS) futures, contract market code 06665O (reported as "MT BELVIEU LDH PROPANE (OPIS)" until 2022, then "PROPANE"). Short positions of managed money, contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 1500000
+  - code: cftc.propane.producer_long
+    name: Propane, Mont Belvieu (NYMEX) — producer/merchant long
+    commodity: lpg
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 42,000 GALLONS)"
+    frequency: weekly
+    source_ref: "06665O|prod_merc_positions_long"
+    description: NYMEX Mont Belvieu propane (OPIS) futures, contract market code 06665O (reported as "MT BELVIEU LDH PROPANE (OPIS)" until 2022, then "PROPANE"). Long positions of producers, merchants, processors and users (commercial hedgers), contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 1500000
+  - code: cftc.propane.producer_short
+    name: Propane, Mont Belvieu (NYMEX) — producer/merchant short
+    commodity: lpg
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 42,000 GALLONS)"
+    frequency: weekly
+    source_ref: "06665O|prod_merc_positions_short"
+    description: NYMEX Mont Belvieu propane (OPIS) futures, contract market code 06665O (reported as "MT BELVIEU LDH PROPANE (OPIS)" until 2022, then "PROPANE"). Short positions of producers, merchants, processors and users, contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 1500000
+  - code: cftc.propane.swap_long
+    name: Propane, Mont Belvieu (NYMEX) — swap dealer long
+    commodity: lpg
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 42,000 GALLONS)"
+    frequency: weekly
+    source_ref: "06665O|swap_positions_long_all"
+    description: NYMEX Mont Belvieu propane (OPIS) futures, contract market code 06665O (reported as "MT BELVIEU LDH PROPANE (OPIS)" until 2022, then "PROPANE"). Long positions of swap dealers, contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 1500000
+  - code: cftc.propane.swap_short
+    name: Propane, Mont Belvieu (NYMEX) — swap dealer short
+    commodity: lpg
+    region: US
+    unit: contracts
+    source_unit: "(CONTRACTS OF 42,000 GALLONS)"
+    frequency: weekly
+    source_ref: "06665O|swap__positions_short_all"
+    description: NYMEX Mont Belvieu propane (OPIS) futures, contract market code 06665O (reported as "MT BELVIEU LDH PROPANE (OPIS)" until 2022, then "PROPANE"). Short positions of swap dealers, contracts. Positions as of Tuesday, published on Friday.
+    publication_lag_days: 3
+    plausible_min: 0
+    plausible_max: 1500000

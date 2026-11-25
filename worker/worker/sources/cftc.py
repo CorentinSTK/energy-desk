@@ -8,7 +8,7 @@ Checked live on 2026-10-30:
   "WTI-PHYSICAL"); the contract market code did not, so series are addressed by code.
 - One row per Tuesday (positions as of that day), published the following Friday, later in
   holiday weeks. Values are numbers of contracts, as strings. History from 13 June 2006.
-- `contract_units` names the contract size; it is the same over the whole history of the three
+- `contract_units` names the contract size; it is the same over the whole history of the four
   markets used and must match the catalogue's `source_unit`.
 - Field names are irregular (e.g. `swap__positions_short_all` with two underscores).
 - Terms (cftc.gov/WebPolicy, read 2026-10-30): CFTC information is public domain and may be freely

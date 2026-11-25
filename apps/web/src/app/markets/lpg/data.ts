@@ -4,6 +4,7 @@ export const TABS = [
   { id: "prices", label: "Prices" },
   { id: "balance", label: "Balance & stocks" },
   { id: "flows", label: "Flows" },
+  { id: "positioning", label: "Positioning" },
   { id: "gaps", label: "Data gaps" },
 ] as const;
 export type Tab = (typeof TABS)[number]["id"];
