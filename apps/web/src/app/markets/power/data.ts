@@ -184,3 +184,19 @@ export function powerHref(tab: PowerTab, zone: ZoneId): string {
   const text = query.toString();
   return text ? `/markets/power?${text}` : "/markets/power";
 }
+
+/**
+ * Day-ahead base prices compared across European zones (phase 2). All from SMARD, which publishes
+ * Germany's neighbours; filter IDs checked against Energy-Charts (worker/catalog/smard.yaml).
+ * `colorIndex` is a 0-based index into the chart palette.
+ */
+export const EUROPEAN_ZONES = [
+  { code: "smard.de_lu.price_da_base", label: "Germany-Luxembourg", short: "DE-LU", colorIndex: 0 },
+  { code: "smard.fr.price_da_base", label: "France", short: "FR", colorIndex: 4 },
+  { code: "smard.nl.price_da_base", label: "Netherlands", short: "NL", colorIndex: 1 },
+  { code: "smard.be.price_da_base", label: "Belgium", short: "BE", colorIndex: 2 },
+  { code: "smard.at.price_da_base", label: "Austria", short: "AT", colorIndex: 3 },
+  { code: "smard.ch.price_da_base", label: "Switzerland", short: "CH", colorIndex: 5 },
+  { code: "smard.it_north.price_da_base", label: "Italy North", short: "IT-North", colorIndex: 6 },
+  { code: "smard.pl.price_da_base", label: "Poland", short: "PL", colorIndex: 7 },
+] as const;

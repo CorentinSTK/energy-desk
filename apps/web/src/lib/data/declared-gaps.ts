@@ -107,6 +107,12 @@ export const DECLARED_GAPS: DeclaredGap[] = [
     markets: ["power"],
   },
   {
+    title: "Load and generation outside Germany, France and Great Britain",
+    reason:
+      "Day-ahead prices for the Netherlands, Belgium, Austria, Switzerland, Italy North and Poland come from SMARD. Their load and generation mix need the ENTSO-E Transparency Platform, whose access token has not been granted yet.",
+    markets: ["power"],
+  },
+  {
     title: "EUA carbon price",
     reason: "No free, redistributable daily source confirmed yet.",
     markets: ["power"],
