@@ -28,7 +28,7 @@ import { cn } from "@/lib/utils";
 
 const CHART_HEIGHT = 320;
 
-// The three models are known in advance, so the id is checked before streaming starts: an unknown
+// The models are known in advance, so the id is checked before streaming starts: an unknown
 // id gets a real 404 status.
 export function generateStaticParams() {
   return FORECAST_MODELS.map((m) => ({ id: m.id }));

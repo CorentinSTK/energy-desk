@@ -1,5 +1,5 @@
 """Inputs read at issue time from outside the database: French public holidays and the weather
-forecast.
+forecasts (French temperatures; German wind and sunshine for the day-ahead price models).
 
 - Holidays: calendrier.api.gouv.fr (Etalab, Licence Ouverte), metropolitan France, checked live on
   2026-10-30 ({"YYYY-MM-DD": "name"}, about twenty years back and a few years ahead).
@@ -13,9 +13,12 @@ from typing import Any
 
 import httpx
 
-from worker.catalog import load_catalog
+from worker.catalog import SeriesSpec, load_catalog
+from worker.forecast.models.da_price import TargetWeather
+from worker.forecast.models.da_price import WeatherForTargets as PriceWeatherForTargets
 from worker.forecast.models.fr_power import CITY_WEIGHTS, WeatherForTargets
 from worker.http_client import get_json
+from worker.sources.open_meteo_de import parse_location
 
 HOLIDAYS_URL = "https://calendrier.api.gouv.fr/jours-feries/metropole.json"
 FORECAST_URL = "https://api.open-meteo.com/v1/forecast"
@@ -74,3 +77,49 @@ def forecast_weather(client: httpx.Client) -> WeatherForTargets:
         return {t: weighted[t] for t in targets if t in weighted}, "Open-Meteo weather forecast"
 
     return target_weather
+
+
+def forecast_price_weather(client: httpx.Client, french: bool) -> PriceWeatherForTargets:
+    """Live day-ahead price forecasts: German wind and solar indices from the Open-Meteo forecast,
+    for the same sites as the archive series (and the French temperature), fetched once."""
+    specs = load_catalog("open_meteo_de").series
+    locations = sorted({s.source_ref.split("|")[0] for s in specs})
+    body = get_json(
+        client,
+        FORECAST_URL,
+        {
+            "latitude": ",".join(loc.split(",")[0] for loc in locations),
+            "longitude": ",".join(loc.split(",")[1] for loc in locations),
+            "hourly": "wind_speed_100m",
+            "daily": "shortwave_radiation_sum",
+            "timezone": "Europe/Berlin",
+            "forecast_days": FORECAST_DAYS,
+        },
+    )
+    bodies = dict(zip(locations, body if isinstance(body, list) else [body], strict=True))
+    wind = price_weather_index(specs, bodies, "wind100")
+    solar = price_weather_index(specs, bodies, "radiation")
+    temperature = forecast_weather(client) if french else None
+
+    def target_weather(targets: list[date]) -> tuple[dict[date, TargetWeather], str]:
+        temps = temperature(targets)[0] if temperature else {}
+        out = {}
+        for t in targets:
+            if t in wind and t in solar and (not french or t in temps):
+                out[t] = TargetWeather(wind[t], solar[t], temps.get(t) if french else None)
+        return out, "Open-Meteo weather forecast"
+
+    return target_weather
+
+
+def price_weather_index(
+    specs: list[SeriesSpec], bodies: dict[str, dict[str, Any]], variable: str
+) -> dict[date, float]:
+    """Unweighted mean over the sites of one variable, for days every site has a value."""
+    per_site = []
+    for spec in specs:
+        location, kind = spec.source_ref.split("|")
+        if kind == variable:
+            per_site.append({o.ts.date(): o.value for o in parse_location(bodies[location], spec)})
+    days = set.intersection(*(set(s) for s in per_site)) if per_site else set()
+    return {d: sum(s[d] for s in per_site) / len(per_site) for d in sorted(days)}

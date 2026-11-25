@@ -20,8 +20,9 @@ from worker.forecast import registry
 from worker.forecast.backtest import backtest
 from worker.forecast.core import Forecast, Model, with_interval
 from worker.forecast.data import History
-from worker.forecast.live_inputs import fetch_holidays, forecast_weather
+from worker.forecast.live_inputs import fetch_holidays, forecast_price_weather, forecast_weather
 from worker.forecast.metrics import score
+from worker.forecast.models import da_price
 from worker.forecast.models.eu_storage import EuStorage30d
 from worker.forecast.models.fr_power import FrPowerDemand, observed_weather
 from worker.forecast.models.us_crude import UsCrudeStocks
@@ -31,17 +32,28 @@ MODEL_CLASSES: dict[str, type[Model]] = {
     "eu_storage_30d": EuStorage30d,
     "fr_power_demand": FrPowerDemand,
     "us_crude_stocks": UsCrudeStocks,
+    "de_lu_da_price": da_price.DayAheadPrice,
+    "fr_da_price": da_price.DayAheadPrice,
 }
 
 
 def build_models(ids: Sequence[str], history: History, live: bool) -> list[Model]:
-    """Instantiate models; the French demand model needs holidays and target-day weather."""
+    """Instantiate models; weather-driven models need target-day weather (and French holidays)."""
     models: list[Model] = []
     with make_client() as client:
         for model_id in ids:
             if model_id == "fr_power_demand":
                 weather = forecast_weather(client) if live else observed_weather(history)
                 models.append(FrPowerDemand(fetch_holidays(client), weather))
+            elif model_id.endswith("_da_price"):
+                zone = da_price.ZONES[model_id.removesuffix("_da_price")]
+                price_weather = (
+                    forecast_price_weather(client, zone.french)
+                    if live
+                    else da_price.observed_weather(history, zone.french)
+                )
+                holidays = fetch_holidays(client) if zone.french else None
+                models.append(da_price.DayAheadPrice(zone, price_weather, holidays))
             else:
                 models.append(MODEL_CLASSES[model_id]())
     return models

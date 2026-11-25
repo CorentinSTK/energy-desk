@@ -105,6 +105,62 @@ export const FORECAST_MODELS: ForecastModelInfo[] = [
     ],
     href: "/markets/crude?tab=balance",
   },
+  {
+    id: "de_lu_da_price",
+    name: "Germany-Luxembourg day-ahead price",
+    target:
+      "Germany-Luxembourg day-ahead base price (average of the hourly auction prices) of the day after tomorrow",
+    targetCode: "smard.de_lu.price_da_base",
+    commodity: "power",
+    horizons: [2],
+    headlineHorizon: 2,
+    horizonUnit: "day",
+    cadence: "Daily, in the evening, after the noon auction has priced tomorrow",
+    decimals: 1,
+    method: [
+      "Forecasts are issued in the evening, when the noon auction has already priced tomorrow, so the target is the day after tomorrow and tomorrow's price is the latest known value. That price carries the cost level of gas and carbon.",
+      "A linear regression, refitted on the past year, then adjusts it for German wind and sunshine on the target day (mean wind speed at 100 m over six wind sites, solar radiation over six solar sites, both from Open-Meteo), which push prices down across the coupled market, and for the day of the week.",
+    ],
+    baselines: {
+      naive: "Tomorrow's price, the latest known: no change.",
+      seasonal: "The price on the same weekday one week before the target.",
+    },
+    limits: [
+      "Backtests use the observed weather of each target day, a perfect weather forecast; live forecasts use the Open-Meteo forecast, so live errors will be larger than backtest errors.",
+      "Wind and sunshine are proxies for wind and solar output, which are not forecast directly: the official day-ahead generation forecasts are published after the auction.",
+      "German public holidays are not modelled.",
+      "Gas and carbon prices, plant outages and interconnector limits are not modelled; they enter only through the latest known price.",
+    ],
+    href: "/markets/power",
+  },
+  {
+    id: "fr_da_price",
+    name: "France day-ahead price",
+    target:
+      "France day-ahead base price (average of the hourly auction prices) of the day after tomorrow",
+    targetCode: "smard.fr.price_da_base",
+    commodity: "power",
+    horizons: [2],
+    headlineHorizon: 2,
+    horizonUnit: "day",
+    cadence: "Daily, in the evening, after the noon auction has priced tomorrow",
+    decimals: 1,
+    method: [
+      "Forecasts are issued in the evening, when the noon auction has already priced tomorrow, so the target is the day after tomorrow and tomorrow's price is the latest known value. That price carries the cost level of gas and carbon.",
+      "A linear regression, refitted on the past year, then adjusts it for German wind and sunshine on the target day (mean wind speed at 100 m over six wind sites, solar radiation over six solar sites, both from Open-Meteo), which push prices down across the coupled market, and for the day of the week; for France also heating degree-days of the population-weighted temperature (eight cities) and public holidays.",
+    ],
+    baselines: {
+      naive: "Tomorrow's price, the latest known: no change.",
+      seasonal: "The price on the same weekday one week before the target.",
+    },
+    limits: [
+      "Backtests use the observed weather of each target day, a perfect weather forecast; live forecasts use the Open-Meteo forecast, so live errors will be larger than backtest errors.",
+      "Wind and sunshine are proxies for wind and solar output, which are not forecast directly: the official day-ahead generation forecasts are published after the auction.",
+      "French prices depend heavily on nuclear availability, for which there is no free source: expect a small edge over tomorrow's price.",
+      "Gas and carbon prices, plant outages and interconnector limits are not modelled; they enter only through the latest known price.",
+    ],
+    href: "/markets/power?zone=fr",
+  },
 ];
 
 export function modelInfo(id: string): ForecastModelInfo | undefined {

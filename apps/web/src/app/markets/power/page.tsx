@@ -113,7 +113,7 @@ async function PowerContent({
         </Link>
         .
       </p>
-      <RelatedForecasts ids={["fr_power_demand"]} />
+      <RelatedForecasts ids={["de_lu_da_price", "fr_da_price", "fr_power_demand"]} />
       <RelatedPresets ids={["de_fr_mean_reversion"]} />
     </>
   );
