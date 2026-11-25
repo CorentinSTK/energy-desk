@@ -18,6 +18,7 @@ import { latestLevelTakeaway, seasonalLevelTakeaway } from "@/lib/takeaways";
 import { cn } from "@/lib/utils";
 
 import { FLOWS, type PowerZone, powerHref, type PowerTab, ZONES } from "./data";
+import { CouplingMatrix } from "./coupling";
 import { EuropeanZones } from "./zones";
 
 const MAIN_HEIGHT = 320;
@@ -360,6 +361,7 @@ export async function PricesTab({ ctx, zone }: { ctx: PageContext; zone: PowerZo
 
       {zone.id === "gb" ? <GbPriceYear ctx={ctx} zone={zone} /> : <DeFrComparison ctx={ctx} />}
       {zone.id !== "gb" && <EuropeanZones ctx={ctx} />}
+      {zone.id !== "gb" && <CouplingMatrix ctx={ctx} />}
 
       <DataGapNotice
         title="No forward curve for power"

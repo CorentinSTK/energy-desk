@@ -71,3 +71,27 @@ Timing constraints:
 - 90 % intervals covered 85 % in the backtest: slightly too narrow, and reported as such by the
   scores.
 - Twelve new weather series (`open_meteo_de`), ingested daily with the French temperatures.
+
+## Update — version 2: recent days weighted more (2026-11-25)
+
+The one-year fit reacted late to the autumn 2026 price rise (DE-LU bias about −32 €/MWh). Variants were
+compared on the same walk-forward backtest (1 Jan 2020 to 25 Nov 2026, observed weather):
+
+| Variant | DE-LU MAE | DE-LU skill vs naive | FR MAE | FR skill vs naive | DE-LU bias, autumn 2026 |
+|---|---|---|---|---|---|
+| Version 1 (unweighted year) | 21.3 | 17 % | 18.5 | 10 % | −32.2 |
+| Half-life 30 days | 18.2 | 29 % | 17.3 | 16 % | −13.4 |
+| **Half-life 45 days (version 2)** | **18.4** | **28 %** | **17.1** | **17 %** | **−16.6** |
+| Half-life 60 days | 18.6 | 27 % | 17.2 | 16 % | −19.2 |
+| Half-life 90 days | 19.1 | 25 % | 17.4 | 15 % | −22.5 |
+| Price change as target (coefficient 1 on the last price) | 22.0 | 14 % | 17.8 | 13 % | +0.3 |
+| Version 1 + German public holidays | 21.2 | 18 % | — | — | −33.0 |
+
+Decision: weighted least squares, each training day weighted 0.5^(age / 45 days); the training window
+stays one year. Every half-life helped both zones; 45 days is the middle value, chosen to avoid tuning to
+the decimal on the period being scored. Modelling the price change removes the bias but loses accuracy
+(it trusts yesterday's level fully); German public holidays changed nothing and are left out.
+
+Caveat: the half-life was chosen on the same backtest it is scored on, so the gain is slightly
+optimistic; the live track record is the real test. Version 1 live forecasts stay in the registry
+under their version.

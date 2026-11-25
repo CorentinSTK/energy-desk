@@ -87,3 +87,14 @@ test.describe("power market page", () => {
     ).toBeVisible();
   });
 });
+
+test("the zone gap matrix is shown for continental zones, not for GB", async ({ page }) => {
+  await page.goto("/markets/power");
+  await expect(
+    page.getByRole("heading", { name: "Which zones trade close together?" }),
+  ).toBeVisible();
+  await page.goto("/markets/power?zone=gb");
+  await expect(
+    page.getByRole("heading", { name: "Which zones trade close together?" }),
+  ).toHaveCount(0);
+});
