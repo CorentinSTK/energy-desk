@@ -31,11 +31,13 @@ a stored observation. Missing data is shown as missing, never estimated.
 - **[Methodology](https://energy-desk-two.vercel.app/methodology):** how each number is computed, and
   the licence of each source.
 
-| Gas (light theme) | Forecast registry |
-|---|---|
-| ![Gas page: EU storage against the 2021–2025 range](docs/screenshots/gas-light.png) | ![Forecast page: EU storage, forecast against outcome](docs/screenshots/forecasts-dark.png) |
-| **Power** | **Lab: rule backtester** |
-| ![Power page](docs/screenshots/power-dark.png) | ![Lab backtester: Brent–WTI mean reversion](docs/screenshots/lab-dark.png) |
+| Gas (light theme)                                                                                       | Forecast registry                                                                           |
+| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| ![Gas page: EU storage against the 2021–2025 range](docs/screenshots/gas-light.png)                     | ![Forecast page: EU storage, forecast against outcome](docs/screenshots/forecasts-dark.png) |
+| **Power**                                                                                               | **Lab: rule backtester**                                                                    |
+| ![Power page](docs/screenshots/power-dark.png)                                                          | ![Lab backtester: Brent–WTI mean reversion](docs/screenshots/lab-dark.png)                  |
+| **Freight & shipping**                                                                                  | **Home (light theme)**                                                                      |
+| ![Freight page: tanker transits through the oil and LNG chokepoints](docs/screenshots/freight-dark.png) | ![Home in the light theme](docs/screenshots/home-light.png)                                 |
 
 ## Data principles
 
