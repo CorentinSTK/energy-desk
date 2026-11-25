@@ -573,3 +573,119 @@ series:
     plausible_min: 5
     plausible_max: 200
     licence: *spot_licence
+  # United States (phase 2): context for the European gas and power pages.
+  - code: eia.us_gas_storage
+    name: US working gas in storage, Lower 48
+    commodity: natgas
+    region: US
+    unit: Bcf
+    source_unit: BCF
+    frequency: weekly
+    source_ref: natural-gas/stor/wkly|NW2_EPG0_SWO_R48_BCF
+    description: Weekly working gas in underground storage, Lower 48 states, billion cubic feet (Friday stocks, published on Thursday).
+    publication_lag_days: 7
+    plausible_min: 500
+    plausible_max: 5000
+  - code: eia.us_lng_exports
+    name: US LNG exports
+    commodity: lng
+    region: US
+    unit: MMcf/mo
+    source_unit: MMCF
+    frequency: monthly
+    source_ref: natural-gas/move/expc|N9133US2
+    description: US liquefied natural gas exports, million cubic feet per month (monthly, about three months behind).
+    publication_lag_days: 100
+    plausible_min: 0
+    plausible_max: 2000000
+  - code: eia.us48_demand
+    name: US Lower 48 electricity demand, daily
+    commodity: power
+    region: US
+    unit: MWh/d
+    source_unit: megawatthours
+    frequency: daily
+    source_ref: electricity/rto/daily-region-data|respondent=US48;type=D;timezone=Eastern
+    description: EIA-930 hourly demand of the Lower 48 balancing authorities, summed by EIA over each day in US Eastern time, MWh.
+    publication_lag_days: 3
+    incomplete_recent_days: 2  # the latest Eastern day fills in hour by hour
+    plausible_min: 4000000
+    plausible_max: 25000000
+  - code: eia.us48.gen.ng
+    name: US Lower 48 generation from natural gas, daily
+    commodity: power
+    region: US
+    unit: MWh/d
+    source_unit: megawatthours
+    frequency: daily
+    source_ref: electricity/rto/daily-fuel-type-data|respondent=US48;fueltype=NG;timezone=Eastern
+    description: EIA-930 net generation from natural gas, Lower 48 balancing authorities, summed by EIA over each day in US Eastern time, MWh.
+    publication_lag_days: 3
+    incomplete_recent_days: 2
+    plausible_min: 0
+    plausible_max: 15000000
+  - code: eia.us48.gen.col
+    name: US Lower 48 generation from coal, daily
+    commodity: power
+    region: US
+    unit: MWh/d
+    source_unit: megawatthours
+    frequency: daily
+    source_ref: electricity/rto/daily-fuel-type-data|respondent=US48;fueltype=COL;timezone=Eastern
+    description: EIA-930 net generation from coal, Lower 48 balancing authorities, summed by EIA over each day in US Eastern time, MWh.
+    publication_lag_days: 3
+    incomplete_recent_days: 2
+    plausible_min: 0
+    plausible_max: 15000000
+  - code: eia.us48.gen.nuc
+    name: US Lower 48 generation from nuclear, daily
+    commodity: power
+    region: US
+    unit: MWh/d
+    source_unit: megawatthours
+    frequency: daily
+    source_ref: electricity/rto/daily-fuel-type-data|respondent=US48;fueltype=NUC;timezone=Eastern
+    description: EIA-930 net generation from nuclear, Lower 48 balancing authorities, summed by EIA over each day in US Eastern time, MWh.
+    publication_lag_days: 3
+    incomplete_recent_days: 2
+    plausible_min: 0
+    plausible_max: 15000000
+  - code: eia.us48.gen.wnd
+    name: US Lower 48 generation from wind, daily
+    commodity: power
+    region: US
+    unit: MWh/d
+    source_unit: megawatthours
+    frequency: daily
+    source_ref: electricity/rto/daily-fuel-type-data|respondent=US48;fueltype=WND;timezone=Eastern
+    description: EIA-930 net generation from wind, Lower 48 balancing authorities, summed by EIA over each day in US Eastern time, MWh.
+    publication_lag_days: 3
+    incomplete_recent_days: 2
+    plausible_min: 0
+    plausible_max: 15000000
+  - code: eia.us48.gen.sun
+    name: US Lower 48 generation from solar, daily
+    commodity: power
+    region: US
+    unit: MWh/d
+    source_unit: megawatthours
+    frequency: daily
+    source_ref: electricity/rto/daily-fuel-type-data|respondent=US48;fueltype=SUN;timezone=Eastern
+    description: EIA-930 net generation from solar, Lower 48 balancing authorities, summed by EIA over each day in US Eastern time, MWh.
+    publication_lag_days: 3
+    incomplete_recent_days: 2
+    plausible_min: 0
+    plausible_max: 15000000
+  - code: eia.us48.gen.wat
+    name: US Lower 48 generation from hydro, daily
+    commodity: power
+    region: US
+    unit: MWh/d
+    source_unit: megawatthours
+    frequency: daily
+    source_ref: electricity/rto/daily-fuel-type-data|respondent=US48;fueltype=WAT;timezone=Eastern
+    description: EIA-930 net generation from hydro, Lower 48 balancing authorities, summed by EIA over each day in US Eastern time, MWh.
+    publication_lag_days: 3
+    incomplete_recent_days: 2
+    plausible_min: 0
+    plausible_max: 15000000

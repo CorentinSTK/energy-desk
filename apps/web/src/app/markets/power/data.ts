@@ -163,6 +163,7 @@ export const TABS = [
   { id: "balance", label: "Balance & stocks" },
   { id: "flows", label: "Flows" },
   { id: "positioning", label: "Positioning" },
+  { id: "us", label: "United States" },
   { id: "gaps", label: "Data gaps" },
 ] as const;
 export type PowerTab = (typeof TABS)[number]["id"];

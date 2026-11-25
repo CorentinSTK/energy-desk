@@ -8,6 +8,7 @@ const PAGES = [
   "/",
   "/markets/gas",
   "/markets/gas?tab=flows",
+  "/markets/gas?tab=us",
   "/markets/lng",
   "/markets/power",
   "/markets/crude",

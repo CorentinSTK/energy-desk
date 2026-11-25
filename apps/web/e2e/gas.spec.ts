@@ -66,4 +66,14 @@ test.describe("gas market page", () => {
     );
     expect(overflow).toBeLessThanOrEqual(0);
   });
+
+  test("the United States tab shows US storage, Henry Hub and LNG exports", async ({ page }) => {
+    await page.goto("/markets/gas?tab=us");
+    await expect(
+      page.getByRole("heading", { name: "Is US gas storage high or low for the season?" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "How much LNG is the US exporting?" }),
+    ).toBeVisible();
+  });
 });

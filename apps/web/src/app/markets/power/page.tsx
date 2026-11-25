@@ -24,6 +24,7 @@ import {
   PricesTab,
   ZoneNav,
 } from "./sections";
+import { UsTab } from "./us";
 
 export const metadata: Metadata = {
   title: "European power — Energy Desk",
@@ -128,6 +129,8 @@ function TabContent({ tab, zone, ctx }: { tab: PowerTab; zone: PowerZone; ctx: P
       return <FlowsTab ctx={ctx} zone={zone} />;
     case "positioning":
       return <PositioningTab />;
+    case "us":
+      return <UsTab ctx={ctx} />;
     case "gaps":
       return <GapsTab />;
   }
