@@ -608,3 +608,10 @@ Still open:
 - DA price forecasts version 2: recency-weighted fit (half-life 45 days). Backtest 2020–2026: DE-LU
   MAE 21.3 → 18.4 €/MWh (skill vs naive 17 % → 28 %), FR 18.5 → 17.1 (10 % → 17 %). Alternatives
   tested and rejected are in ADR 0016.
+
+## 2026-11-25 — Pipeline status and "How it is built"
+
+- /data: Pipeline status grid (latest run, last success, fresh/delayed/stale split per source);
+  footer link "Status". Added the missing Open-Meteo (Germany) source label.
+- /about: key figures read from the catalogue (sources, series, observations, first observation),
+  a four-step architecture diagram and the engineering principles, linked to the ADRs.
