@@ -230,3 +230,16 @@ export function metricText(metric: Metric, value: number | null): string {
       return `${formatPercentile(value)} of 5 years`;
   }
 }
+
+/** The value alone, for compact lists where the measure is named in the heading: "−16.3%". */
+export function metricShort(metric: Metric, value: number | null): string {
+  if (value === null) return "no data";
+  switch (metric) {
+    case "seasonal":
+      return `${formatChange(value, 1)}%`;
+    case "move":
+      return `${formatChange(value, 1)}σ`;
+    case "percentile":
+      return formatPercentile(value);
+  }
+}

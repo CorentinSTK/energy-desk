@@ -9,6 +9,7 @@ import {
   formatNumber,
   formatPercentChange,
   formatPercentile,
+  formatShortDate,
 } from "./format";
 
 describe("formatNumber", () => {
@@ -94,5 +95,18 @@ describe("decimalsFor", () => {
     expect(decimalsFor("$/MMBtu")).toBe(3);
     expect(decimalsFor("TWh")).toBe(1);
     expect(decimalsFor("unknown")).toBe(2);
+  });
+});
+
+describe("formatShortDate", () => {
+  const now = new Date("2026-11-25T12:00:00Z");
+  it("drops the year in the current year", () => {
+    expect(formatShortDate("2026-11-23T00:00:00Z", now)).toBe("23 Nov");
+  });
+  it("keeps the year for earlier years", () => {
+    expect(formatShortDate("2025-12-31T00:00:00Z", now)).toBe("31 Dec 2025");
+  });
+  it("shows a dash when missing", () => {
+    expect(formatShortDate(null, now)).toBe(formatDate(null));
   });
 });

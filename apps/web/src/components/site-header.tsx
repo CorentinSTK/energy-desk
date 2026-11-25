@@ -1,42 +1,31 @@
 import Link from "next/link";
 
+import { SiteNav } from "@/components/site-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
 
-const NAV = [
-  { href: "/markets/gas", label: "Gas" },
-  { href: "/markets/lng", label: "LNG" },
-  { href: "/markets/power", label: "Power" },
-  { href: "/markets/crude", label: "Crude" },
-  { href: "/markets/products", label: "Products" },
-  { href: "/markets/lpg", label: "LPG" },
-  { href: "/markets/freight", label: "Freight" },
-  { href: "/forecasts", label: "Forecasts" },
-  { href: "/lab", label: "Lab" },
-  { href: "/data", label: "Data" },
-  { href: "/methodology", label: "Methodology" },
-];
+/** The brand mark: three rising bars, in the accent colour. Decorative; the name carries the meaning. */
+function LogoMark() {
+  return (
+    <svg viewBox="0 0 24 24" className="size-6 shrink-0" aria-hidden>
+      <rect width="24" height="24" rx="6" fill="var(--primary)" />
+      <rect x="6" y="12" width="3" height="6" rx="1" fill="var(--primary-foreground)" />
+      <rect x="10.5" y="8.5" width="3" height="9.5" rx="1" fill="var(--primary-foreground)" />
+      <rect x="15" y="5.5" width="3" height="12.5" rx="1" fill="var(--primary-foreground)" />
+    </svg>
+  );
+}
 
-/** Site-wide header: name, market links, theme toggle. The style guide is deliberately not linked. */
+/** Site-wide header: name, navigation, theme toggle. The style guide is deliberately not linked. */
 export function SiteHeader() {
   return (
-    <header className="border-b">
+    <header className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur-md supports-[backdrop-filter]:bg-background/70">
       <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between gap-4 px-4">
-        <Link href="/" className="shrink-0 font-semibold tracking-tight">
-          Energy Desk
+        <Link href="/" className="flex shrink-0 items-center gap-2 font-semibold tracking-tight">
+          <LogoMark />
+          <span>Energy Desk</span>
         </Link>
         <div className="flex min-w-0 items-center gap-1">
-          {/* On a phone the links scroll sideways rather than push the page wider. */}
-          <nav aria-label="Main" className="flex min-w-0 items-center overflow-x-auto text-sm">
-            {NAV.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="shrink-0 rounded-md px-2 py-1.5 whitespace-nowrap text-text-secondary transition-colors hover:bg-muted hover:text-foreground sm:px-2.5"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
+          <SiteNav />
           <ThemeToggle />
         </div>
       </div>

@@ -8,6 +8,7 @@ import {
   homeHref,
   layerSeries,
   legend,
+  metricShort,
   metricText,
   metricValue,
   parseHomeParams,
@@ -99,5 +100,13 @@ describe("metricText", () => {
     expect(metricText("move", 2.04)).toBe("+2.0σ latest move");
     expect(metricText("percentile", 97.1)).toBe("97th pct of 5 years");
     expect(metricText("move", null)).toBe("no data");
+  });
+});
+
+describe("metricShort", () => {
+  it("gives the value without the measure name", () => {
+    expect(metricShort("seasonal", -16.3)).toBe("−16.3%");
+    expect(metricShort("move", 2.04)).toBe("+2.0σ");
+    expect(metricShort("percentile", null)).toBe("no data");
   });
 });

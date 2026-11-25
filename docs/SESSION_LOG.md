@@ -572,3 +572,14 @@ Still open:
   - EUA and clean spreads stay declared gaps.
 - Not done: Japan power (JEPX terms not checked), EEX MiFID position reports (EEX terms).
 - Live after the deploys: the LPG, power, US-tab and forecast pages return 200 with no error cards.
+
+## 2026-11-25 — Visual pass, step 1: header and home page
+
+- Header: brand mark, sticky translucent bar, markets and tools separated, current section highlighted.
+- Home: larger title block; benchmark strip as one ribbon (commodity dot, monospaced figures, change
+  pill, short dates, freshness count); map controls as segmented controls inside the map card; legend
+  as a colour bar under the map; side panel ranks the most unusual countries when nothing is selected;
+  "Today in energy" cards tagged by market.
+- No change to charts, data or colours. Checked: lint, typecheck, format, 303 unit tests, home, smoke
+  and mobile e2e (56), screenshots in both themes and at 390 px.
+- Next: extend the look (market headers, KPI cards, tabs) to the market pages once approved.

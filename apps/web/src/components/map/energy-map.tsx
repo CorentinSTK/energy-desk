@@ -139,7 +139,7 @@ export function EnergyMap({
               fill={colorFor(state.metric, value)}
               stroke={selected ? "var(--primary)" : "var(--map-stroke)"}
               strokeWidth={selected ? 2 : 0.6}
-              className="transition-opacity hover:opacity-80"
+              className="transition-[opacity,stroke] hover:[stroke:var(--foreground)] hover:[stroke-width:1.2] hover:opacity-90"
             >
               <title>{`${country.name}: ${metricText(state.metric, value)}`}</title>
             </path>
