@@ -12,7 +12,15 @@ import { isDatabaseConfigured } from "@/lib/data/db";
 import { loadContext, type PageContext } from "@/lib/data/page-context";
 
 import { lpgHref, parseLpgParams, type Tab, TABS } from "./data";
-import { BalanceTab, FlowsTab, GapsTab, LpgKpis, MainRatioChart, PricesTab } from "./sections";
+import {
+  BalanceTab,
+  FlowsTab,
+  GapsTab,
+  LpgKpis,
+  MainRatioChart,
+  PositioningTab,
+  PricesTab,
+} from "./sections";
 
 export const metadata: Metadata = {
   title: "LPG (propane) — Energy Desk",
@@ -106,6 +114,8 @@ function TabContent({ tab, ctx }: { tab: Tab; ctx: PageContext }) {
       return <BalanceTab ctx={ctx} />;
     case "flows":
       return <FlowsTab ctx={ctx} />;
+    case "positioning":
+      return <PositioningTab ctx={ctx} />;
     case "gaps":
       return <GapsTab />;
   }

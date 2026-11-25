@@ -63,4 +63,17 @@ test.describe("power market page", () => {
     );
     expect(overflow).toBeLessThanOrEqual(0);
   });
+
+  test("Germany and France compare day-ahead prices across eight European zones", async ({
+    page,
+  }) => {
+    await page.goto("/markets/power");
+    await expect(
+      page.getByRole("heading", { name: "How do day-ahead prices compare across Europe?" }),
+    ).toBeVisible();
+    await page.goto("/markets/power?zone=gb");
+    await expect(
+      page.getByRole("heading", { name: "How do day-ahead prices compare across Europe?" }),
+    ).toHaveCount(0);
+  });
 });

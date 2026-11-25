@@ -1,5 +1,6 @@
 import { DataGapNotice } from "@/components/data-gap-notice";
 import { KpiCard } from "@/components/kpi-card";
+import { CotPanel } from "@/components/markets/cot-panel";
 import { LinesCard } from "@/components/markets/lines-card";
 import { WeeklySeasonalCard } from "@/components/markets/weekly-seasonal-card";
 import {
@@ -247,6 +248,22 @@ export function FlowsTab({ ctx }: { ctx: PageContext }) {
       decimals={0}
       height={CHART_HEIGHT}
       ariaLabel="US propane exports, weekly, three years"
+    />
+  );
+}
+
+// Positioning ------------------------------------------------------------------------------------
+
+export function PositioningTab({ ctx }: { ctx: PageContext }) {
+  return (
+    <CotPanel
+      ctx={ctx}
+      market={{
+        key: "propane",
+        name: "Mont Belvieu propane",
+        contract: "NYMEX Mont Belvieu propane (OPIS)",
+        commodity: "lpg",
+      }}
     />
   );
 }

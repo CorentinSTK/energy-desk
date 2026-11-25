@@ -12,11 +12,31 @@ on:
       source:
         description: Source to ingest
         type: choice
-        options: [cftc, ec_wob, ecb, eia, elexon, entsog, fred, gie_agsi, gie_alsi, odre, open_meteo, portwatch, smard, yahoo]
+        options:
+          [
+            cftc,
+            ec_wob,
+            ecb,
+            eia,
+            elexon,
+            entsog,
+            fred,
+            gie_agsi,
+            gie_alsi,
+            odre,
+            open_meteo,
+            portwatch,
+            smard,
+            yahoo,
+          ]
       backfill:
         description: Fetch the full history
         type: boolean
         default: false
+      series:
+        description: Only these series codes, space-separated (empty means every series of the source)
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -73,4 +93,11 @@ jobs:
         env:
           SOURCE: ${{ matrix.source }}
           BACKFILL: ${{ inputs.backfill && '--backfill' || '' }}
-        run: uv run --no-dev python -m worker.ingest --source "$SOURCE" $BACKFILL
+          SERIES: ${{ inputs.series }}
+        run: |
+          # Series codes are lowercase words with dots, underscores and hyphens; reject anything else.
+          if [[ -n "$SERIES" && ! "$SERIES" =~ ^[a-z0-9._\ -]+$ ]]; then
+            echo "Invalid series list: $SERIES" >&2
+            exit 1
+          fi
+          uv run --no-dev python -m worker.ingest --source "$SOURCE" $BACKFILL ${SERIES:+--series $SERIES}

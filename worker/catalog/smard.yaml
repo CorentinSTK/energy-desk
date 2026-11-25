@@ -1,7 +1,9 @@
 # SMARD (Bundesnetzagentur) — German power market data and neighbouring day-ahead prices, no key.
 # Terms (read 2026-10-29, https://www.smard.de/en/datennutzung): data is freely available for public use
 # (EnWG §111d) under CC BY 4.0; attribute to "Bundesnetzagentur | SMARD.de". SMARD receives the data
-# from ENTSO-E. Filter IDs checked live on 2026-10-29 (see worker/sources/smard.py).
+# from ENTSO-E. Filter IDs checked live on 2026-10-29 (see worker/sources/smard.py). Neighbour zones
+# (phase 2) checked on 2026-11-25 against Energy-Charts, 48 hours each, max difference 0.01 €/MWh:
+# 256 NL, 4996 BE, 4170 AT, 259 CH, 255 IT-North, 257 PL.
 # Daily series are the average power (MW) or average price over complete Europe/Berlin delivery days
 # (worker/power.py). Plausible ranges are generous physical bounds: they catch unit errors, not records.
 source: smard
@@ -59,6 +61,156 @@ series:
     description: Average of the hourly day-ahead prices over the delivery day (Europe/Berlin), complete days only.
     price_kind: spot
     delivery_lead_days: 1  # the auction at noon CET prices tomorrow's hours
+    plausible_min: -600
+    plausible_max: 10000
+  - code: smard.nl.price_da
+    name: Netherlands day-ahead price, hourly
+    commodity: power
+    region: NL
+    unit: "€/MWh"
+    frequency: hourly
+    source_ref: "256|DE-LU|hourly"
+    description: Day-ahead (SDAC) auction price per hour, as published by SMARD for Germany's neighbours.
+    price_kind: spot
+    delivery_lead_days: 1
+    plausible_min: -600
+    plausible_max: 10000
+  - code: smard.nl.price_da_base
+    name: Netherlands day-ahead base price
+    commodity: power
+    region: NL
+    unit: "€/MWh"
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "256|DE-LU|daily_mean"
+    description: Average of the hourly day-ahead prices over the delivery day (Europe/Berlin), complete days only.
+    price_kind: spot
+    delivery_lead_days: 1
+    plausible_min: -600
+    plausible_max: 10000
+  - code: smard.be.price_da
+    name: Belgium day-ahead price, hourly
+    commodity: power
+    region: BE
+    unit: "€/MWh"
+    frequency: hourly
+    source_ref: "4996|DE-LU|hourly"
+    description: Day-ahead (SDAC) auction price per hour, as published by SMARD for Germany's neighbours.
+    price_kind: spot
+    delivery_lead_days: 1
+    plausible_min: -600
+    plausible_max: 10000
+  - code: smard.be.price_da_base
+    name: Belgium day-ahead base price
+    commodity: power
+    region: BE
+    unit: "€/MWh"
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "4996|DE-LU|daily_mean"
+    description: Average of the hourly day-ahead prices over the delivery day (Europe/Berlin), complete days only.
+    price_kind: spot
+    delivery_lead_days: 1
+    plausible_min: -600
+    plausible_max: 10000
+  - code: smard.at.price_da
+    name: Austria day-ahead price, hourly
+    commodity: power
+    region: AT
+    unit: "€/MWh"
+    frequency: hourly
+    source_ref: "4170|DE-LU|hourly"
+    description: Day-ahead (SDAC) auction price per hour, as published by SMARD for Germany's neighbours.
+    price_kind: spot
+    delivery_lead_days: 1
+    plausible_min: -600
+    plausible_max: 10000
+  - code: smard.at.price_da_base
+    name: Austria day-ahead base price
+    commodity: power
+    region: AT
+    unit: "€/MWh"
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "4170|DE-LU|daily_mean"
+    description: Average of the hourly day-ahead prices over the delivery day (Europe/Berlin), complete days only.
+    price_kind: spot
+    delivery_lead_days: 1
+    plausible_min: -600
+    plausible_max: 10000
+  - code: smard.ch.price_da
+    name: Switzerland day-ahead price, hourly
+    commodity: power
+    region: CH
+    unit: "€/MWh"
+    frequency: hourly
+    source_ref: "259|DE-LU|hourly"
+    description: Day-ahead (SDAC) auction price per hour, as published by SMARD for Germany's neighbours.
+    price_kind: spot
+    delivery_lead_days: 1
+    plausible_min: -600
+    plausible_max: 10000
+  - code: smard.ch.price_da_base
+    name: Switzerland day-ahead base price
+    commodity: power
+    region: CH
+    unit: "€/MWh"
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "259|DE-LU|daily_mean"
+    description: Average of the hourly day-ahead prices over the delivery day (Europe/Berlin), complete days only.
+    price_kind: spot
+    delivery_lead_days: 1
+    plausible_min: -600
+    plausible_max: 10000
+  - code: smard.it_north.price_da
+    name: Italy North day-ahead price, hourly
+    commodity: power
+    region: IT-North
+    unit: "€/MWh"
+    frequency: hourly
+    source_ref: "255|DE-LU|hourly"
+    description: Day-ahead (SDAC) auction price per hour, as published by SMARD for Germany's neighbours.
+    price_kind: spot
+    delivery_lead_days: 1
+    plausible_min: -600
+    plausible_max: 10000
+  - code: smard.it_north.price_da_base
+    name: Italy North day-ahead base price
+    commodity: power
+    region: IT-North
+    unit: "€/MWh"
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "255|DE-LU|daily_mean"
+    description: Average of the hourly day-ahead prices over the delivery day (Europe/Berlin), complete days only.
+    price_kind: spot
+    delivery_lead_days: 1
+    plausible_min: -600
+    plausible_max: 10000
+  - code: smard.pl.price_da
+    name: Poland day-ahead price, hourly
+    commodity: power
+    region: PL
+    unit: "€/MWh"
+    frequency: hourly
+    source_ref: "257|DE-LU|hourly"
+    description: Day-ahead (SDAC) auction price per hour, as published by SMARD for Germany's neighbours.
+    price_kind: spot
+    delivery_lead_days: 1
+    plausible_min: -600
+    plausible_max: 10000
+  - code: smard.pl.price_da_base
+    name: Poland day-ahead base price
+    commodity: power
+    region: PL
+    unit: "€/MWh"
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "257|DE-LU|daily_mean"
+    description: Average of the hourly day-ahead prices over the delivery day (Europe/Berlin), complete days only.
+    price_kind: spot
+    delivery_lead_days: 1
     plausible_min: -600
     plausible_max: 10000
   - code: smard.de.load
