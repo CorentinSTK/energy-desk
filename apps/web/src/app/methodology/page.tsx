@@ -83,8 +83,9 @@ export default function MethodologyPage() {
           <ul className="list-disc space-y-1 pl-5">
             <li>
               <strong className="text-foreground">Official, free sources only</strong> (EIA, GIE,
-              ENTSOG, SMARD, RTE, Elexon, CFTC, the European Commission, the ECB, Open-Meteo…).
-              Exchange and price-reporting data that is licensed is never redistributed.
+              ENTSOG, ENTSO-E, SMARD, RTE, Elexon, CFTC, the European Commission, the ECB,
+              Open-Meteo…). Exchange and price-reporting data that is licensed is never
+              redistributed.
             </li>
             <li>
               <strong className="text-foreground">

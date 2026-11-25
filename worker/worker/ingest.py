@@ -21,6 +21,7 @@ from worker.sources.ec_wob import EcWobSource
 from worker.sources.ecb import EcbSource
 from worker.sources.eia import EiaSource
 from worker.sources.elexon import ElexonSource
+from worker.sources.entsoe import EntsoeSource
 from worker.sources.entsog import EntsogSource
 from worker.sources.fred import FredSource
 from worker.sources.gie import GieAgsiSource, GieAlsiSource
@@ -37,6 +38,7 @@ SOURCES: dict[str, Callable[[], Source]] = {
     "ecb": EcbSource,
     "eia": EiaSource,
     "elexon": ElexonSource,
+    "entsoe": EntsoeSource,
     "entsog": EntsogSource,
     "fred": FredSource,
     "gie_agsi": GieAgsiSource,

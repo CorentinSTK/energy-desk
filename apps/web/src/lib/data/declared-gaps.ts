@@ -107,9 +107,9 @@ export const DECLARED_GAPS: DeclaredGap[] = [
     markets: ["power"],
   },
   {
-    title: "Load and generation outside Germany, France and Great Britain",
+    title: "Load, generation and plant outages outside the open sources",
     reason:
-      "Day-ahead prices for the Netherlands, Belgium, Austria, Switzerland, Italy North and Poland come from SMARD. Their load and generation mix need the ENTSO-E Transparency Platform, whose access token has not been granted yet.",
+      "ENTSO-E publishes load, generation per type and plant unavailability for every zone, but these items are not on its list of data free for re-use (only grid data such as physical flows is, under CC BY 4.0). They are therefore not republished here. Germany, France and Great Britain are covered by SMARD, RTE and Elexon. French nuclear availability has no open daily source confirmed yet; French nuclear output (RTE) is shown instead.",
     markets: ["power"],
   },
   {

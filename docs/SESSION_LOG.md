@@ -624,3 +624,14 @@ Still open:
   and the Council site refuse automated requests. Shown as a measure, never as compliance.
 - Also: README screenshots regenerated with the new design (#70); DA price v2 backtests written to
   production by the Forecast workflow (DE-LU MAE 18.4, FR 17.1).
+
+## 2026-11-25 — ENTSO-E: physical flows (free re-use list only)
+
+- Token received and checked live. ENTSO-E terms and the free re-use list (18 Oct 2023) read: only
+  listed items are CC BY 4.0; generation, plant outages, actual load and prices are not, so they are
+  not ingested even though the project is non-commercial (ADR 0017, agreed with the owner).
+- New source `entsoe`: net physical flows on 13 borders between the site's zones, daily average MW
+  (Europe/Brussels days), parser handles A03 curves and "no data" acknowledgements; ingested daily
+  with the power sources. Power page: "Which way is power flowing?" diverging bars, 7-day average.
+- French nuclear availability: EDF's open daily dataset is gone and RTE's outage API has no stated
+  open licence; it stays a declared gap. French nuclear output (RTE) tested as a price-model input.
