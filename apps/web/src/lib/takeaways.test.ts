@@ -1,16 +1,17 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  largestFlowTakeaway,
-  monthlyBenchmarkTakeaway,
-  promptSpreadTakeaway,
-  seasonalLevelTakeaway,
-  storageTakeaway,
   balanceTakeaway,
   curveTakeaway,
+  largestFlowTakeaway,
+  monthlyBenchmarkTakeaway,
+  monthlyTotalTakeaway,
   positioningTakeaway,
+  promptSpreadTakeaway,
   pumpPriceTakeaway,
+  seasonalLevelTakeaway,
   spreadTakeaway,
+  storageTakeaway,
 } from "./takeaways";
 
 const base = { mean: 89.6, min: 77, max: 98.6, yearsCount: 5 };
@@ -208,5 +209,13 @@ describe("seasonalLevelTakeaway for weekly stocks", () => {
         "week",
       ),
     ).toContain("was 92.8% on");
+  });
+});
+
+describe("monthlyTotalTakeaway", () => {
+  it("names the month of a monthly total", () => {
+    expect(monthlyTotalTakeaway("US LNG exports", 514.617, "Bcf", 0, "2026-08-01T00:00:00Z")).toBe(
+      "US LNG exports were 515 Bcf in August 2026.",
+    );
   });
 });

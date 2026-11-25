@@ -55,6 +55,10 @@ class SeriesSpec(BaseModel):
     # Days ahead of today a value may be dated: day-ahead auctions price tomorrow's delivery hours.
     # Validation only (not stored); everything else is rejected beyond one day of time-zone slack.
     delivery_lead_days: int = Field(default=0, ge=0, le=7)
+    # Values dated within this many days of today are dropped: the provider publishes the latest
+    # periods while they are still incomplete (EIA-930 daily totals fill in hour by hour). They are
+    # ingested by a later run, once complete.
+    incomplete_recent_days: int = Field(default=0, ge=0, le=7)
     # Values outside this range are rejected by validation, not stored.
     plausible_min: float
     plausible_max: float

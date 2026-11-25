@@ -16,7 +16,7 @@ Checked live on 2026-10-28 and 2026-10-30:
 
 import time
 from collections.abc import Callable
-from datetime import UTC, date, datetime
+from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
 import httpx
@@ -60,10 +60,23 @@ def period_start(period: str) -> datetime:
     return datetime(day.year, day.month, day.day, tzinfo=UTC)
 
 
+def facets(route: str, ref: str) -> dict[str, str]:
+    """Facet filters for a source_ref's second part.
+
+    Most routes take one series ID ("RWTC" → facets[series][]=RWTC). Routes without series IDs, such
+    as the EIA-930 grid data, take explicit facets: "respondent=US48;type=D;timezone=Eastern".
+    """
+    if "=" not in ref:
+        return {SERIES_FACET.get(route, "series"): ref}
+    pairs = (part.split("=", 1) for part in ref.split(";"))
+    return {name.strip(): value.strip() for name, value in pairs}
+
+
 def parse_rows(rows: list[dict[str, Any]], spec: SeriesSpec) -> list[Observation]:
     observations = []
     for row in rows:
-        unit = row.get("units", row.get("unit"))
+        # Spelled "units" on most routes, "unit" on STEO and "value-units" on EIA-930.
+        unit = row.get("units", row.get("unit", row.get("value-units")))
         if spec.source_unit is not None and unit != spec.source_unit:
             raise UnitMismatch(f"{spec.code}: expected {spec.source_unit!r}, got {unit!r}")
         if row.get("value") in (None, ""):
@@ -78,6 +91,16 @@ def history_only(observations: list[Observation], today: date) -> list[Observati
     """Months before the current one (STEO: the rest is EIA's forecast, not an observation)."""
     current_month = datetime(today.year, today.month, 1, tzinfo=UTC)
     return [o for o in observations if o.ts < current_month]
+
+
+def complete_only(
+    observations: list[Observation], spec: SeriesSpec, today: date
+) -> list[Observation]:
+    """Drop the latest periods the provider is still filling in (`incomplete_recent_days`)."""
+    if spec.incomplete_recent_days == 0:
+        return observations
+    cutoff = today - timedelta(days=spec.incomplete_recent_days)
+    return [o for o in observations if o.ts.date() <= cutoff]
 
 
 def derive(name: str, code: str, components: list[dict[datetime, float]]) -> list[Observation]:
@@ -126,12 +149,12 @@ class EiaSource(Source):
     def _request(
         self, client: httpx.Client, spec: SeriesSpec, since: date | None
     ) -> list[Observation]:
-        route, series_id = spec.source_ref.split("|")
+        route, ref = spec.source_ref.split("|")
         params: dict[str, Any] = {
             "api_key": self._key(),
             "frequency": spec.frequency,
             "data[0]": "value",
-            f"facets[{SERIES_FACET.get(route, 'series')}][]": series_id,
+            **{f"facets[{name}][]": value for name, value in facets(route, ref).items()},
             "sort[0][column]": "period",
             "sort[0][direction]": "asc",
             "length": PAGE_SIZE,
@@ -153,5 +176,5 @@ class EiaSource(Source):
             if not rows or offset >= int(response["total"]):
                 if route in HISTORY_ONLY_ROUTES:
                     return history_only(observations, self._today())
-                return observations
+                return complete_only(observations, spec, self._today())
             time.sleep(self.request_interval)

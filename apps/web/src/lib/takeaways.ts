@@ -226,3 +226,19 @@ export function balanceTakeaway(date: string, production: number, consumption: n
     ? `In ${month} world production exceeded consumption by ${formatNumber(gap, 1)} mb/d (EIA estimates): stocks were building.`
     : `In ${month} world consumption exceeded production by ${formatNumber(-gap, 1)} mb/d (EIA estimates): stocks were being drawn.`;
 }
+
+/** Rule: a monthly total and its month ("US LNG exports were 515 Bcf in August 2026."). */
+export function monthlyTotalTakeaway(
+  name: string,
+  value: number,
+  unit: string,
+  decimals: number,
+  date: string,
+): string {
+  const month = new Intl.DateTimeFormat("en-GB", {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(date));
+  return `${name} were ${formatNumber(value, decimals)} ${unit} in ${month}.`;
+}

@@ -76,4 +76,14 @@ test.describe("power market page", () => {
       page.getByRole("heading", { name: "How do day-ahead prices compare across Europe?" }),
     ).toHaveCount(0);
   });
+
+  test("the United States tab shows US demand and generation", async ({ page }) => {
+    await page.goto("/markets/power?tab=us");
+    await expect(
+      page.getByRole("heading", { name: "How much electricity does the US use?" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "What generates US electricity?" }),
+    ).toBeVisible();
+  });
 });

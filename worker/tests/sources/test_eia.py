@@ -7,7 +7,15 @@ import respx
 
 from worker.catalog import load_catalog
 from worker.http_client import make_client
-from worker.sources.eia import BASE_URL, EiaSource, UnitMismatch, history_only, parse_rows
+from worker.sources.eia import (
+    BASE_URL,
+    EiaSource,
+    UnitMismatch,
+    complete_only,
+    facets,
+    history_only,
+    parse_rows,
+)
 from worker.validate import Observation
 
 SPEC = next(s for s in load_catalog("eia").series if s.code == "eia.wti_spot")
@@ -104,3 +112,32 @@ def test_crack_is_derived_from_cached_components() -> None:
     assert [o.value for o in wti] == [103.37]
     assert [(o.series_code, round(o.value, 3)) for o in crack] == [("eia.crack_321_usgc", 50.196)]
     assert route.call_count == 3  # WTI was fetched once, for its own series, then reused
+
+
+def test_series_refs_and_facet_refs() -> None:
+    assert facets("petroleum/pri/spt", "RWTC") == {"series": "RWTC"}
+    assert facets("steo", "COPS_OPEC") == {"seriesId": "COPS_OPEC"}
+    assert facets(
+        "electricity/rto/daily-region-data", "respondent=US48;type=D;timezone=Eastern"
+    ) == {
+        "respondent": "US48",
+        "type": "D",
+        "timezone": "Eastern",
+    }
+
+
+def test_eia930_rows_read_value_units() -> None:
+    spec = next(s for s in load_catalog("eia").series if s.code == "eia.us48_demand")
+    rows = [{"period": "2026-11-23", "value": "10978759", "value-units": "megawatthours"}]
+    assert [o.value for o in parse_rows(rows, spec)] == [10978759.0]
+    with pytest.raises(UnitMismatch):
+        parse_rows([{**rows[0], "value-units": "megawatts"}], spec)
+
+
+def test_incomplete_recent_days_are_dropped() -> None:
+    spec = next(s for s in load_catalog("eia").series if s.code == "eia.us48_demand")
+    assert spec.incomplete_recent_days == 2
+    days = [datetime(2026, 11, d, tzinfo=UTC) for d in (22, 23, 24)]
+    observations = [Observation(spec.code, ts, 1e7) for ts in days]
+    kept = complete_only(observations, spec, date(2026, 11, 25))
+    assert [o.ts.day for o in kept] == [22, 23]

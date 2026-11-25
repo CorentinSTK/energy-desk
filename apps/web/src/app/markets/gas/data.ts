@@ -29,6 +29,7 @@ export const TABS = [
   { id: "storage", label: "Balance & stocks" },
   { id: "flows", label: "Flows" },
   { id: "positioning", label: "Positioning" },
+  { id: "us", label: "United States" },
   { id: "gaps", label: "Data gaps" },
 ] as const;
 export type GasTab = (typeof TABS)[number]["id"];

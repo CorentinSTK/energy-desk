@@ -23,6 +23,7 @@ import {
   PricesTab,
   StorageTab,
 } from "./sections";
+import { UsTab } from "./us";
 
 export const metadata: Metadata = {
   title: "European natural gas — Energy Desk",
@@ -120,6 +121,8 @@ function TabContent({ tab, area, ctx }: { tab: GasTab; area: StorageArea; ctx: P
       return <FlowsTab ctx={ctx} />;
     case "positioning":
       return <PositioningTab />;
+    case "us":
+      return <UsTab ctx={ctx} />;
     case "gaps":
       return <GapsTab />;
   }
