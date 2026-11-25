@@ -24,7 +24,7 @@ export default function AboutPage() {
   return (
     <main className="mx-auto w-full max-w-3xl space-y-10 px-4 py-8">
       <header className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">About</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">About</h1>
         <p className="text-text-secondary">A personal project, built in the open.</p>
       </header>
 

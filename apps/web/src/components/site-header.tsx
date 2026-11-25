@@ -3,14 +3,23 @@ import Link from "next/link";
 import { SiteNav } from "@/components/site-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
 
-/** The brand mark: three rising bars, in the accent colour. Decorative; the name carries the meaning. */
+/** The brand mark: the author's initials on the accent colour. Decorative; the name carries the meaning. */
 function LogoMark() {
   return (
-    <svg viewBox="0 0 24 24" className="size-6 shrink-0" aria-hidden>
+    <svg viewBox="0 0 24 24" className="size-7 shrink-0" aria-hidden>
       <rect width="24" height="24" rx="6" fill="var(--primary)" />
-      <rect x="6" y="12" width="3" height="6" rx="1" fill="var(--primary-foreground)" />
-      <rect x="10.5" y="8.5" width="3" height="9.5" rx="1" fill="var(--primary-foreground)" />
-      <rect x="15" y="5.5" width="3" height="12.5" rx="1" fill="var(--primary-foreground)" />
+      <text
+        x="12"
+        y="16.2"
+        textAnchor="middle"
+        fontSize="11"
+        fontWeight="700"
+        letterSpacing="-0.4"
+        fill="var(--primary-foreground)"
+        fontFamily="var(--font-inter), system-ui, sans-serif"
+      >
+        CS
+      </text>
     </svg>
   );
 }

@@ -30,7 +30,7 @@ export default function ForecastsPage() {
   return (
     <main className="mx-auto w-full max-w-7xl space-y-6 px-4 py-8">
       <div className="max-w-3xl space-y-2">
-        <h1 className="text-2xl font-semibold tracking-tight">Forecasts</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">Forecasts</h1>
         <p className="text-text-secondary">
           The point is not to beat the market but to be honest and measurable. Every live forecast
           is stored when it is issued and never edited, then scored when the real value is

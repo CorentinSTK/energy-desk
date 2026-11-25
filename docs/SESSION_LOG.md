@@ -582,4 +582,7 @@ Still open:
   "Today in energy" cards tagged by market.
 - No change to charts, data or colours. Checked: lint, typecheck, format, 303 unit tests, home, smoke
   and mobile e2e (56), screenshots in both themes and at 390 px.
-- Next: extend the look (market headers, KPI cards, tabs) to the market pages once approved.
+- Step 2, same day: "CS" monogram in the header and as the browser icon (app/icon.svg replaces the
+  default favicon); side-sheet menu below 1024 px instead of sideways-scrolling links; market headers
+  with a commodity pill; KPI cards with monospaced values, change pills and a ruled context block;
+  page titles one size up. Full e2e suite (154) passed locally.

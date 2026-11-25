@@ -56,7 +56,7 @@ export default async function ForecastPage({ params, searchParams }: PageProps<"
             ← All forecasts
           </Link>
         </p>
-        <h1 className="text-2xl font-semibold tracking-tight">{model.name}</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">{model.name}</h1>
         <p className="text-text-secondary">
           {model.target}. {model.cadence}.
         </p>

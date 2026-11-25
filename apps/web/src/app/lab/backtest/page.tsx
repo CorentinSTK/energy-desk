@@ -39,7 +39,7 @@ export default function BacktestPage({ searchParams }: PageProps<"/lab/backtest"
             ← Lab
           </Link>
         </p>
-        <h1 className="text-2xl font-semibold tracking-tight">Rule backtester</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">Rule backtester</h1>
         <p className="text-text-secondary">
           Pick a series to trade, a signal and simple entry and exit rules. Everything runs in your
           browser on official data; the rule is in the URL, so a result can be shared.
