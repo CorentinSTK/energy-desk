@@ -38,7 +38,7 @@ export default function SimulatorPage({ searchParams }: PageProps<"/lab/simulato
             ← Lab
           </Link>
         </p>
-        <h1 className="text-2xl font-semibold tracking-tight">Trade simulator</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">Trade simulator</h1>
         <p className="text-text-secondary">
           Choose an entry level, a stop and a target: how often would the order fill, and would the
           target or the stop come first, if the future moved like the past?

@@ -31,11 +31,18 @@ test.describe("LNG market page", () => {
 test.describe("site header", () => {
   test("links to the market pages and the data catalogue, not the style guide", async ({
     page,
-  }) => {
+  }, testInfo) => {
+    // Narrow screens keep the links in a menu sheet.
+    const mobile = testInfo.project.name === "mobile";
+    const openMenu = async () => {
+      if (mobile) await page.getByRole("button", { name: "Open menu" }).click();
+    };
     await page.goto("/");
     const nav = page.getByRole("navigation", { name: "Main" });
+    await openMenu();
     await nav.getByRole("link", { name: "Gas" }).click();
     await expect(page).toHaveURL(/\/markets\/gas$/);
+    await openMenu();
     await nav.getByRole("link", { name: "LNG" }).click();
     await expect(page).toHaveURL(/\/markets\/lng$/);
     await expect(page.getByRole("link", { name: /style guide/i })).toHaveCount(0);

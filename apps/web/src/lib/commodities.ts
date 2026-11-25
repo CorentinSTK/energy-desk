@@ -37,3 +37,19 @@ export const COMMODITIES: Record<Commodity, CommodityStyle> = {
     bgClass: "bg-freight",
   },
 };
+
+const MARKET_PAGES: Record<string, Commodity> = {
+  crude: "crude",
+  products: "products",
+  gas: "natgas",
+  lng: "lng",
+  lpg: "lpg",
+  power: "power",
+  freight: "freight",
+};
+
+/** The commodity of a market page link ("/markets/gas?tab=storage" → natgas); null otherwise. */
+export function commodityOfHref(href: string): Commodity | null {
+  const page = /^\/markets\/([a-z]+)/.exec(href)?.[1];
+  return page ? (MARKET_PAGES[page] ?? null) : null;
+}

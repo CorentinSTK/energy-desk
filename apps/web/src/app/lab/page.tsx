@@ -14,7 +14,7 @@ export default function LabPage() {
   return (
     <main className="mx-auto w-full max-w-7xl space-y-6 px-4 py-8">
       <div className="max-w-3xl space-y-2">
-        <h1 className="text-2xl font-semibold tracking-tight">Lab</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">Lab</h1>
         <p className="text-text-secondary">
           Two research tools on the site&apos;s official series. They show what a simple idea would
           have done and how fragile the answer is: costs, drawdowns, number of trades, a control

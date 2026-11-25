@@ -22,7 +22,7 @@ import {
 import { everyNthDay, rollingMean, weekVsSeason, WINDOW_DAYS } from "@/lib/freight/rolling";
 import { extraDays, KNOTS, ROUTES } from "@/lib/freight/routes";
 import { chokepointTakeaway } from "@/lib/freight/takeaway";
-import { formatChange, formatDate, formatNumber } from "@/lib/format";
+import { formatChange, formatNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 import { freightHref } from "./data";

@@ -30,7 +30,7 @@ export default function DataPage({ searchParams }: PageProps<"/data">) {
     <main className="mx-auto w-full max-w-7xl space-y-8 px-4 py-8">
       <header className="flex items-start justify-between gap-4">
         <div className="space-y-1">
-          <h1 className="text-2xl font-semibold tracking-tight">Data catalogue</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">Data catalogue</h1>
           <p className="max-w-3xl text-text-secondary">
             Every series on this site: where it comes from, its unit and licence, how fresh it is,
             and where it has gaps. Missing data is shown as missing, never estimated.

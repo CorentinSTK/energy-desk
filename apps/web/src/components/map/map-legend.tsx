@@ -38,33 +38,50 @@ function Shape({ shape }: { shape: string }) {
   );
 }
 
+/** Colour scale as one segmented bar (low to high), then "no data" and the marker shapes. */
 export function MapLegend({ metric, view }: { metric: Metric; view: View }) {
   const title = METRICS.find((m) => m.id === metric)?.label ?? "";
+  const items = legend(metric);
+  const scale = items.filter((item) => item.label !== "No data");
+  const noData = items.find((item) => item.label === "No data");
   return (
-    <div className="space-y-3 text-xs">
-      <div>
-        <p className="mb-1.5 font-medium text-foreground">{title}</p>
-        <ul className="grid grid-cols-2 gap-x-3 gap-y-1">
-          {legend(metric).map((item) => (
-            <li key={item.label} className="flex items-center gap-1.5 text-text-secondary">
+    <div className="flex flex-col gap-3 text-xs">
+      <div className="min-w-0 space-y-1.5">
+        <p className="font-medium text-text-secondary">{title}</p>
+        <div className="flex items-start gap-3">
+          <ul className="flex min-w-0 flex-1 sm:max-w-xl">
+            {scale.map((item) => (
+              <li
+                key={item.label}
+                className="min-w-0 flex-1 space-y-1 first:[&>span:first-child]:rounded-l-full last:[&>span:first-child]:rounded-r-full"
+              >
+                <span className="block h-2" style={{ background: item.color }} aria-hidden />
+                <span className="block px-0.5 text-center text-[10px] leading-tight text-muted-foreground sm:text-[11px]">
+                  {item.label}
+                </span>
+              </li>
+            ))}
+          </ul>
+          {noData && (
+            <span className="flex shrink-0 items-center gap-1.5 text-muted-foreground">
               <span
-                className="size-3 shrink-0 rounded-sm border border-border"
-                style={{ background: item.color }}
+                className="size-2.5 rounded-sm ring-1 ring-border"
+                style={{ background: noData.color }}
                 aria-hidden
               />
-              {item.label}
-            </li>
-          ))}
-        </ul>
+              {noData.label}
+            </span>
+          )}
+        </div>
       </div>
-      <ul className="space-y-1">
+      <ul className="flex flex-wrap gap-x-4 gap-y-1 text-text-secondary">
         {MARKER_KEY[view].map((item) => (
-          <li key={item.label} className="flex items-center gap-1.5 text-text-secondary">
+          <li key={item.label} className="flex items-center gap-1.5">
             <Shape shape={item.shape} />
             {item.label}
           </li>
         ))}
-        <li className="text-muted-foreground">Dashed outline: no data for this point.</li>
+        <li className="text-muted-foreground">Dashed outline: no data</li>
       </ul>
     </div>
   );

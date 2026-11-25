@@ -72,7 +72,7 @@ export default function MethodologyPage() {
 
       <article className="max-w-3xl space-y-10">
         <header className="space-y-2">
-          <h1 className="text-2xl font-semibold tracking-tight">Methodology</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">Methodology</h1>
           <p className="text-text-secondary">
             How every number on the site is sourced, computed and labelled. The decisions behind it
             are recorded as architecture decision records (ADRs) in the public repository.

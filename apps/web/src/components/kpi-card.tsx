@@ -66,19 +66,29 @@ export function KpiCard({
       )}
       <CardContent className="space-y-1.5">
         {demo && <DemoBanner className="mb-2 w-fit" />}
-        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{label}</p>
-        {asOf && <p className="text-xs text-muted-foreground">{formatDate(asOf)}</p>}
-        <p className="flex items-baseline gap-1.5">
-          <span className="text-2xl font-semibold">{formatNumber(value, decimals)}</span>
+        <div className="flex items-baseline justify-between gap-2">
+          <p className="text-[11px] font-medium tracking-[0.08em] text-muted-foreground uppercase">
+            {label}
+          </p>
+          {asOf && (
+            <p className="shrink-0 text-xs text-muted-foreground tabular-nums">
+              {formatDate(asOf)}
+            </p>
+          )}
+        </div>
+        <p className="flex items-baseline gap-1.5 pt-0.5">
+          <span className="font-mono text-2xl font-semibold tracking-tight">
+            {formatNumber(value, decimals)}
+          </span>
           <span className="text-sm text-muted-foreground">{unit}</span>
         </p>
         {change && <ChangeLine change={change} decimals={decimals} />}
         {context.length > 0 && (
-          <dl className="space-y-0.5 pt-1 text-xs">
+          <dl className="mt-2 space-y-0.5 border-t pt-2 text-xs">
             {context.map((item) => (
               <div key={item.label} className="flex justify-between gap-3">
                 <dt className="text-muted-foreground">{item.label}</dt>
-                <dd className="font-medium">{item.value}</dd>
+                <dd className="font-medium tabular-nums">{item.value}</dd>
               </div>
             ))}
           </dl>
@@ -103,19 +113,19 @@ function ChangeLine({ change, decimals }: { change: KpiChange; decimals: number 
   const Icon = direction > 0 ? ArrowUpRight : direction < 0 ? ArrowDownRight : ArrowRight;
 
   return (
-    <p className="flex items-center gap-1 text-sm">
+    <p className="flex flex-wrap items-center gap-1.5 text-sm">
       <span
         className={cn(
-          "flex items-center gap-0.5 font-medium",
-          direction > 0 && "text-positive",
-          direction < 0 && "text-negative",
-          direction === 0 && "text-muted-foreground",
+          "flex items-center gap-0.5 rounded px-1 py-px font-mono text-xs font-medium",
+          direction > 0 && "bg-positive/10 text-positive",
+          direction < 0 && "bg-negative/10 text-negative",
+          direction === 0 && "bg-muted text-muted-foreground",
         )}
       >
         <Icon className="size-3.5" aria-hidden />
         {text}
       </span>
-      <span className="text-muted-foreground">{change.label}</span>
+      <span className="text-xs text-muted-foreground">{change.label}</span>
     </p>
   );
 }

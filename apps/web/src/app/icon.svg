@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Browser-tab icon; mirrors the header mark. Literal colours: an icon file cannot read the CSS tokens
+       (they match --primary and --primary-foreground in src/styles/tokens.css). -->
+  <style>
+    rect { fill: #0b5cc7; }
+    text { fill: #ffffff; }
+    @media (prefers-color-scheme: dark) {
+      rect { fill: #6ea8fe; }
+      text { fill: #0b0f14; }
+    }
+  </style>
+  <rect width="32" height="32" rx="8" />
+  <text x="16" y="21.5" text-anchor="middle" font-family="Inter, system-ui, -apple-system, Segoe UI, sans-serif" font-size="15" font-weight="700" letter-spacing="-0.5">CS</text>
+</svg>

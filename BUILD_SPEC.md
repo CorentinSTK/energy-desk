@@ -98,11 +98,13 @@ global markets (they are priced globally). Non-European gas and power markets ar
     percentile*. A point without data is shown as "no data", never estimated.
   - Marker positions: Natural Earth ports and towns (public domain), approximate, drawing only.
 - Click a country or marker → side panel (state in the URL, `?focus=`) with its latest values, date,
-  percentile and seasonal gap, and a link to the market page. The same data is available as a table.
+  percentile and seasonal gap, and a link to the market page. With nothing selected, the panel ranks
+  the view's items by the measure (countries in Europe, markers in World): the six furthest from normal.
+  The same data is available as a table.
 - "Today in energy": up to 6 sentences from fixed rules (EU storage vs norm, moves of 2σ or more,
   5-year extremes beyond the 95th/5th percentile, the storage country furthest from its norm).
 - A compact strip of benchmark prices with the change from the previous value, each labelled with its
-  price type and source.
+  price type and source, and a count of how many are fresh.
 
 ### Market page template (identical structure for every market)
 

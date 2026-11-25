@@ -101,6 +101,21 @@ export function formatDate(value: string | Date | null | undefined): string {
   }).format(date);
 }
 
+/**
+ * Compact date for dense strips: "23 Nov" in the current year (of `now`, UTC), "23 Nov 2025" before.
+ */
+export function formatShortDate(value: string | Date | null | undefined, now: Date): string {
+  if (value === null || value === undefined) return MISSING;
+  const date = typeof value === "string" ? new Date(value) : value;
+  if (Number.isNaN(date.getTime())) return MISSING;
+  if (date.getUTCFullYear() !== now.getUTCFullYear()) return formatDate(date);
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    timeZone: "UTC",
+  }).format(date);
+}
+
 /** Date and time in a market's time zone, e.g. "26 Oct 2026, 14:00 CET" (intraday power prices). */
 export function formatDateTime(value: string | null | undefined, timeZone: string): string {
   if (value === null || value === undefined) return MISSING;

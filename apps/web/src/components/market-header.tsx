@@ -21,13 +21,18 @@ export function MarketHeader({
   const style = COMMODITIES[commodity];
   return (
     <header className={cn("@container space-y-4", className)}>
-      <div className="space-y-1">
-        <p className={cn("flex items-center gap-2 text-xs font-medium uppercase", style.textClass)}>
-          <span className={cn("size-2 rounded-full", style.bgClass)} aria-hidden />
+      <div className="space-y-2">
+        <p
+          className={cn(
+            "inline-flex items-center gap-2 rounded-full border bg-card px-2.5 py-0.5 text-[11px] font-medium tracking-[0.12em] uppercase",
+            style.textClass,
+          )}
+        >
+          <span className={cn("size-1.5 rounded-full", style.bgClass)} aria-hidden />
           {style.label}
         </p>
-        <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-        <p className="text-text-secondary">{description}</p>
+        <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+        <p className="max-w-3xl text-base text-text-secondary">{description}</p>
       </div>
       {children && (
         // Container queries: the grid follows the space the header gets, not the viewport.
