@@ -66,3 +66,13 @@ test.describe("data catalogue", () => {
     expect(overflow).toBeLessThanOrEqual(0);
   });
 });
+
+test("pipeline status lists sources and the footer links to it", async ({ page }) => {
+  await page.goto("/");
+  await page
+    .getByRole("navigation", { name: "Footer" })
+    .getByRole("link", { name: "Status" })
+    .click();
+  await expect(page).toHaveURL(/\/data#pipeline$/);
+  await expect(page.getByRole("heading", { name: "Pipeline status" })).toBeVisible();
+});

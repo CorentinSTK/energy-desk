@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { type ReactNode, Suspense } from "react";
+
+import { Architecture } from "@/components/about/architecture";
+import { KeyFigures } from "@/components/about/key-figures";
 
 import { ADR_URL, AUTHOR, REPO_URL } from "@/lib/site";
 
@@ -22,7 +25,7 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 
 export default function AboutPage() {
   return (
-    <main className="mx-auto w-full max-w-3xl space-y-10 px-4 py-8">
+    <main className="mx-auto w-full max-w-4xl space-y-10 px-4 py-8">
       <header className="space-y-1">
         <h1 className="text-3xl font-semibold tracking-tight">About</h1>
         <p className="text-text-secondary">A personal project, built in the open.</p>
@@ -52,20 +55,39 @@ export default function AboutPage() {
       </Section>
 
       <Section title="How it is built">
-        <p>
-          A Python worker, run on a schedule by GitHub Actions, fetches each source, validates it
-          and stores it in Postgres (Supabase). The site is a Next.js application on Vercel that
-          reads the database through a read-only role. The main choices and their trade-offs are
-          recorded as{" "}
-          <a href={ADR_URL} className={LINK} rel="noreferrer" target="_blank">
-            architecture decision records
-          </a>
-          , and the{" "}
-          <a href={REPO_URL} className={LINK} rel="noreferrer" target="_blank">
-            source code
-          </a>{" "}
-          is public.
-        </p>
+        <Suspense fallback={null}>
+          <KeyFigures />
+        </Suspense>
+        <Architecture />
+        <ul className="list-disc space-y-2 pl-5">
+          <li>
+            <span className="text-foreground">Traceable numbers.</span> Every value on the site is a
+            stored observation or a documented computation on them; units are converted in one
+            module and always shown; missing data stays missing.
+          </li>
+          <li>
+            <span className="text-foreground">Honest forecasts.</span> Forecasts are stored when
+            issued, never revised, and scored against naive and seasonal baselines in walk-forward
+            backtests and live.
+          </li>
+          <li>
+            <span className="text-foreground">Tested and reviewed.</span> Unit tests for every
+            transform (Python and TypeScript), browser tests on desktop and phone widths, and
+            continuous integration that must pass before anything reaches the live site.
+          </li>
+          <li>
+            <span className="text-foreground">Decisions on record.</span> Data, model and
+            architecture choices, with their trade-offs, are written up as{" "}
+            <a href={ADR_URL} className={LINK} rel="noreferrer" target="_blank">
+              architecture decision records
+            </a>
+            ; the{" "}
+            <a href={REPO_URL} className={LINK} rel="noreferrer" target="_blank">
+              source code
+            </a>{" "}
+            is public.
+          </li>
+        </ul>
       </Section>
 
       <Section title="Author">

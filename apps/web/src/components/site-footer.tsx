@@ -5,6 +5,7 @@ import { AUTHOR, REPO_URL } from "@/lib/site";
 const LINKS = [
   { href: "/methodology", label: "Methodology" },
   { href: "/data", label: "Data catalogue" },
+  { href: "/data#pipeline", label: "Status" },
   { href: "/about", label: "About" },
 ];
 
