@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 // Runs against a database: the CI fixture (no forecasts yet) or a local one with backtests.
 
 test.describe("forecast registry", () => {
-  test("lists the three models with their live and backtest verdicts", async ({ page }) => {
+  test("lists the five models with their live and backtest verdicts", async ({ page }) => {
     const errors: string[] = [];
     page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
     await page.goto("/forecasts");
@@ -12,6 +12,8 @@ test.describe("forecast registry", () => {
       "EU gas storage in 30 days",
       "France daily power demand",
       "US crude stocks, next EIA report",
+      "Germany-Luxembourg day-ahead price",
+      "France day-ahead price",
     ]) {
       await expect(page.getByRole("heading", { name })).toBeVisible();
     }

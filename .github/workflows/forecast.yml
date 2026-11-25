@@ -11,7 +11,15 @@ on:
       model:
         description: Model
         type: choice
-        options: [all, eu_storage_30d, fr_power_demand, us_crude_stocks]
+        options:
+          [
+            all,
+            eu_storage_30d,
+            fr_power_demand,
+            us_crude_stocks,
+            de_lu_da_price,
+            fr_da_price,
+          ]
       mode:
         description: Issue today's live forecasts, or run the walk-forward backtest
         type: choice

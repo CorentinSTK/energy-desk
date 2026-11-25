@@ -20,7 +20,7 @@ a stored observation. Missing data is shown as missing, never estimated.
   the Cape.
 - **Home:** a map of Europe (gas storage, power prices, diesel at the pump) and a world oil view, with
   a short "Today in energy" generated from fixed rules.
-- **Forecasts:** three models (EU gas storage in 30 days, French daily power demand, US crude stocks).
+- **Forecasts:** five models (EU gas storage in 30 days, French daily power demand, US crude stocks, and day-ahead base prices for Germany-Luxembourg and France).
   Every live forecast is stored before its outcome is known and can never be edited. Each model is
   scored against naive and seasonal baselines, and the site says plainly when a model has no edge.
 - **Lab:** a rule backtester (the rule lives in the URL, trades execute the day after the signal, and

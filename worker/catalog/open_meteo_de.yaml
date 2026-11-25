@@ -1,0 +1,159 @@
+# Open-Meteo historical weather for Germany (archive API, no key): inputs of the day-ahead power price
+# forecasts (ADR 0016). Same provider and terms as open_meteo.yaml (read 2026-10-30, rechecked
+# 2026-11-25): CC BY 4.0, "Weather data by Open-Meteo.com"; ERA5 reanalysis (Copernicus C3S); free API
+# for non-commercial use, under 10,000 calls a day.
+# Locations are chosen, not weighted: wind sites where German onshore and offshore capacity
+# concentrates (North Sea and Baltic, the northern coasts, Saxony-Anhalt, Brandenburg); solar sites in
+# the states with the most photovoltaic capacity (Bavaria, Baden-Württemberg, North Rhine-Westphalia,
+# Lower Saxony, Berlin-Brandenburg). The models average them without weights.
+source: open_meteo_de
+licence:
+  name: Open-Meteo — CC BY 4.0 (ERA5 reanalysis, Copernicus C3S)
+  url: https://open-meteo.com/en/licence
+  attribution: "Weather data by Open-Meteo.com (CC BY 4.0); contains modified Copernicus Climate Change Service information."
+licence_checked: 2026-11-25
+series:
+  - code: open_meteo_de.wind.german_bight
+    name: German Bight (North Sea offshore) daily mean wind speed at 100 m
+    commodity: weather
+    region: German Bight
+    unit: km/h
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "54.35,6.25|wind100"
+    description: Daily mean of the hourly wind speed at 100 m (local day, Europe/Berlin), reanalysis. Input of the day-ahead power price forecasts.
+    publication_lag_days: 6
+    plausible_min: 0
+    plausible_max: 200
+  - code: open_meteo_de.wind.baltic
+    name: Western Baltic (offshore) daily mean wind speed at 100 m
+    commodity: weather
+    region: Western Baltic
+    unit: km/h
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "54.62,12.65|wind100"
+    description: Daily mean of the hourly wind speed at 100 m (local day, Europe/Berlin), reanalysis. Input of the day-ahead power price forecasts.
+    publication_lag_days: 6
+    plausible_min: 0
+    plausible_max: 200
+  - code: open_meteo_de.wind.husum
+    name: Husum (Schleswig-Holstein coast) daily mean wind speed at 100 m
+    commodity: weather
+    region: Husum
+    unit: km/h
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "54.48,9.05|wind100"
+    description: Daily mean of the hourly wind speed at 100 m (local day, Europe/Berlin), reanalysis. Input of the day-ahead power price forecasts.
+    publication_lag_days: 6
+    plausible_min: 0
+    plausible_max: 200
+  - code: open_meteo_de.wind.emden
+    name: Emden (Lower Saxony coast) daily mean wind speed at 100 m
+    commodity: weather
+    region: Emden
+    unit: km/h
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "53.37,7.21|wind100"
+    description: Daily mean of the hourly wind speed at 100 m (local day, Europe/Berlin), reanalysis. Input of the day-ahead power price forecasts.
+    publication_lag_days: 6
+    plausible_min: 0
+    plausible_max: 200
+  - code: open_meteo_de.wind.magdeburg
+    name: Magdeburg (Saxony-Anhalt) daily mean wind speed at 100 m
+    commodity: weather
+    region: Magdeburg
+    unit: km/h
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "52.13,11.62|wind100"
+    description: Daily mean of the hourly wind speed at 100 m (local day, Europe/Berlin), reanalysis. Input of the day-ahead power price forecasts.
+    publication_lag_days: 6
+    plausible_min: 0
+    plausible_max: 200
+  - code: open_meteo_de.wind.cottbus
+    name: Cottbus (Brandenburg) daily mean wind speed at 100 m
+    commodity: weather
+    region: Cottbus
+    unit: km/h
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "51.76,14.33|wind100"
+    description: Daily mean of the hourly wind speed at 100 m (local day, Europe/Berlin), reanalysis. Input of the day-ahead power price forecasts.
+    publication_lag_days: 6
+    plausible_min: 0
+    plausible_max: 200
+  - code: open_meteo_de.solar.munich
+    name: Munich daily shortwave radiation
+    commodity: weather
+    region: Munich
+    unit: "MJ/m²"
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "48.14,11.58|radiation"
+    description: Daily sum of shortwave (solar) radiation (local day, Europe/Berlin), reanalysis. Input of the day-ahead power price forecasts.
+    publication_lag_days: 6
+    plausible_min: 0
+    plausible_max: 40
+  - code: open_meteo_de.solar.nuremberg
+    name: Nuremberg daily shortwave radiation
+    commodity: weather
+    region: Nuremberg
+    unit: "MJ/m²"
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "49.45,11.08|radiation"
+    description: Daily sum of shortwave (solar) radiation (local day, Europe/Berlin), reanalysis. Input of the day-ahead power price forecasts.
+    publication_lag_days: 6
+    plausible_min: 0
+    plausible_max: 40
+  - code: open_meteo_de.solar.stuttgart
+    name: Stuttgart daily shortwave radiation
+    commodity: weather
+    region: Stuttgart
+    unit: "MJ/m²"
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "48.78,9.18|radiation"
+    description: Daily sum of shortwave (solar) radiation (local day, Europe/Berlin), reanalysis. Input of the day-ahead power price forecasts.
+    publication_lag_days: 6
+    plausible_min: 0
+    plausible_max: 40
+  - code: open_meteo_de.solar.cologne
+    name: Cologne daily shortwave radiation
+    commodity: weather
+    region: Cologne
+    unit: "MJ/m²"
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "50.94,6.96|radiation"
+    description: Daily sum of shortwave (solar) radiation (local day, Europe/Berlin), reanalysis. Input of the day-ahead power price forecasts.
+    publication_lag_days: 6
+    plausible_min: 0
+    plausible_max: 40
+  - code: open_meteo_de.solar.hanover
+    name: Hanover daily shortwave radiation
+    commodity: weather
+    region: Hanover
+    unit: "MJ/m²"
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "52.37,9.73|radiation"
+    description: Daily sum of shortwave (solar) radiation (local day, Europe/Berlin), reanalysis. Input of the day-ahead power price forecasts.
+    publication_lag_days: 6
+    plausible_min: 0
+    plausible_max: 40
+  - code: open_meteo_de.solar.berlin
+    name: Berlin daily shortwave radiation
+    commodity: weather
+    region: Berlin
+    unit: "MJ/m²"
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "52.52,13.4|radiation"
+    description: Daily sum of shortwave (solar) radiation (local day, Europe/Berlin), reanalysis. Input of the day-ahead power price forecasts.
+    publication_lag_days: 6
+    plausible_min: 0
+    plausible_max: 40

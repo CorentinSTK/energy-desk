@@ -169,6 +169,7 @@ the v1-style IDs below are kept as human-readable references.
 | All | Macro and volatility: USD index, rates, OVX | FRED | free key | daily | per series; some are copyrighted (e.g. CBOE OVX) — verify each |
 | LPG | Mont Belvieu propane spot (`EER_EPLLPA_PF4_Y44MB_DPG`), US propane/propylene stocks (`WPRSTUS1`), product supplied (`WPRUP_NUS_2`), propane exports (`W_EPLLPZ_EEX_NUS-Z00_MBBLD`); derived propane as % of WTI | EIA (spot, WPSR) | free key | daily / weekly | US public domain; spot prices from Refinitiv (LSEG) as named by EIA. Verified live 2026-11-25 |
 | US (context) | US working gas in storage (`NW2_EPG0_SWO_R48_BCF`, weekly, Bcf), US LNG exports (`N9133US2`, monthly, MMcf), Lower 48 daily demand and generation by fuel (EIA-930 `daily-region-data`, `daily-fuel-type-data`, Eastern time; latest two days dropped until complete) | EIA | free key | weekly / monthly / daily | US public domain. Verified live 2026-11-25. Shown as "United States" tabs on the gas and power pages |
+| Weather (price models) | Daily mean wind speed at 100 m (six German wind sites) and daily shortwave radiation (six solar sites), Europe/Berlin days | Open-Meteo archive (`archive-api.open-meteo.com`; forecast API read at issue time, never stored) | none | daily | CC BY 4.0, "Weather data by Open-Meteo.com"; ERA5 (Copernicus C3S). Verified live 2026-11-25 |
 | All | Weather for demand models (HDD/CDD): daily mean temperature of the eight largest cities of metropolitan France | Open-Meteo (archive for history from 2015; forecast API read at issue time, never stored as observations) | none | daily | CC BY 4.0, "Weather data by Open-Meteo.com"; ERA5 from Copernicus C3S; free API for non-commercial use (confirmed 2026-10-30) |
 | All | French public holidays (demand model) | calendrier.api.gouv.fr | none | yearly | Licence Ouverte (Etalab) |
 | Futures | Front month and individual contracts where available (see note) | Yahoo Finance via `yfinance` | unofficial | daily, delayed | **not licensed for redistribution** — see ADR 0003 |
@@ -341,7 +342,11 @@ Initial models (phase 1), chosen because the target is published on a fixed sche
    heating makes demand strongly temperature-sensitive, which keeps the model explainable.
 3. **EU gas storage fill level in 30 days** (GIE): seasonal trajectory + recent injection pace.
 
-Phase 2: day-ahead power price for 1–2 European zones (ENTSO-E) with load and renewables forecasts.
+Phase 2 (ADR 0016): day-ahead base price for Germany-Luxembourg and France, two days ahead (issued in
+the evening, after the noon auction has priced tomorrow). A regression on the latest known price, German
+wind at 100 m and solar radiation (Open-Meteo, six sites each), the weekday and, for France, heating
+degree-days and holidays, refitted on the past year. Weather proxies replace ENTSO-E load and
+renewables forecasts, which are published after the auction or need the pending token.
 
 ---
 

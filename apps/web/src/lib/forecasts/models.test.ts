@@ -43,6 +43,8 @@ describe("models", () => {
       "eu_storage_30d",
       "fr_power_demand",
       "us_crude_stocks",
+      "de_lu_da_price",
+      "fr_da_price",
     ]);
     for (const m of FORECAST_MODELS) expect(m.horizons).toContain(m.headlineHorizon);
   });
