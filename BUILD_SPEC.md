@@ -415,7 +415,7 @@ Work one milestone at a time. Each ends with a demo to the user and their approv
 
 European markets come first: they are the focus and the most differentiating part for European desks.
 
-Status (25 Nov 2026): M0–M8, F and P2 done and live. P2: P2a LPG page; P2b power zones NL, BE, AT, CH, IT-North and PL (SMARD); P2c "United States" tabs on gas and power; P2d day-ahead price forecasts for DE-LU and FR (ADR 0016; version 2 weights recent days, half-life 45 days); P2e carbon terms checked, EUA stays a declared gap. Not done in P2: Japan power (JEPX terms not checked) and EEX MiFID position reports (same EEX terms as carbon).
+Status (25 Nov 2026): M0–M8, F and P2 done and live. P2: P2a LPG page; P2b power zones NL, BE, AT, CH, IT-North and PL (SMARD); P2c "United States" tabs on gas and power; P2d day-ahead price forecasts for DE-LU and FR (ADR 0016; version 2 weights recent days, half-life 45 days); gas storage tab measures the peak filling in the 1 October–1 December window against the 90 % target of Regulation (EU) 2025/1733 (a measure, not a compliance check); P2e carbon terms checked, EUA stays a declared gap. Not done in P2: Japan power (JEPX terms not checked) and EEX MiFID position reports (same EEX terms as carbon).
 
 | # | Milestone | Done when |
 |---|---|---|

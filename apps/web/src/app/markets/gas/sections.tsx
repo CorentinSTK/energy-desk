@@ -31,6 +31,7 @@ import { cn } from "@/lib/utils";
 import { attempt, daysAgo, type PageContext, seriesOf } from "@/lib/data/page-context";
 
 import { ENTRY_POINTS, gasHref, STORAGE_AREAS, type StorageArea } from "./data";
+import { StorageTargetCard } from "./storage-target";
 
 const MAIN_HEIGHT = 320;
 const CHART_HEIGHT = 280;
@@ -430,6 +431,8 @@ export async function StorageTab({ ctx, area }: { ctx: PageContext; area: Storag
           </tbody>
         </table>
       </div>
+
+      <StorageTargetCard ctx={ctx} />
     </div>
   );
 }

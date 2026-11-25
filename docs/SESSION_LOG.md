@@ -615,3 +615,12 @@ Still open:
   footer link "Status". Added the missing Open-Meteo (Germany) source label.
 - /about: key figures read from the catalogue (sources, series, observations, first observation),
   a four-step architecture diagram and the engineering principles, linked to the ADRs.
+
+## 2026-11-25 — Gas storage against the 90 % target window
+
+- Gas page, storage tab: peak filling between 1 October and 1 December (or today) for the EU and 18
+  countries, with the first day at 90 %. Rule checked on the European Commission's gas storage page
+  (Regulation (EU) 2025/1733: 90 % at any time in the window, 2025–2027, deviations allowed); EUR-Lex
+  and the Council site refuse automated requests. Shown as a measure, never as compliance.
+- Also: README screenshots regenerated with the new design (#70); DA price v2 backtests written to
+  production by the Forecast workflow (DE-LU MAE 18.4, FR 17.1).

@@ -77,3 +77,10 @@ test.describe("gas market page", () => {
     ).toBeVisible();
   });
 });
+
+test("the storage tab measures filling against the 90% target window", async ({ page }) => {
+  await page.goto("/markets/gas?tab=storage");
+  await expect(
+    page.getByRole("heading", { name: /reach 90% in the \d{4} filling window/ }),
+  ).toBeVisible();
+});
