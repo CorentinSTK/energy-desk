@@ -408,7 +408,7 @@ Work one milestone at a time. Each ends with a demo to the user and their approv
 
 European markets come first: they are the focus and the most differentiating part for European desks.
 
-Status (25 Nov 2026): M0–M8 and F done and live. P2 in progress, in five steps: P2a LPG; P2b power zones NL, BE, AT, CH, IT-North and PL (SMARD); P2c US gas, LNG and power as "United States" tabs; P2d day-ahead price forecasts for DE-LU and FR; P2e carbon terms check.
+Status (25 Nov 2026): M0–M8, F and P2 done and live. P2: P2a LPG page; P2b power zones NL, BE, AT, CH, IT-North and PL (SMARD); P2c "United States" tabs on gas and power; P2d day-ahead price forecasts for DE-LU and FR (ADR 0016); P2e carbon terms checked, EUA stays a declared gap. Not done in P2: Japan power (JEPX terms not checked) and EEX MiFID position reports (same EEX terms as carbon).
 
 | # | Milestone | Done when |
 |---|---|---|
@@ -433,7 +433,7 @@ Status (25 Nov 2026): M0–M8 and F done and live. P2 in progress, in five steps
 - Whether to add a French/English language toggle.
 - ~~Lab presets (§7)~~ — decided at M7 (2026-10-31): presets on long official series only (see §7 and
   ADR 0010); TTF and Brent M1–M2 presets once the stored futures history is long enough.
-- Carbon (EUA): no confirmed free, redistributable daily price yet (needed for clean spark/dark spreads).
+- ~~Carbon (EUA)~~ — checked at P2e (2026-11-25): EEX auction results and CoT reports may not be republished without written approval (eex.com/en/disclaimer); public display needs a paid Media Usage licence. The Commission publishes no prices. EUA stays a declared gap, and so do clean spark and dark spreads. Contact for a licence: datasource@eex-group.com.
 - ~~Freight & shipping~~: decided at F (2026-11-20): IMF PortWatch transits and computed voyage times;
   freight rates and bunker prices remain declared gaps (ADR 0013). Pending: the IMF's answer on automated
   access.

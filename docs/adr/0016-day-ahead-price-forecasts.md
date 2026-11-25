@@ -53,6 +53,16 @@ Timing constraints:
   - Germany: wind and sunshine explain much of the day-to-day move.
   - France: prices follow nuclear availability, which has no free source, so the edge over persistence
     is small. The site says so.
+- The production backtest (Forecast workflow, 1 Jan 2020 to 25 Nov 2026, including the 2022 price
+  crisis) is the one the site shows:
+
+  | Zone | Scored | MAE | Skill vs naive | Skill vs seasonal | 90 % coverage |
+  |---|---|---|---|---|---|
+  | DE-LU | 2,308 | 21.3 €/MWh | 17 % | 42 % | 87 % |
+  | France | 2,309 | 18.5 €/MWh | 10 % | 44 % | 85 % |
+
+- When prices trend, the one-year refit reacts late. In autumn 2026, with prices up on the Hormuz
+  disruption, DE-LU forecasts ran about 32 €/MWh too low on average.
 - Live errors will be larger than backtest errors, which use a perfect weather forecast.
 - Not modelled:
   - German public holidays;

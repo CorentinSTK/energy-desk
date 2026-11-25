@@ -114,7 +114,8 @@ export const DECLARED_GAPS: DeclaredGap[] = [
   },
   {
     title: "EUA carbon price",
-    reason: "No free, redistributable daily source confirmed yet.",
+    reason:
+      "EEX publishes EU ETS auction results and Commitments of Traders, but its terms forbid republication without written approval; public display needs a paid Media Usage licence (checked 25 Nov 2026). The European Commission links to EEX and publishes no prices itself.",
     markets: ["power"],
   },
   {

@@ -536,3 +536,39 @@ Still open:
 - Playwright on the live site after #57: 137/138 on the first clean run. The desktop Lab stop-side
   test failed once, then passed 3/3 on repeat. An earlier run had been invalidated by the machine
   sleeping mid-run (4.4 h, `page.goto` timeouts).
+
+## 2026-11-25 — Phase 2 (P2a–P2e) in production
+
+- P2a, LPG (#59, #60):
+  - `/markets/lpg` shows Mont Belvieu propane, propane as % of WTI (derived by the worker), US
+    propane stocks against their 5-year range, demand and exports (EIA, verified live);
+  - positioning from the CFTC (NYMEX propane 06665O), the same contract units since 2009;
+  - declared gaps: European and Asian LPG prices, European stocks, propane futures.
+- P2b, power zones (#60):
+  - day-ahead prices for NL, BE, AT, CH, IT-North and PL from SMARD;
+  - each filter ID was matched to its zone against Energy-Charts (48 h each, max difference
+    0.01 €/MWh);
+  - the power page compares eight zones on one delivery day. SMARD skipped NL on 20 Nov, and the
+    page shows that day as not published;
+  - load and generation for these zones are a declared gap (ENTSO-E token);
+  - the Ingest workflow now takes a validated `series` list for targeted backfills.
+- P2c, United States (#61):
+  - "United States" tabs on gas (storage against its 5-year range, Henry Hub, monthly LNG exports)
+    and on power (EIA-930 Lower 48 daily demand and the six largest sources);
+  - the EIA source accepts facet refs;
+  - `incomplete_recent_days` drops days still being filled in: EIA-930's latest day was partial
+    when checked.
+- P2d, day-ahead price forecasts for DE-LU and FR (#62, #63, ADR 0016):
+  - issued at 22:30 UTC for the day after tomorrow;
+  - a regression on the latest known price, German wind and sun (new `open_meteo_de`, 12 series),
+    the weekday, and for France heating degree-days and holidays;
+  - production backtest 2020–2026: skill vs naive 17 % (DE-LU) and 10 % (FR), vs seasonal 42 % and
+    44 %;
+  - #63 fixed a bug that would have broken tonight's `--model all` run for every model. A test now
+    builds every registered model.
+- P2e, carbon:
+  - EEX terms forbid republishing auction results or CoT without written approval; public display
+    needs a paid Media Usage licence;
+  - EUA and clean spreads stay declared gaps.
+- Not done: Japan power (JEPX terms not checked), EEX MiFID position reports (EEX terms).
+- Live after the deploys: the LPG, power, US-tab and forecast pages return 200 with no error cards.
