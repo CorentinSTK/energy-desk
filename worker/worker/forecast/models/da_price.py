@@ -98,6 +98,12 @@ class Zone:
     french: bool  # adds temperature and holidays
 
 
+def inputs_for(zone: "Zone") -> tuple[str, ...]:
+    """Every series the zone's model reads: its price and the weather of the price models."""
+    weather = (*WIND_SITES, *SOLAR_SITES, *(TEMPERATURES if zone.french else ()))
+    return (zone.price_code, *weather)
+
+
 ZONES = {
     "de_lu": Zone("de_lu", "Germany-Luxembourg", "smard.de_lu.price_da_base", french=False),
     "fr": Zone("fr", "France", "smard.fr.price_da_base", french=True),
@@ -121,8 +127,7 @@ class DayAheadPrice(Model):
             + (", French heating degree-days and holidays" if zone.french else "")
             + ", refitted on the past year."
         )
-        weather = (*WIND_SITES, *SOLAR_SITES, *(TEMPERATURES if zone.french else ()))
-        self.inputs = (zone.price_code, *weather)
+        self.inputs = inputs_for(zone)
         self._target_weather = target_weather
         self._holidays = holidays if zone.french else None
 

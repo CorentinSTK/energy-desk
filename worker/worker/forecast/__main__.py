@@ -37,6 +37,13 @@ MODEL_CLASSES: dict[str, type[Model]] = {
 }
 
 
+def model_inputs(model_id: str) -> Sequence[str]:
+    """Series a model reads, known before it is built (the price models have one per zone)."""
+    if model_id.endswith("_da_price"):
+        return da_price.inputs_for(da_price.ZONES[model_id.removesuffix("_da_price")])
+    return MODEL_CLASSES[model_id].inputs
+
+
 def build_models(ids: Sequence[str], history: History, live: bool) -> list[Model]:
     """Instantiate models; weather-driven models need target-day weather (and French holidays)."""
     models: list[Model] = []
@@ -72,7 +79,7 @@ def run(args: argparse.Namespace) -> int:
     ids = list(MODEL_CLASSES) if args.model == "all" else [args.model]
     url = require(get_settings().database_url, "DATABASE_URL")
     with psycopg.connect(url) as conn:
-        codes = {code for model_id in ids for code in MODEL_CLASSES[model_id].inputs}
+        codes = {code for model_id in ids for code in model_inputs(model_id)}
         history = registry.load_history(conn, codes)
         for model in build_models(ids, history, live=not args.backtest):
             if not args.dry_run:
