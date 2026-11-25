@@ -3,7 +3,7 @@
  * estimate). Shown on /data. Update this list when a source is added or a gap is closed.
  */
 
-export type GapMarket = "gas" | "lng" | "crude" | "products" | "power" | "freight";
+export type GapMarket = "gas" | "lng" | "crude" | "products" | "lpg" | "power" | "freight";
 
 export interface DeclaredGap {
   title: string;
@@ -110,6 +110,24 @@ export const DECLARED_GAPS: DeclaredGap[] = [
     title: "EUA carbon price",
     reason: "No free, redistributable daily source confirmed yet.",
     markets: ["power"],
+  },
+  {
+    title: "European and Asian LPG prices",
+    reason:
+      "Northwest Europe propane, the Argus Far East Index and Saudi Aramco contract prices are licensed price assessments (Argus, Platts) or are not published for reuse. The LPG page shows the free US benchmark, Mont Belvieu propane (EIA).",
+    markets: ["lpg"],
+  },
+  {
+    title: "European LPG stocks and demand",
+    reason:
+      "No free weekly source. Monthly national statistics exist (Eurostat, JODI) but are not added yet. US stocks and demand (EIA weekly) are shown.",
+    markets: ["lpg"],
+  },
+  {
+    title: "Propane and butane futures",
+    reason:
+      "NYMEX and ICE propane futures are licensed exchange data, and no free official source publishes them. Only spot prices are shown.",
+    markets: ["lpg"],
   },
   {
     title: "Tanker and LNG carrier freight rates",

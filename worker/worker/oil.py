@@ -1,4 +1,4 @@
-"""Crack spreads from official spot prices (pure functions; BUILD_SPEC §4, ADR 0007).
+"""Crack spreads and price ratios from official spot prices (pure functions; BUILD_SPEC §4).
 
 A crack spread is the refining margin implied by prices: what the products sell for minus what the
 crude costs, in $/bbl. Every component here is an EIA daily spot price (same price kind), and a
@@ -33,3 +33,18 @@ def product_crack(product: Prices, crude: Prices) -> dict[datetime, float]:
     """One product against one crude: product ($/gal, converted to $/bbl) - crude ($/bbl)."""
     dates = product.keys() & crude.keys()
     return {ts: convert(product[ts], "$/gal", "$/bbl") - crude[ts] for ts in sorted(dates)}
+
+
+def price_ratio_pct(product: Prices, crude: Prices) -> dict[datetime, float]:
+    """Product price as a percentage of crude, in $/bbl: product ($/gal to $/bbl) / crude * 100.
+
+    The usual measure of propane's value relative to crude (e.g. "propane at 45 % of WTI").
+    Dates where crude is zero or negative (WTI in April 2020) have no value: the ratio is
+    meaningless there.
+    """
+    dates = product.keys() & crude.keys()
+    return {
+        ts: convert(product[ts], "$/gal", "$/bbl") / crude[ts] * 100
+        for ts in sorted(dates)
+        if crude[ts] > 0
+    }

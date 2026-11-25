@@ -508,3 +508,68 @@ series:
     publication_lag_days: 5
     plausible_min: 0
     plausible_max: 1000
+  # LPG (phase 2). Mont Belvieu is the US Gulf Coast hub for propane; the price is non-TET (Enterprise)
+  # propane, the benchmark EIA publishes.
+  - code: eia.propane_mb_spot
+    name: Propane spot price, Mont Belvieu
+    commodity: lpg
+    region: US Gulf Coast
+    unit: $/gal
+    source_unit: $/GAL
+    frequency: daily
+    source_ref: petroleum/pri/spt|EER_EPLLPA_PF4_Y44MB_DPG
+    description: Mont Belvieu, TX propane spot price FOB.
+    price_kind: spot
+    publication_lag_days: 9
+    plausible_min: 0
+    plausible_max: 5
+    licence: *spot_licence
+  - code: eia.us_propane_stocks
+    name: US propane and propylene stocks
+    commodity: lpg
+    region: US
+    unit: kb
+    source_unit: MBBL
+    frequency: weekly
+    source_ref: petroleum/stoc/wstk|WPRSTUS1
+    description: U.S. ending stocks of propane and propylene, thousand barrels.
+    publication_lag_days: 5
+    plausible_min: 10000
+    plausible_max: 150000
+  - code: eia.us_propane_supplied
+    name: US propane and propylene product supplied
+    commodity: lpg
+    region: US
+    unit: kb/d
+    source_unit: MBBL/D
+    frequency: weekly
+    source_ref: petroleum/cons/wpsup|WPRUP_NUS_2
+    description: U.S. product supplied of propane and propylene, thousand barrels per day (implied demand).
+    publication_lag_days: 5
+    plausible_min: 0
+    plausible_max: 3000
+  - code: eia.us_propane_exports
+    name: US propane exports
+    commodity: lpg
+    region: US
+    unit: kb/d
+    source_unit: MBBL/D
+    frequency: weekly
+    source_ref: petroleum/move/wkly|W_EPLLPZ_EEX_NUS-Z00_MBBLD
+    description: U.S. exports of propane, thousand barrels per day (weekly estimates).
+    publication_lag_days: 5
+    plausible_min: 0
+    plausible_max: 4000
+  - code: eia.propane_wti_ratio
+    name: Propane as a percentage of WTI (spot)
+    commodity: lpg
+    region: US
+    unit: "%"
+    frequency: daily
+    source_ref: derived|propane_wti_ratio
+    description: Mont Belvieu propane spot, converted from $/gal at 42 gal/bbl, divided by WTI Cushing spot, × 100. Both EIA spot prices of the same date; a date missing either has no value, and dates with WTI at or below zero are skipped. Propane's value relative to crude.
+    price_kind: spot
+    publication_lag_days: 9
+    plausible_min: 5
+    plausible_max: 200
+    licence: *spot_licence

@@ -34,16 +34,19 @@ PAGE_SIZE = 5000
 SERIES_FACET = {"steo": "seriesId"}
 HISTORY_ONLY_ROUTES = {"steo"}
 
-# Crack spreads: name → (formula, component source_refs in the formula's argument order).
+# Derived spot series (cracks, ratios): name → (formula, component source_refs in the formula's
+# argument order).
 # Components must be catalogued series.
 WTI = "petroleum/pri/spt|RWTC"
 BRENT = "petroleum/pri/spt|RBRTE"
 GASOLINE_USGC = "petroleum/pri/spt|EER_EPMRU_PF4_RGC_DPG"
 ULSD_USGC = "petroleum/pri/spt|EER_EPD2DXL0_PF4_RGC_DPG"
 ULSD_NYH = "petroleum/pri/spt|EER_EPD2DXL0_PF4_Y35NY_DPG"
+PROPANE_MB = "petroleum/pri/spt|EER_EPLLPA_PF4_Y44MB_DPG"
 DERIVED: dict[str, tuple[Callable[..., dict[datetime, float]], tuple[str, ...]]] = {
     "crack_321_usgc": (oil.crack_321, (GASOLINE_USGC, ULSD_USGC, WTI)),
     "crack_ulsd_nyh_brent": (oil.product_crack, (ULSD_NYH, BRENT)),
+    "propane_wti_ratio": (oil.price_ratio_pct, (PROPANE_MB, WTI)),
 }
 
 

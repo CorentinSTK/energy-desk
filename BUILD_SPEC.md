@@ -166,6 +166,7 @@ the v1-style IDs below are kept as human-readable references.
 | All | Positioning: CFTC COT disaggregated, futures only (NYMEX WTI `067651`, RBOB `111659`, NY Harbor ULSD `022651`; Socrata dataset `72hh-3qpy`) | CFTC Public Reporting API (Socrata) | none | weekly | Public domain, acknowledge the CFTC (cftc.gov/WebPolicy, confirmed 2026-10-30). Raw longs and shorts stored; nets computed on the site |
 | All | FX for unit conversion (EUR/USD, EUR/GBP) | ECB Data Portal (`data-api.ecb.europa.eu`) | none | daily (TARGET days) | Free reuse, quote "Source: ECB statistics.", do not modify (confirmed 2026-10-28) |
 | All | Macro and volatility: USD index, rates, OVX | FRED | free key | daily | per series; some are copyrighted (e.g. CBOE OVX) — verify each |
+| LPG | Mont Belvieu propane spot (`EER_EPLLPA_PF4_Y44MB_DPG`), US propane/propylene stocks (`WPRSTUS1`), product supplied (`WPRUP_NUS_2`), propane exports (`W_EPLLPZ_EEX_NUS-Z00_MBBLD`); derived propane as % of WTI | EIA (spot, WPSR) | free key | daily / weekly | US public domain; spot prices from Refinitiv (LSEG) as named by EIA. Verified live 2026-11-25 |
 | All | Weather for demand models (HDD/CDD): daily mean temperature of the eight largest cities of metropolitan France | Open-Meteo (archive for history from 2015; forecast API read at issue time, never stored as observations) | none | daily | CC BY 4.0, "Weather data by Open-Meteo.com"; ERA5 from Copernicus C3S; free API for non-commercial use (confirmed 2026-10-30) |
 | All | French public holidays (demand model) | calendrier.api.gouv.fr | none | yearly | Licence Ouverte (Etalab) |
 | Futures | Front month and individual contracts where available (see note) | Yahoo Finance via `yfinance` | unofficial | daily, delayed | **not licensed for redistribution** — see ADR 0003 |
@@ -400,7 +401,7 @@ Work one milestone at a time. Each ends with a demo to the user and their approv
 
 European markets come first: they are the focus and the most differentiating part for European desks.
 
-Status (21 Nov 2026): M0–M8 done and live. F built (PortWatch transits, computed routes; ADR 0013). P2 not started.
+Status (25 Nov 2026): M0–M8 and F done and live. P2 in progress, in five steps: P2a LPG; P2b power zones NL, BE, AT, CH, IT-North and PL (SMARD); P2c US gas, LNG and power as "United States" tabs; P2d day-ahead price forecasts for DE-LU and FR; P2e carbon terms check.
 
 | # | Milestone | Done when |
 |---|---|---|

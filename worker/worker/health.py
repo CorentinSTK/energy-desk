@@ -29,6 +29,7 @@ PAGES = (
     "/markets/crude",
     "/markets/products",
     "/markets/freight",
+    "/markets/lpg",
     "/forecasts",
     "/lab",
     "/data",

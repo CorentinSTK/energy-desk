@@ -6,6 +6,7 @@
 export const COMMODITY_FILTERS = [
   "crude",
   "products",
+  "lpg",
   "natgas",
   "lng",
   "power",
