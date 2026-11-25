@@ -33,4 +33,5 @@ Runtime Cache on Hobby (vercel.com/docs/runtime-cache, read 25 Nov 2026):
 - Freshness is unchanged. Data can lag an ingest by up to the `hours` profile, as before.
 - Budget: a page reads about 25 entries, so 1M reads is about 40,000 page views a month. If the quota
   runs out, the site falls back to querying the database, as it does today. Nothing breaks.
-- The `db_query` log shows the hit rate: fewer lines per visit means more hits.
+- The `db_query` log showed the hit rate: fewer lines per visit meant more hits. Since 2026-11-25 it
+  logs only queries of 1 s or more and retries (`SLOW_QUERY_MS`), to keep the logs readable.

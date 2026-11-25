@@ -22,7 +22,7 @@ import {
 import { everyNthDay, rollingMean, weekVsSeason, WINDOW_DAYS } from "@/lib/freight/rolling";
 import { extraDays, KNOTS, ROUTES } from "@/lib/freight/routes";
 import { chokepointTakeaway } from "@/lib/freight/takeaway";
-import { formatChange, formatNumber } from "@/lib/format";
+import { formatChange, formatDate, formatNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 import { freightHref } from "./data";
@@ -201,10 +201,18 @@ export async function ChokepointsTab({ ctx, strait }: { ctx: PageContext; strait
     };
   });
   const ongoing = eventsFor(events, [choke.portwatchId], ctx.now.toISOString());
+  const current = rows.find((r) => r.choke.id === choke.id)?.tankers;
+  const measured =
+    current && current.deviationPct !== null
+      ? `Measured now: ${formatNumber(current.value, 1)} tankers a day in the 7 days to ${formatDate(current.asOf)}, ${formatChange(current.deviationPct, 0)}% against the ${ctx.rangeLabel} norm for those days.`
+      : undefined;
 
   return (
     <div className="grid gap-4">
-      <nav aria-label="Chokepoint" className="flex flex-wrap gap-1.5">
+      <nav
+        aria-label="Chokepoint"
+        className="flex w-fit max-w-full flex-wrap gap-0.5 rounded-lg bg-muted p-0.5"
+      >
         {CHOKEPOINTS.map((c) => (
           <Link
             key={c.id}
@@ -212,8 +220,10 @@ export async function ChokepointsTab({ ctx, strait }: { ctx: PageContext; strait
             scroll={false}
             aria-current={c.id === strait ? "true" : undefined}
             className={cn(
-              "rounded-md border px-2.5 py-1 text-sm transition-colors hover:bg-muted",
-              c.id === strait && "border-primary bg-muted font-medium",
+              "rounded-md px-2.5 py-1 text-sm transition-colors",
+              c.id === strait
+                ? "bg-surface-raised font-medium text-foreground shadow-sm ring-1 ring-border"
+                : "text-text-secondary hover:text-foreground",
             )}
           >
             {c.label}
@@ -222,7 +232,12 @@ export async function ChokepointsTab({ ctx, strait }: { ctx: PageContext; strait
       </nav>
 
       {ongoing.map((e) => (
-        <SourceEventNotice key={e.eventId} event={e} source={PORTWATCH_SOURCE} />
+        <SourceEventNotice
+          key={e.eventId}
+          event={e}
+          source={PORTWATCH_SOURCE}
+          measured={measured}
+        />
       ))}
 
       <ChartCard
