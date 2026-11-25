@@ -20,6 +20,7 @@ const PAGES = [
   { name: "power", path: "/markets/power" },
   { name: "forecasts", path: "/forecasts/eu_storage_30d" },
   { name: "lab", path: "/lab/backtest?preset=brent_wti_mean_reversion" },
+  { name: "freight", path: "/markets/freight" },
 ];
 const THEMES = ["dark", "light"];
 const DESKTOP = { width: 1440, height: 900 };
