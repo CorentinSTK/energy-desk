@@ -198,6 +198,11 @@ study when the phase starts, each source to be verified live and for licence:
   transits, IMF tanker-tonnage estimates) and its disruption events; six benchmark routes computed with
   searoute between Natural Earth ports. PortWatch is used by the owner's decision while the IMF's
   permission for automated access is pending.
+- "Who carries what" (Nov 2026): reference section on the freight page with the main vessel classes per
+  commodity (crude, products, LNG, LPG), typical capacities quoted from EIA and Wikipedia with a link to
+  each source, and site-drawn silhouettes sized by capacity within a commodity. Reference data in
+  `apps/web/src/lib/freight/vessels.ts`, not in `observations`; trade shares by class stay a declared
+  gap (paid vessel tracking).
 
 **Phase 2:** LPG (Mont Belvieu propane spot, US propane stocks `WPRSTUS1`, EIA); other European power zones
 (ENTSO-E); non-European markets: US gas storage and US LNG exports (EIA), US power (EIA-930), Japan power

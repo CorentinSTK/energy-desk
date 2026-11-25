@@ -586,3 +586,14 @@ Still open:
   default favicon); side-sheet menu below 1024 px instead of sideways-scrolling links; market headers
   with a commodity pill; KPI cards with monospaced values, change pills and a ruled context block;
   page titles one size up. Full e2e suite (154) passed locally.
+
+## 2026-11-25 — Freight: "Who carries what"
+
+- New section on /markets/freight: vessel classes per commodity, largest first, with capacities quoted
+  from EIA (AFRA scale 2014, Gulf Coast ports 2018, tanker rates 2026) and Wikipedia (Q-Max, Q-Flex,
+  LNG carrier, gas carrier), each linked. Every figure was read on the source page before use.
+- Silhouettes drawn in SVG (tanker, membrane LNG carrier, gas carrier), length proportional to top
+  capacity within a commodity; slide-in on commodity change and a gentle swell, both off under
+  reduced motion.
+- Not shown: share of trade by class (needs paid AIS data). Suezmax and Aframax have no dwt-free
+  barrel range in the sources, so they show the sources' single "about" figures.

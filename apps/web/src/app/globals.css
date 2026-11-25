@@ -73,6 +73,20 @@
     /* Tabular numerals everywhere: figures line up in tables, cards and tooltips. */
     @apply bg-background text-foreground tabular-nums;
   }
+  /* A ship riding the swell (freight page silhouettes); off under reduced motion, like every animation. */
+  @keyframes vessel-bob {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-1.5px) rotate(-0.4deg);
+    }
+  }
+  .vessel-bob {
+    animation: vessel-bob 4.5s ease-in-out infinite;
+    transform-origin: 50% 90%;
+  }
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
