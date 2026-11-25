@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { ErrorState } from "@/components/error-state";
 import { ChartCardSkeleton, KpiCardSkeleton } from "@/components/loading-skeletons";
 import { MarketHeader, MarketKpis } from "@/components/market-header";
+import { VesselClasses } from "@/components/freight/vessel-classes";
 import { TabNav } from "@/components/markets/tab-nav";
 import { Card, CardContent } from "@/components/ui/card";
 import { isDatabaseConfigured } from "@/lib/data/db";
@@ -96,6 +97,8 @@ async function FreightContent({
           <TabContent tab={tab} strait={strait} ctx={ctx} />
         </Suspense>
       </section>
+
+      <VesselClasses />
 
       <p className="text-sm text-muted-foreground">
         Every series on this page, with its licence and freshness, is listed in the{" "}

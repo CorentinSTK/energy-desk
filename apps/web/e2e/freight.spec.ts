@@ -56,3 +56,21 @@ test.describe("freight page", () => {
     ).toBeVisible();
   });
 });
+
+test.describe("who carries what", () => {
+  test("switches commodity and shows each class with its source", async ({ page }) => {
+    await page.goto("/markets/freight");
+    const section = page.getByRole("region", { name: "Who carries what" });
+    await expect(section.getByText("VLCC", { exact: true })).toBeVisible();
+    await section.getByRole("button", { name: "LNG" }).click();
+    await expect(section.getByRole("button", { name: "LNG" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await expect(section.getByText("Q-Max", { exact: true })).toBeVisible();
+    await expect(section.getByRole("link", { name: "Wikipedia, Q-Max" })).toHaveAttribute(
+      "href",
+      "https://en.wikipedia.org/wiki/Q-Max",
+    );
+  });
+});
