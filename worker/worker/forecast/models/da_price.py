@@ -4,7 +4,8 @@ Method, in two sentences: the next unknown day-ahead price is explained by the l
 (persistence carries the fuel and carbon cost level), German wind and sunshine on the target day
 (wind and solar output push the price down across the coupled market), the day of the week and,
 for France, the cold (electric heating) and public holidays. It is a linear regression refitted on
-the year before each issue date.
+the year before each issue date, with recent days weighted more (half-life HALF_LIFE_DAYS), so the
+fit follows a change in price level within weeks rather than a year (version 2, ADR 0016).
 
 Timing: forecasts are issued in the evening (22:30 UTC). By then the noon auction has already priced
 tomorrow, so the target is the day after tomorrow (horizon 2), and tomorrow's price is the latest
@@ -38,6 +39,10 @@ HORIZON = 2
 TRAINING_DAYS = 365
 MIN_TRAINING_DAYS = 200
 WEATHER_LAG_DAYS = 6  # the weather archive is final about five days after the day
+# A day's weight in the fit halves every HALF_LIFE_DAYS back from the latest training day. Chosen
+# among 30/45/60/90 in the 2020-2026 backtest: all beat the unweighted fit; 45 is the middle value
+# that did well for both zones (ADR 0016).
+HALF_LIFE_DAYS = 45
 
 
 @dataclass(frozen=True)
@@ -90,6 +95,11 @@ def features(
     return row
 
 
+def recency_weights(ages: Sequence[int]) -> np.ndarray:
+    """Weight of each training day: 1 for the latest, halving every HALF_LIFE_DAYS of age."""
+    return np.asarray([0.5 ** (age / HALF_LIFE_DAYS) for age in ages], dtype=float)
+
+
 @dataclass(frozen=True)
 class Zone:
     id: str
@@ -112,7 +122,7 @@ ZONES = {
 
 class DayAheadPrice(Model):
     horizon_unit = "day"
-    version = "1"
+    version = "2"
 
     def __init__(
         self, zone: Zone, target_weather: WeatherForTargets, holidays: set[date] | None = None
@@ -125,7 +135,7 @@ class DayAheadPrice(Model):
             f"{zone.name} day-ahead base price two days ahead from a regression on the latest "
             "known price, German wind and sunshine, the weekday"
             + (", French heating degree-days and holidays" if zone.french else "")
-            + ", refitted on the past year."
+            + ", refitted on the past year with recent days weighted more."
         )
         self.inputs = inputs_for(zone)
         self._target_weather = target_weather
@@ -142,10 +152,12 @@ class DayAheadPrice(Model):
         known = price.get(issued + timedelta(days=1))
         if known is None:
             return []  # tomorrow's auction result is missing: no basis for the forecast
-        rows, ys = self._training(history, price, issued)
+        rows, ys, ages = self._training(history, price, issued)
         if len(ys) < MIN_TRAINING_DAYS:
             return []
-        x, y = np.asarray(rows), np.asarray(ys)
+        # Weighted least squares: scale each row by the square root of its weight.
+        root_w = np.sqrt(recency_weights(ages))
+        x, y = np.asarray(rows) * root_w[:, None], np.asarray(ys) * root_w
         coef, *_ = np.linalg.lstsq(x, y, rcond=None)
 
         target = issued + timedelta(days=HORIZON)
@@ -176,9 +188,10 @@ class DayAheadPrice(Model):
 
     def _training(
         self, history: History, price: Series, issued: date
-    ) -> tuple[list[list[float]], list[float]]:
-        """Days with a price, the previous day's price and observed weather, in the past year."""
-        rows, ys = [], []
+    ) -> tuple[list[list[float]], list[float], list[int]]:
+        """Days with a price, the previous day's price and observed weather, in the past year, with
+        each day's age in days before the latest training day."""
+        rows, ys, ages = [], [], []
         last_weather = issued - timedelta(days=WEATHER_LAG_DAYS)
         day = last_weather - timedelta(days=TRAINING_DAYS - 1)
         while day <= last_weather:
@@ -188,8 +201,9 @@ class DayAheadPrice(Model):
             if y is not None and previous is not None and w is not None:
                 rows.append(features(day, previous, w, self._holidays))
                 ys.append(y)
+                ages.append((last_weather - day).days)
             day += timedelta(days=1)
-        return rows, ys
+        return rows, ys, ages
 
 
 def observed_weather(full_history: History, french: bool) -> WeatherForTargets:

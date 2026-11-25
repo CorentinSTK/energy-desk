@@ -4,6 +4,7 @@ import math
 from datetime import date, timedelta
 
 import numpy as np
+import pytest
 
 from worker.forecast.data import History, Series, days
 from worker.forecast.models import da_price
@@ -104,3 +105,8 @@ def test_no_forecast_without_tomorrows_auction_result() -> None:
         }
     )
     assert model.forecast(holed.as_of(model.cutoffs(issued)), issued) == []
+
+
+def test_recency_weights_halve_every_half_life() -> None:
+    w = da_price.recency_weights([0, da_price.HALF_LIFE_DAYS, 2 * da_price.HALF_LIFE_DAYS])
+    assert w.tolist() == pytest.approx([1.0, 0.5, 0.25])

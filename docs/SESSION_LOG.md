@@ -597,3 +597,14 @@ Still open:
   reduced motion.
 - Not shown: share of trade by class (needs paid AIS data). Suezmax and Aframax have no dwt-free
   barrel range in the sources, so they show the sources' single "about" figures.
+
+## 2026-11-25 — Polish batch, zone gap matrix, DA price model v2
+
+- Disruption notices add the latest measured 7-day tanker transits against the norm (#67); quieter
+  `db_query` logs (slow or retried queries only).
+- Power: "Which zones trade close together?", a matrix of the mean absolute hourly day-ahead gap
+  between the eight SMARD zones over 30 days. Exact same-price shares were tried first and dropped:
+  since 15-minute products, hourly averages are rarely equal to the cent, which understated coupling.
+- DA price forecasts version 2: recency-weighted fit (half-life 45 days). Backtest 2020–2026: DE-LU
+  MAE 21.3 → 18.4 €/MWh (skill vs naive 17 % → 28 %), FR 18.5 → 17.1 (10 % → 17 %). Alternatives
+  tested and rejected are in ADR 0016.

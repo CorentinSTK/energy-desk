@@ -119,7 +119,7 @@ export const FORECAST_MODELS: ForecastModelInfo[] = [
     decimals: 1,
     method: [
       "Forecasts are issued in the evening, when the noon auction has already priced tomorrow, so the target is the day after tomorrow and tomorrow's price is the latest known value. That price carries the cost level of gas and carbon.",
-      "A linear regression, refitted on the past year, then adjusts it for German wind and sunshine on the target day (mean wind speed at 100 m over six wind sites, solar radiation over six solar sites, both from Open-Meteo), which push prices down across the coupled market, and for the day of the week.",
+      "A linear regression, refitted on the past year with recent days weighted more (a day's weight halves every 45 days back, so the fit follows a new price level within weeks), then adjusts it for German wind and sunshine on the target day (mean wind speed at 100 m over six wind sites, solar radiation over six solar sites, both from Open-Meteo), which push prices down across the coupled market, and for the day of the week.",
     ],
     baselines: {
       naive: "Tomorrow's price, the latest known: no change.",
@@ -147,7 +147,7 @@ export const FORECAST_MODELS: ForecastModelInfo[] = [
     decimals: 1,
     method: [
       "Forecasts are issued in the evening, when the noon auction has already priced tomorrow, so the target is the day after tomorrow and tomorrow's price is the latest known value. That price carries the cost level of gas and carbon.",
-      "A linear regression, refitted on the past year, then adjusts it for German wind and sunshine on the target day (mean wind speed at 100 m over six wind sites, solar radiation over six solar sites, both from Open-Meteo), which push prices down across the coupled market, and for the day of the week; for France also heating degree-days of the population-weighted temperature (eight cities) and public holidays.",
+      "A linear regression, refitted on the past year with recent days weighted more (a day's weight halves every 45 days back, so the fit follows a new price level within weeks), then adjusts it for German wind and sunshine on the target day (mean wind speed at 100 m over six wind sites, solar radiation over six solar sites, both from Open-Meteo), which push prices down across the coupled market, and for the day of the week; for France also heating degree-days of the population-weighted temperature (eight cities) and public holidays.",
     ],
     baselines: {
       naive: "Tomorrow's price, the latest known: no change.",
