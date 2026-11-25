@@ -516,3 +516,23 @@ Still open:
   - the table shows the error state on failure.
 - Checked with a local proxy that freezes the DB: error card during the freeze, normal load right
   after.
+- Merged #55; then live: no more "—" or error cards in 40 visits, but one freight visit in two took
+  4.5 s.
+- #56: one `db_query` log line per SQL query that runs (each line is a `use cache` miss), with pool
+  age and idle time.
+  - The logs showed about 23 SQL queries per visit: the in-memory cache kept almost nothing on
+    Vercel.
+  - Next 16 documents this for serverless: entries "typically don't persist across requests".
+  - The slow visits did not run `getPointsMany` and waited on a cache entry instead.
+- #57 (ADR 0015): the 11 cached data functions use `'use cache: remote'`, stored in Vercel Runtime
+  Cache.
+  - Hobby allows 1M reads and 200K writes a month. When the quota runs out the cache pauses: no
+    charge, and the site falls back to the database.
+  - Measured live after the deploy: 0 SQL queries on repeat visits, versus about 23 before.
+  - Freight 0.4–1.2 s, with no 4.5 s visits; gas 0.3 s; home 0.6 s; no error cards.
+  - The 4 s waits went away with the remote cache. Their exact mechanism (a pending in-memory entry)
+    was not proven.
+- Closes ADR 0012's open item "`use cache` rarely hits on Vercel".
+- Playwright on the live site after #57: 137/138 on the first clean run. The desktop Lab stop-side
+  test failed once, then passed 3/3 on repeat. An earlier run had been invalidated by the machine
+  sleeping mid-run (4.4 h, `page.goto` timeouts).
