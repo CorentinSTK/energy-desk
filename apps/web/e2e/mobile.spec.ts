@@ -12,6 +12,7 @@ const PAGES = [
   "/markets/power",
   "/markets/crude",
   "/markets/products",
+  "/markets/lpg",
   "/markets/freight",
   "/markets/freight?tab=routes",
   "/forecasts",

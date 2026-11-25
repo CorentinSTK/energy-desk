@@ -8,6 +8,7 @@ const NAV = [
   { href: "/markets/power", label: "Power" },
   { href: "/markets/crude", label: "Crude" },
   { href: "/markets/products", label: "Products" },
+  { href: "/markets/lpg", label: "LPG" },
   { href: "/markets/freight", label: "Freight" },
   { href: "/forecasts", label: "Forecasts" },
   { href: "/lab", label: "Lab" },
