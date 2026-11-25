@@ -1,0 +1,170 @@
+# ENTSO-E Transparency Platform — net cross-border physical flows between the power zones of the site.
+# Terms (read 2026-11-25): Terms of Use of 29/03/2023 and the "List of data available for free re-use"
+# of 18/10/2023 (pasted by the owner from the platform's help centre). Physical flows (art. 12.1.g,
+# item 18) are on the list: free re-use under CC BY 4.0, crediting the source and indicating changes.
+# Data not on the list (generation, generation outages, actual load, prices) is never ingested.
+# Values: daily average of the hourly net flow FROM→TO in MW (Europe/Brussels days, complete days only);
+# positive = FROM exports. Endpoint, zones and units checked live on 2026-11-25 (worker/sources/entsoe.py).
+source: entsoe
+licence:
+  name: CC BY 4.0
+  url: https://creativecommons.org/licenses/by/4.0/
+  attribution: "Source: ENTSO-E Transparency Platform (CC BY 4.0); daily averages of net hourly flows computed by Energy Desk."
+licence_checked: 2026-11-25
+series:
+  - code: entsoe.flow.fr_de_lu
+    name: Net physical flow France → Germany-Luxembourg
+    commodity: power
+    region: "FR→DE-LU"
+    unit: MW
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "flow|FR|DE_LU"
+    description: Daily average of the hourly physical flow France → Germany-Luxembourg minus the reverse flow; positive when France exports.
+    publication_lag_days: 1
+    plausible_min: -30000
+    plausible_max: 30000
+  - code: entsoe.flow.nl_de_lu
+    name: Net physical flow Netherlands → Germany-Luxembourg
+    commodity: power
+    region: "NL→DE-LU"
+    unit: MW
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "flow|NL|DE_LU"
+    description: Daily average of the hourly physical flow Netherlands → Germany-Luxembourg minus the reverse flow; positive when Netherlands exports.
+    publication_lag_days: 1
+    plausible_min: -30000
+    plausible_max: 30000
+  - code: entsoe.flow.be_de_lu
+    name: Net physical flow Belgium → Germany-Luxembourg
+    commodity: power
+    region: "BE→DE-LU"
+    unit: MW
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "flow|BE|DE_LU"
+    description: Daily average of the hourly physical flow Belgium → Germany-Luxembourg minus the reverse flow; positive when Belgium exports.
+    publication_lag_days: 1
+    plausible_min: -30000
+    plausible_max: 30000
+  - code: entsoe.flow.at_de_lu
+    name: Net physical flow Austria → Germany-Luxembourg
+    commodity: power
+    region: "AT→DE-LU"
+    unit: MW
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "flow|AT|DE_LU"
+    description: Daily average of the hourly physical flow Austria → Germany-Luxembourg minus the reverse flow; positive when Austria exports.
+    publication_lag_days: 1
+    plausible_min: -30000
+    plausible_max: 30000
+  - code: entsoe.flow.ch_de_lu
+    name: Net physical flow Switzerland → Germany-Luxembourg
+    commodity: power
+    region: "CH→DE-LU"
+    unit: MW
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "flow|CH|DE_LU"
+    description: Daily average of the hourly physical flow Switzerland → Germany-Luxembourg minus the reverse flow; positive when Switzerland exports.
+    publication_lag_days: 1
+    plausible_min: -30000
+    plausible_max: 30000
+  - code: entsoe.flow.pl_de_lu
+    name: Net physical flow Poland → Germany-Luxembourg
+    commodity: power
+    region: "PL→DE-LU"
+    unit: MW
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "flow|PL|DE_LU"
+    description: Daily average of the hourly physical flow Poland → Germany-Luxembourg minus the reverse flow; positive when Poland exports.
+    publication_lag_days: 1
+    plausible_min: -30000
+    plausible_max: 30000
+  - code: entsoe.flow.fr_be
+    name: Net physical flow France → Belgium
+    commodity: power
+    region: "FR→BE"
+    unit: MW
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "flow|FR|BE"
+    description: Daily average of the hourly physical flow France → Belgium minus the reverse flow; positive when France exports.
+    publication_lag_days: 1
+    plausible_min: -30000
+    plausible_max: 30000
+  - code: entsoe.flow.nl_be
+    name: Net physical flow Netherlands → Belgium
+    commodity: power
+    region: "NL→BE"
+    unit: MW
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "flow|NL|BE"
+    description: Daily average of the hourly physical flow Netherlands → Belgium minus the reverse flow; positive when Netherlands exports.
+    publication_lag_days: 1
+    plausible_min: -30000
+    plausible_max: 30000
+  - code: entsoe.flow.fr_ch
+    name: Net physical flow France → Switzerland
+    commodity: power
+    region: "FR→CH"
+    unit: MW
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "flow|FR|CH"
+    description: Daily average of the hourly physical flow France → Switzerland minus the reverse flow; positive when France exports.
+    publication_lag_days: 1
+    plausible_min: -30000
+    plausible_max: 30000
+  - code: entsoe.flow.fr_it_north
+    name: Net physical flow France → Italy North
+    commodity: power
+    region: "FR→IT-North"
+    unit: MW
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "flow|FR|IT_NORTH"
+    description: Daily average of the hourly physical flow France → Italy North minus the reverse flow; positive when France exports.
+    publication_lag_days: 1
+    plausible_min: -30000
+    plausible_max: 30000
+  - code: entsoe.flow.ch_it_north
+    name: Net physical flow Switzerland → Italy North
+    commodity: power
+    region: "CH→IT-North"
+    unit: MW
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "flow|CH|IT_NORTH"
+    description: Daily average of the hourly physical flow Switzerland → Italy North minus the reverse flow; positive when Switzerland exports.
+    publication_lag_days: 1
+    plausible_min: -30000
+    plausible_max: 30000
+  - code: entsoe.flow.at_it_north
+    name: Net physical flow Austria → Italy North
+    commodity: power
+    region: "AT→IT-North"
+    unit: MW
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "flow|AT|IT_NORTH"
+    description: Daily average of the hourly physical flow Austria → Italy North minus the reverse flow; positive when Austria exports.
+    publication_lag_days: 1
+    plausible_min: -30000
+    plausible_max: 30000
+  - code: entsoe.flow.at_ch
+    name: Net physical flow Austria → Switzerland
+    commodity: power
+    region: "AT→CH"
+    unit: MW
+    frequency: daily
+    gap_threshold_days: 1
+    source_ref: "flow|AT|CH"
+    description: Daily average of the hourly physical flow Austria → Switzerland minus the reverse flow; positive when Austria exports.
+    publication_lag_days: 1
+    plausible_min: -30000
+    plausible_max: 30000

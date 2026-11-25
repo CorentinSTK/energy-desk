@@ -5,7 +5,7 @@ on:
   schedule:
     - cron: "15 16 * * 1-5" # ECB reference rates, published around 16:00 CET on TARGET days
     - cron: "0 17 * * 1-5" # EIA (spot prices weekly, stocks Wednesday 10:30 ET), FRED, EC Weekly Oil Bulletin (Thursday)
-    - cron: "15 14 * * *" # Power: SMARD (day-ahead results ~12:45 CET), RTE éCO2mix and Elexon (day D-1 complete); Open-Meteo weather (France, Germany); IMF PortWatch transits (~5 days behind)
+    - cron: "15 14 * * *" # Power: SMARD (day-ahead results ~12:45 CET), RTE éCO2mix, Elexon and ENTSO-E flows (day D-1 complete); Open-Meteo weather (France, Germany); IMF PortWatch transits (~5 days behind)
     - cron: "30 21 * * *" # GIE AGSI+ and ALSI, ENTSOG (gas day D by the evening of D+1); Yahoo after NYMEX settlement; CFTC COT (Friday ~19:30 UTC, later in holiday weeks)
   workflow_dispatch:
     inputs:
@@ -19,6 +19,7 @@ on:
             ecb,
             eia,
             elexon,
+            entsoe,
             entsog,
             fred,
             gie_agsi,
@@ -56,7 +57,7 @@ jobs:
           case "$SCHEDULE" in
             "15 16 * * 1-5") sources='["ecb"]' ;;
             "0 17 * * 1-5") sources='["eia","fred","ec_wob"]' ;;
-            "15 14 * * *") sources='["smard","odre","elexon","open_meteo","open_meteo_de","portwatch"]' ;;
+            "15 14 * * *") sources='["smard","odre","elexon","entsoe","open_meteo","open_meteo_de","portwatch"]' ;;
             "30 21 * * *") sources='["gie_agsi","gie_alsi","entsog","yahoo","cftc"]' ;;
             *) sources="[\"$MANUAL_SOURCE\"]" ;;
           esac
@@ -83,6 +84,7 @@ jobs:
       EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
       FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
       GIE_API_KEY: ${{ secrets.GIE_API_KEY }}
+      ENTSOE_API_TOKEN: ${{ secrets.ENTSOE_API_TOKEN }}
     steps:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v10.3.2 # no floating major tag is published

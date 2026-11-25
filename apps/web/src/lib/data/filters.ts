@@ -21,6 +21,7 @@ export const SOURCE_LABELS: Record<string, string> = {
   ecb: "ECB",
   eia: "EIA",
   elexon: "Elexon",
+  entsoe: "ENTSO-E",
   entsog: "ENTSOG",
   fred: "FRED",
   gie_agsi: "GIE AGSI+",
