@@ -4,7 +4,16 @@ import type { ShippingEvent } from "@/lib/data/shipping-events";
 import { formatDate } from "@/lib/format";
 
 /** A disruption event exactly as the source publishes it: name, code, dates and alert level. */
-export function SourceEventNotice({ event, source }: { event: ShippingEvent; source: string }) {
+export function SourceEventNotice({
+  event,
+  source,
+  measured,
+}: {
+  event: ShippingEvent;
+  source: string;
+  /** Optional sentence computed from the transit data: is the disruption still visible today? */
+  measured?: string;
+}) {
   const period = `from ${formatDate(event.startsOn)}${
     event.endsOn ? ` to ${formatDate(event.endsOn)}` : ", ongoing"
   }`;
@@ -20,6 +29,7 @@ export function SourceEventNotice({ event, source }: { event: ShippingEvent; sou
           Disruption event published by {source}, {period}
           {event.alertLevel && `, alert level ${event.alertLevel}`}.
         </p>
+        {measured && <p className="text-foreground">{measured}</p>}
       </div>
     </div>
   );

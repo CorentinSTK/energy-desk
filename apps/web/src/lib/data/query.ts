@@ -8,6 +8,8 @@ import { QueryTimeoutError, withTimeout } from "./timing";
 /** Time limit for one attempt of one SQL query. Two attempts fit inside the page-level TIMEOUT_MS. */
 export const ATTEMPT_MS = 4_000;
 const ATTEMPTS = 2;
+/** Successful queries are logged only from this duration (or on a retry): enough to spot slowness. */
+export const SLOW_QUERY_MS = 1_000;
 
 /**
  * Run one SQL query with a time limit and one retry on a fresh pool. Call it inside every
@@ -31,7 +33,9 @@ export async function query<R>(label: string, run: (sql: postgres.Sql) => Promis
     try {
       const rows = await withTimeout(label, run(db()), ATTEMPT_MS);
       const ms = Math.round(performance.now() - start);
-      console.log(JSON.stringify({ event: "db_query", label, attempt, ms, ...timings }));
+      if (ms >= SLOW_QUERY_MS || attempt > 1) {
+        console.log(JSON.stringify({ event: "db_query", label, attempt, ms, ...timings }));
+      }
       return rows;
     } catch (error) {
       if (!(error instanceof QueryTimeoutError)) throw error;
