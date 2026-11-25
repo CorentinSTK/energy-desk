@@ -27,7 +27,8 @@ export const SOURCE_LABELS: Record<string, string> = {
   gie_alsi: "GIE ALSI",
   odre: "RTE éCO2mix",
   portwatch: "IMF PortWatch",
-  open_meteo: "Open-Meteo",
+  open_meteo: "Open-Meteo (France)",
+  open_meteo_de: "Open-Meteo (Germany)",
   smard: "SMARD",
   yahoo: "Yahoo Finance",
 };

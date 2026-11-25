@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 
 import { FilterBar } from "@/components/data/filter-bar";
+import { PipelineStatus } from "@/components/data/pipeline-status";
 import { Pagination } from "@/components/data/pagination";
 import { RunsTable } from "@/components/data/runs-table";
 import { SeriesTable } from "@/components/data/series-table";
@@ -101,6 +102,7 @@ async function Catalog({ searchParams }: { searchParams: PageProps<"/data">["sea
         now={now}
         problemRuns={runs.filter((r) => r.status !== "ok").length}
       />
+      <PipelineStatus catalog={catalog} runs={runs} now={now} />
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">Series</h2>
         <FilterBar filters={filters} />
