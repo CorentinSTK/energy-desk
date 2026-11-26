@@ -139,6 +139,19 @@ export const FLOWS: Partial<
       { name: "Germany & Belgium", codes: ["odre.fr.exch.de_be"] },
     ],
   },
+  // ENTSO-E net physical flows neighbour → DE-LU: positive means Germany-Luxembourg imports. Only the
+  // six borders with zones on this site; Denmark, Czechia, Sweden and Norway are not ingested.
+  de: {
+    source: "ENTSO-E",
+    lines: [
+      { name: "France", codes: ["entsoe.flow.fr_de_lu"] },
+      { name: "Netherlands", codes: ["entsoe.flow.nl_de_lu"] },
+      { name: "Belgium", codes: ["entsoe.flow.be_de_lu"] },
+      { name: "Austria", codes: ["entsoe.flow.at_de_lu"] },
+      { name: "Switzerland", codes: ["entsoe.flow.ch_de_lu"] },
+      { name: "Poland", codes: ["entsoe.flow.pl_de_lu"] },
+    ],
+  },
   gb: {
     source: "Elexon",
     lines: [

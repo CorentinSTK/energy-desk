@@ -485,6 +485,16 @@ export function BalanceTab({ ctx }: { ctx: PageContext }) {
         height={CHART_HEIGHT}
         caveat={demandCaveat}
       />
+      <WeeklySeasonalCard
+        ctx={ctx}
+        code="eia.us_jet_supplied"
+        title="Is US jet fuel demand strong for the season?"
+        subject="US jet fuel product supplied"
+        commodity="products"
+        decimals={0}
+        height={CHART_HEIGHT}
+        caveat={demandCaveat}
+      />
     </div>
   );
 }
