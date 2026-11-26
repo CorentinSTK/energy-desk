@@ -660,3 +660,11 @@ Still open:
   so a pipeline-vs-LNG split would mislead).
 - Checks: 326 unit tests, full e2e locally (power and crude re-run with fewer workers after dev
   server timeouts under parallel load).
+
+## 2026-11-26 — EIA job hardening
+
+- The scheduled EIA ingest of 26 Nov was cancelled at the 30-minute limit: the EIA API stalled
+  (EIA-930 answered non-JSON after 61 s or hung for an hour; other routes timed out too).
+- EIA-930 routes now make one attempt per request (no retries). A circuit breaker skips the
+  remaining EIA series after 3 timeouts in a row, so a stalled API fails the job in minutes and the
+  pipeline status shows it; the next scheduled run tries again.

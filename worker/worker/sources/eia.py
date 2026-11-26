@@ -24,7 +24,7 @@ import httpx
 from worker import oil
 from worker.catalog import SeriesSpec, load_catalog
 from worker.config import get_settings, require
-from worker.http_client import get_json
+from worker.http_client import get_json, get_once
 from worker.sources.base import Source
 from worker.validate import Observation
 
@@ -52,6 +52,25 @@ DERIVED: dict[str, tuple[Callable[..., dict[datetime, float]], tuple[str, ...]]]
 
 class UnitMismatch(Exception):
     pass
+
+
+# Circuit breaker: when the EIA API stalls (26 Nov 2026: every route timed out), the remaining
+# series are skipped after this many timeouts in a row, so the job fails in minutes instead of
+# running into the workflow's 30-minute limit. The next scheduled run tries again.
+MAX_TIMEOUTS_IN_A_ROW = 3
+
+
+def _is_timeout(error: BaseException) -> bool:
+    chain: BaseException | None = error
+    while chain is not None:
+        if isinstance(chain, httpx.TimeoutException) or "Timeout" in str(chain):
+            return True
+        chain = chain.__cause__
+    return False
+
+
+# EIA-930 hourly electric grid routes: slow and sometimes stalled; no retries (see _request).
+SLOW_ROUTE_PREFIX = "electricity/rto"
 
 
 def period_start(period: str) -> datetime:
@@ -117,6 +136,7 @@ class EiaSource(Source):
         # Fetched series by (source_ref, since), so crack components are requested once per run.
         self._cache: dict[tuple[str, date | None], list[Observation]] = {}
         self._specs: dict[str, SeriesSpec] | None = None
+        self._timeouts_in_a_row = 0
 
     def _spec_for(self, source_ref: str) -> SeriesSpec:
         if self._specs is None:
@@ -143,7 +163,17 @@ class EiaSource(Source):
     ) -> list[Observation]:
         key = (spec.source_ref, since)
         if key not in self._cache:
-            self._cache[key] = self._request(client, spec, since)
+            if self._timeouts_in_a_row >= MAX_TIMEOUTS_IN_A_ROW:
+                raise RuntimeError(
+                    f"skipped: the EIA API timed out {self._timeouts_in_a_row} times in a row"
+                )
+            try:
+                self._cache[key] = self._request(client, spec, since)
+            except Exception as error:
+                if _is_timeout(error):
+                    self._timeouts_in_a_row += 1
+                raise
+            self._timeouts_in_a_row = 0
         return self._cache[key]
 
     def _request(
@@ -168,7 +198,17 @@ class EiaSource(Source):
         observations: list[Observation] = []
         offset = 0
         while True:
-            body = get_json(client, f"{BASE_URL}/{route}/data/", {**params, "offset": offset})
+            url = f"{BASE_URL}/{route}/data/"
+            if route.startswith(SLOW_ROUTE_PREFIX):
+                # EIA-930 can hang for many minutes or answer non-JSON (seen 26 Nov 2026): one
+                # attempt only, so a stalled route fails its own series, not the whole EIA job.
+                response_ = get_once(client, url, {**params, "offset": offset})
+                try:
+                    body = response_.json()
+                except ValueError as error:
+                    raise ValueError(f"{spec.code}: EIA answered non-JSON") from error
+            else:
+                body = get_json(client, url, {**params, "offset": offset})
             response = body["response"]
             rows = response["data"]
             observations += parse_rows(rows, spec)
