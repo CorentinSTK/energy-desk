@@ -4,6 +4,7 @@ import {
   balanceTakeaway,
   curveTakeaway,
   largestFlowTakeaway,
+  seasonalAbsoluteTakeaway,
   monthlyBenchmarkTakeaway,
   monthlyTotalTakeaway,
   positioningTakeaway,
@@ -216,6 +217,23 @@ describe("monthlyTotalTakeaway", () => {
   it("names the month of a monthly total", () => {
     expect(monthlyTotalTakeaway("US LNG exports", 514.617, "Bcf", 0, "2026-08-01T00:00:00Z")).toBe(
       "US LNG exports were 515 Bcf in August 2026.",
+    );
+  });
+});
+
+describe("seasonalAbsoluteTakeaway", () => {
+  it("states the gap in the unit, not in percent", () => {
+    const c = {
+      current: 5.7,
+      mean: 9.4,
+      min: 6,
+      max: 13,
+      deviation: -3.7,
+      position: "below" as const,
+      yearsCount: 5,
+    };
+    expect(seasonalAbsoluteTakeaway("The temperature", "2026-11-24", c, "°C", 1, "2021–2025")).toBe(
+      "The temperature was 5.7 °C on 24 Nov 2026, 3.7 °C below the 2021–2025 average for this date, below the 2021–2025 range.",
     );
   });
 });

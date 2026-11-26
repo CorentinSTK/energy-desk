@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import { FLOWS, type PowerZone, powerHref, type PowerTab, ZONES } from "./data";
 import { CarbonIndicator } from "./carbon";
 import { CouplingMatrix } from "./coupling";
+import { NegativeHours, PriceShape, ZoneWeather } from "./insights";
 import { CrossBorderFlows } from "./flows";
 import { EuropeanZones } from "./zones";
 
@@ -362,6 +363,8 @@ export async function PricesTab({ ctx, zone }: { ctx: PageContext; zone: PowerZo
       </ChartCard>
 
       {zone.id === "gb" ? <GbPriceYear ctx={ctx} zone={zone} /> : <DeFrComparison ctx={ctx} />}
+      {zone.id !== "gb" && <PriceShape ctx={ctx} zone={zone} />}
+      {zone.id !== "gb" && <NegativeHours ctx={ctx} />}
       {zone.id !== "gb" && <EuropeanZones ctx={ctx} />}
       {zone.id !== "gb" && <CouplingMatrix ctx={ctx} />}
       {zone.id !== "gb" && <CrossBorderFlows ctx={ctx} />}
@@ -660,6 +663,7 @@ export async function BalanceTab({ ctx, zone }: { ctx: PageContext; zone: PowerZ
           />
         )}
       </ChartCard>
+      <ZoneWeather ctx={ctx} zone={zone} />
     </div>
   );
 }
@@ -686,8 +690,8 @@ export async function FlowsTab({ ctx, zone }: { ctx: PageContext; zone: PowerZon
   if (!flows) {
     return (
       <DataGapNotice
-        title="German cross-border flows are not shown yet"
-        reason="SMARD publishes them per neighbour; they are planned with the other European zones in phase 2. France–Germany exchanges are visible from the France view."
+        title="Cross-border flows are not available for this zone"
+        reason="No open source with flows for this zone is ingested."
       />
     );
   }
@@ -698,7 +702,8 @@ export async function FlowsTab({ ctx, zone }: { ctx: PageContext; zone: PowerZon
   const codes = flows.lines.flatMap((l) => l.codes);
   const failed = lines.some((l) => l.points === null);
   const shown = lines.filter((l) => l.points !== null && l.points.length > 0);
-  const subject = zone.id === "fr" ? "France" : "Great Britain";
+  const subject =
+    zone.id === "fr" ? "France" : zone.id === "de" ? "Germany-Luxembourg" : "Great Britain";
 
   return (
     <div className="grid gap-4">
@@ -715,7 +720,9 @@ export async function FlowsTab({ ctx, zone }: { ctx: PageContext; zone: PowerZon
             <p>
               {zone.id === "fr"
                 ? "Scheduled commercial exchanges with each neighbour, average power per day (RTE). Positive means France imports, negative means France exports. Germany and Belgium form one flow-based border in RTE's data."
-                : "Net flow on each interconnector, average power per day, added up per neighbouring country. Positive means Great Britain imports, negative means it exports."}
+                : zone.id === "de"
+                  ? "Net physical flow with each neighbour, average power per day (ENTSO-E). Positive means Germany-Luxembourg imports, negative means it exports. Only the six borders with zones on this site: Denmark, Czechia, Sweden and Norway are not included, so the lines do not add up to Germany's net position."
+                  : "Net flow on each interconnector, average power per day, added up per neighbouring country. Positive means Great Britain imports, negative means it exports."}
             </p>
           </>
         }

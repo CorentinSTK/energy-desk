@@ -123,6 +123,28 @@ export function seasonalLevelTakeaway(
   return `${level}, ${vsMean}${range}.`;
 }
 
+/**
+ * Same as seasonalLevelTakeaway, with the gap to the norm in the series' unit instead of a
+ * percentage: for values with no meaningful zero (°C) or that cross zero (net flows).
+ */
+export function seasonalAbsoluteTakeaway(
+  subject: string,
+  date: string,
+  c: SeasonalComparison,
+  unit: string,
+  decimals: number,
+  rangeLabel: string,
+): string {
+  const level = `${subject} was ${formatNumber(c.current, decimals)} ${unit} on ${formatDate(date)}`;
+  const gap = Math.abs(c.deviation);
+  const vsMean =
+    gap < 0.5 * 10 ** -decimals
+      ? `in line with the ${rangeLabel} average for this date`
+      : `${formatNumber(gap, decimals)} ${unit} ${c.deviation < 0 ? "below" : "above"} the ${rangeLabel} average for this date`;
+  const range = c.position === "within" ? "" : `, ${c.position} the ${rangeLabel} range`;
+  return `${level}, ${vsMean}${range}.`;
+}
+
 /** Below this size (in the spread's unit), a futures spread is "flat". */
 export const FLAT_CURVE = 0.05;
 

@@ -5,6 +5,7 @@ import { MultiLineChart } from "@/components/charts/multi-line-chart";
 import { SeasonalChart } from "@/components/charts/seasonal-chart";
 import { TimeSeriesChart } from "@/components/charts/time-series-chart";
 import { DataGapNotice } from "@/components/data-gap-notice";
+import { ComputedSeasonalCard } from "@/components/markets/computed-seasonal-card";
 import { KpiCard } from "@/components/kpi-card";
 import {
   changeFromPrevious,
@@ -431,6 +432,36 @@ export async function StorageTab({ ctx, area }: { ctx: PageContext; area: Storag
           </tbody>
         </table>
       </div>
+
+      <ComputedSeasonalCard
+        ctx={ctx}
+        codes={["agsi.eu.withdrawal", "agsi.eu.injection"]}
+        combine={([withdrawal, injection]) => withdrawal - injection}
+        title="Is Europe drawing on storage faster than usual?"
+        subject="EU net storage withdrawal"
+        method={
+          <>
+            <p className="font-medium text-foreground">How it is computed</p>
+            <p>
+              Daily withdrawal minus injection for the EU (GIE AGSI+), in GWh per day: positive when
+              storage is being emptied, negative when it is being filled. For each calendar day, the
+              band and dashed line show the {ctx.rangeLabel} range and mean; a day counts only if
+              both flows are published.
+            </p>
+            <p className="font-medium text-foreground">Caveats</p>
+            <p>
+              Operators revise recent days. Flows depend on the weather as much as on the market: a
+              cold week raises withdrawals whatever the prices.
+            </p>
+          </>
+        }
+        source="GIE AGSI+"
+        unit="GWh/d"
+        compare="absolute"
+        commodity="natgas"
+        decimals={0}
+        height={CHART_HEIGHT}
+      />
 
       <StorageTargetCard ctx={ctx} />
     </div>

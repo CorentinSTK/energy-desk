@@ -35,6 +35,8 @@ import {
   spreadTakeaway,
 } from "@/lib/takeaways";
 
+import { DaysOfCover } from "./cover";
+
 const MAIN_HEIGHT = 320;
 const CHART_HEIGHT = 280;
 const YEAR_DAYS = 366;
@@ -512,6 +514,7 @@ export function BalanceTab({ ctx }: { ctx: PageContext }) {
           }}
         />
       </div>
+      <DaysOfCover ctx={ctx} />
     </div>
   );
 }
@@ -555,8 +558,8 @@ export function FlowsTab({ ctx }: { ctx: PageContext }) {
         }}
       />
       <DataGapNotice
-        title="Seaborne flows and chokepoints (Hormuz, Bab el-Mandeb, Suez) are not shown yet"
-        reason="Tanker tracking data is licensed. Chokepoint transits from open AIS-derived sources are planned for the freight and shipping phase."
+        title="Cargo-level tanker flows are not shown"
+        reason="Who ships which crude to whom needs licensed vessel-tracking data. Daily tanker transits through the chokepoints (IMF PortWatch) are on the freight page."
       />
     </div>
   );

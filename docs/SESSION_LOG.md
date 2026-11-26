@@ -646,3 +646,17 @@ Still open:
 - French nuclear output tested as a FR price-model input: no gain (ADR 0016), not adopted.
 - ENTSO-E flows backfilled after the owner updated the GitHub secret: 37,488 rows, 13 borders since
   2019; direction matches RTE éCO2mix, volumes within about 10–30 %.
+
+## 2026-11-26 — Market deep dive (no new source)
+
+- Audit: 492 catalogue series against the site; unused but stored data and stale notices listed.
+- Added from stored data: power hourly price shape (last 30 days vs a year earlier), negative-price
+  hours per month (DE-LU, FR), German wind and sunshine indices and French population-weighted
+  temperature against their 2021–2025 norms, German cross-border flows (ENTSO-E, replaces a stale
+  gap); gas EU net storage withdrawal against its norm; crude days of cover; US jet fuel demand.
+- Shared helpers: `lib/seasonal.ts` (same rules as web.seasonal_daily), `ComputedSeasonalCard`,
+  `seasonalAbsoluteTakeaway` (gaps in °C or GWh/d where a percentage would mislead).
+- Not added: an "origin of EU gas" stack (ENTSOG entry points ingested are a subset of EU imports,
+  so a pipeline-vs-LNG split would mislead).
+- Checks: 326 unit tests, full e2e locally (power and crude re-run with fewer workers after dev
+  server timeouts under parallel load).

@@ -41,10 +41,10 @@ test.describe("power market page", () => {
     ).toBeVisible();
   });
 
-  test("German flows are a declared gap", async ({ page }) => {
+  test("German flows come from ENTSO-E", async ({ page }) => {
     await page.goto("/markets/power?tab=flows");
     await expect(
-      page.getByText("German cross-border flows are not shown yet").filter({ visible: true }),
+      page.getByRole("heading", { name: "Is Germany-Luxembourg importing or exporting power?" }),
     ).toBeVisible();
   });
 
