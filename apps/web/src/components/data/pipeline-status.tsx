@@ -77,7 +77,7 @@ export function PipelineStatus({
               </p>
               <p className="text-xs text-muted-foreground tabular-nums">
                 {h.latestRun
-                  ? `Last run ${utc(h.latestRun.startedAt)}: ${h.latestRun.status}`
+                  ? `Last run ${utc(h.latestRun.startedAt)}: ${h.latestStatus}`
                   : "No run in the recent log"}
                 {h.latestRun?.status !== "ok" && h.lastSuccessAt
                   ? ` · last success ${utc(h.lastSuccessAt)}`

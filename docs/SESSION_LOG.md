@@ -668,3 +668,10 @@ Still open:
 - EIA-930 routes now make one attempt per request (no retries). A circuit breaker skips the
   remaining EIA series after 3 timeouts in a row, so a stalled API fails the job in minutes and the
   pipeline status shows it; the next scheduled run tries again.
+- Forecasts: the 22:30 UTC run started at 04:15 UTC the next day (GitHub delay), so it issued for
+  the wrong date and the day-ahead price models had no basis (tomorrow's auction not yet held).
+  A scheduled run before 12:00 UTC now keeps the previous evening's issue date.
+- Pipeline status: a run still "running" after two hours (a job killed at its time limit) is shown
+  as interrupted and counted as a failure.
+- Global check (26 Nov, production): 57 pages and tabs crawled, all 200, no error, empty or stale
+  card, no console error; e2e 181/182 (one timing flake, passes on rerun); 15 of 16 sources fresh.

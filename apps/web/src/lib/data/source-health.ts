@@ -6,9 +6,14 @@
 import type { CatalogSeries, IngestRun } from "@/lib/data/catalog";
 import { freshnessStatus, type FreshnessStatus } from "@/lib/freshness";
 
+/** A run still "running" after this long was killed (e.g. a job cancelled at its time limit). */
+export const STALLED_RUN_MS = 2 * 60 * 60 * 1000;
+
 export interface SourceHealth {
   source: string;
   latestRun: IngestRun | null;
+  /** The latest run's status, with a long-"running" run read as "interrupted". */
+  latestStatus: IngestRun["status"] | "interrupted" | null;
   /** Latest run that finished "ok" or "partial". */
   lastSuccessAt: string | null;
   series: Record<FreshnessStatus, number>;
@@ -43,12 +48,19 @@ export function sourceHealth(
     const worst = (Object.keys(series) as FreshnessStatus[])
       .filter((k) => series[k] > 0)
       .sort((a, b) => RANK[b] - RANK[a])[0];
+    const latestStatus =
+      latestRun?.status === "running" &&
+      now.getTime() - Date.parse(latestRun.startedAt) > STALLED_RUN_MS
+        ? "interrupted"
+        : (latestRun?.status ?? null);
     return {
       source,
       latestRun,
+      latestStatus,
       lastSuccessAt,
       series,
-      overall: latestRun?.status === "failed" ? "failed" : (worst ?? "fresh"),
+      overall:
+        latestStatus === "failed" || latestStatus === "interrupted" ? "failed" : (worst ?? "fresh"),
     };
   });
 }

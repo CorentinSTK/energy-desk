@@ -66,3 +66,12 @@ describe("sourceHealth", () => {
     expect(h.lastSuccessAt).toBe("2026-11-24T17:00:00Z");
   });
 });
+
+describe("stalled runs", () => {
+  it("reads a run still running after two hours as interrupted", () => {
+    const stalled = { ...run("eia", "2026-11-25T00:54:00Z", "running"), finishedAt: null };
+    const [h] = sourceHealth([series("a", "eia", "2026-11-24T00:00:00Z")], [stalled], now);
+    expect(h.latestStatus).toBe("interrupted");
+    expect(h.overall).toBe("failed");
+  });
+});

@@ -11,7 +11,7 @@ backtest of the same model version.
 import argparse
 import sys
 from collections.abc import Sequence
-from datetime import UTC, date, datetime
+from datetime import UTC, date, datetime, timedelta
 
 import psycopg
 
@@ -35,6 +35,18 @@ MODEL_CLASSES: dict[str, type[Model]] = {
     "de_lu_da_price": da_price.DayAheadPrice,
     "fr_da_price": da_price.DayAheadPrice,
 }
+
+
+# The workflow is scheduled at 22:30 UTC, but GitHub can start scheduled runs hours late (seen:
+# 04:15 UTC the next day). A run before this hour belongs to the previous evening's slot.
+LATE_RUN_CUTOFF_HOUR = 12
+
+
+def scheduled_issue_date(now: datetime) -> date:
+    """Issue date of a scheduled run: today, or yesterday for a late run after midnight."""
+    if now.hour < LATE_RUN_CUTOFF_HOUR:
+        return now.date() - timedelta(days=1)
+    return now.date()
 
 
 def model_inputs(model_id: str) -> Sequence[str]:
@@ -90,7 +102,7 @@ def run(args: argparse.Namespace) -> int:
                     registry.replace_backtest(conn, model, forecasts)
             else:
                 now = datetime.now(UTC)
-                issued = args.date or now.date()
+                issued = args.date or scheduled_issue_date(now)
                 if registry.issued_live_on(conn, model, issued):
                     print(
                         f"[{model.id} v{model.version}] already issued on {issued}: nothing added"
