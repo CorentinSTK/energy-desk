@@ -124,7 +124,7 @@ function TabContent({
     case "chokepoints":
       return <ChokepointsTab ctx={ctx} strait={strait} />;
     case "routes":
-      return <RoutesTab />;
+      return <RoutesTab ctx={ctx} />;
     case "gaps":
       return <FreightGapsTab />;
   }

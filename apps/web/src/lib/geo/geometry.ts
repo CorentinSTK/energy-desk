@@ -66,6 +66,8 @@ export interface MapGeometry {
   height: number;
   countries: CountryShape[];
   project: (lon: number, lat: number) => [number, number] | null;
+  /** SVG path of a line through [lon, lat] points (great-circle segments, clipped at the edges). */
+  line: (coordinates: [number, number][]) => string;
 }
 
 type Countries = Topology<{ countries: GeometryCollection<{ name: string }> }>;
@@ -83,7 +85,9 @@ function shapes(topology: Countries, projection: GeoProjection): CountryShape[] 
 }
 
 function build(topology: Countries, projection: GeoProjection, height: number): MapGeometry {
+  const linePath = geoPath(projection).digits(PATH_DIGITS);
   return {
+    line: (coordinates) => linePath({ type: "LineString", coordinates }) ?? "",
     width: MAP_WIDTH,
     height,
     countries: shapes(topology, projection),

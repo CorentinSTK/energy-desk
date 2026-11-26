@@ -87,6 +87,59 @@
     animation: vessel-bob 4.5s ease-in-out infinite;
     transform-origin: 50% 90%;
   }
+  /* Weather icons: the turbine rotor turns (speed set inline from the wind index); the sun's rays
+     turn slowly. */
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .turbine-rotor {
+    animation: spin 3s linear infinite;
+    transform-box: view-box;
+    transform-origin: 50px 46px;
+  }
+  .sun-rays {
+    animation: spin 40s linear infinite;
+    transform-box: view-box;
+    transform-origin: 50px 50px;
+  }
+  /* Gas storage tank: the fill rises from the bottom when the page opens. */
+  @keyframes tank-fill {
+    from {
+      transform: scaleY(0);
+    }
+  }
+  .tank-fill {
+    animation: tank-fill 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transform-box: fill-box;
+    transform-origin: bottom;
+  }
+  /* Freight route map: dashes moving along the route in use, a ring pulsing on a disrupted strait. */
+  @keyframes route-flow {
+    to {
+      stroke-dashoffset: -20;
+    }
+  }
+  .route-flow {
+    stroke-dasharray: 8 12;
+    animation: route-flow 1.4s linear infinite;
+  }
+  @keyframes choke-pulse {
+    0% {
+      opacity: 0.9;
+      transform: scale(0.6);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(1.8);
+    }
+  }
+  .choke-pulse {
+    animation: choke-pulse 2s ease-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

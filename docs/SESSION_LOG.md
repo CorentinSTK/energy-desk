@@ -675,3 +675,15 @@ Still open:
   as interrupted and counted as a failure.
 - Global check (26 Nov, production): 57 pages and tabs crawled, all 200, no error, empty or stale
   card, no console error; e2e 181/182 (one timing flake, passes on rerun); 15 of 16 sources fresh.
+
+## 2026-11-26 — Visual touches backed by data
+
+- Freight: "Which sea routes are open?" world map. Route paths are now generated with the routes
+  (searoute geometry, thinned to ≤120 points, `gen_routes.py`). A chokepoint is disrupted when its
+  7-day tanker transits are ≥40 % below the norm (measured, not PortWatch events, which list detours
+  too); the moving line is the shortest variant that avoids disrupted chokepoints.
+- Gas: storage tank beside the seasonal chart, filled to the latest level, with the 5-year mean
+  (dashed) and the 90 % target (solid); the fill rises on load.
+- Power: wind turbine whose rotor speed follows the latest wind index against its norm, and a sun
+  whose brightness follows radiation against its norm.
+- All motion is CSS and stops under prefers-reduced-motion.
