@@ -400,3 +400,18 @@ series:
     publication_lag_days: 1
     plausible_min: -2
     plausible_max: 2
+  # Carbon (2026-11-26): no free, redistributable EUA price exists (EEX terms, BUILD_SPEC); the owner
+  # chose this unofficial indicator. Not an EUA price: the price of one unit of an exchange-traded
+  # commodity (ETC) backed by EUAs held in the EU Registry, so it tracks the EUA price with fees.
+  - code: yahoo.carbon.co2_etc
+    name: SparkChange Physical Carbon EUA ETC (LSE, unofficial)
+    commodity: macro
+    region: EU
+    unit: "€/unit"
+    frequency: daily
+    source_ref: "quote|CO2.L|EUR"
+    description: Closing price of one unit of the SparkChange Physical Carbon EUA ETC on the London Stock Exchange, in euros. Backed by EU emission allowances, so it tracks the EUA price; it is not an EUA price per tonne. Unofficial, delayed.
+    is_unofficial: true
+    publication_lag_days: 1
+    plausible_min: 1
+    plausible_max: 400

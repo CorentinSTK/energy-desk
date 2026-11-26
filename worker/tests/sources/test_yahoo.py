@@ -102,3 +102,33 @@ def test_oil_curve_spreads_follow_the_expiry_rule(monkeypatch: pytest.MonkeyPatc
     assert m12 == []  # December 2027 not settled in this fixture: no value
     # CLX26 (one before the front) to CLN27 (M12), requested once for all CL spreads.
     assert route.call_count == 13
+
+
+def quote_chart(currency: str) -> dict[str, Any]:
+    body = chart([(datetime(2026, 11, 24, 17, tzinfo=UTC), 79.0)])
+    body["chart"]["result"][0]["meta"] = {
+        "exchangeTimezoneName": "Europe/London",
+        "currency": currency,
+    }
+    return body
+
+
+@respx.mock
+def test_a_plain_quote_is_read_in_its_currency() -> None:
+    respx.get(url__regex=r"https://query1\.finance\.yahoo\.com/.*CO2\.L.*").mock(
+        return_value=httpx.Response(200, json=quote_chart("EUR"))
+    )
+    source = YahooSource(today=lambda: date(2026, 11, 25))
+    with make_client() as client:
+        obs = source.fetch(client, SPECS["yahoo.carbon.co2_etc"], date(2026, 11, 20))
+    assert [(o.ts.date(), o.value) for o in obs] == [(date(2026, 11, 24), 79.0)]
+
+
+@respx.mock
+def test_a_currency_change_fails_loudly() -> None:
+    respx.get(url__regex=r"https://query1\.finance\.yahoo\.com/.*CO2\.L.*").mock(
+        return_value=httpx.Response(200, json=quote_chart("GBp"))
+    )
+    source = YahooSource(today=lambda: date(2026, 11, 25))
+    with make_client() as client, pytest.raises(ValueError):
+        source.fetch(client, SPECS["yahoo.carbon.co2_etc"], date(2026, 11, 20))

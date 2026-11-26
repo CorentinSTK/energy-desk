@@ -94,6 +94,7 @@ test("the zone gap matrix is shown for continental zones, not for GB", async ({ 
     page.getByRole("heading", { name: "Which zones trade close together?" }),
   ).toBeVisible();
   await expect(page.getByRole("heading", { name: "Which way is power flowing?" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /What is carbon worth/ })).toBeVisible();
   await page.goto("/markets/power?zone=gb");
   await expect(
     page.getByRole("heading", { name: "Which zones trade close together?" }),
