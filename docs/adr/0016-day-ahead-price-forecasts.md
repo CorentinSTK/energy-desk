@@ -95,3 +95,11 @@ the decimal on the period being scored. Modelling the price change removes the b
 Caveat: the half-life was chosen on the same backtest it is scored on, so the gain is slightly
 optimistic; the live track record is the real test. Version 1 live forecasts stay in the registry
 under their version.
+
+### Tested and rejected: French nuclear output (2026-11-26)
+
+French nuclear output (RTE éCO2mix, daily average MW, known up to the day before issue, so three days
+before the target) was added to version 2 of the France model. Backtest 1 Jan 2022 to 25 Nov 2026,
+same rows: MAE 19.09 → 19.12 €/MWh, skill vs naive 15.4 % → 15.1 %. No gain: the latest known price
+already reflects the state of the fleet. Nuclear availability forecasts (planned outages) would be the
+useful input, but no open source is confirmed (ADR 0017).
