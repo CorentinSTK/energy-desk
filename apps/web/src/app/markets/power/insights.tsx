@@ -203,6 +203,7 @@ export function ZoneWeather({ ctx, zone }: { ctx: PageContext; zone: PowerZone }
           )}
           source="Open-Meteo"
           unit="km/h"
+          illustration="wind"
           commodity="power"
           decimals={1}
           height={HEIGHT}
@@ -219,6 +220,7 @@ export function ZoneWeather({ ctx, zone }: { ctx: PageContext; zone: PowerZone }
           )}
           source="Open-Meteo"
           unit="MJ/m²"
+          illustration="sun"
           commodity="power"
           decimals={1}
           height={HEIGHT}

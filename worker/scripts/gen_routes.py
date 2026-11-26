@@ -87,6 +87,21 @@ ROUTES = [
 ]
 
 
+# The page draws each variant: its path is thinned to at most this many points (drawing only).
+MAX_PATH_POINTS = 120
+
+
+def thin_path(coordinates: list[list[float]]) -> list[list[float]]:
+    """Round to 0.01° and keep evenly spaced points, always the first and the last."""
+    points = [[round(lon, 2), round(lat, 2)] for lon, lat in coordinates]
+    deduped = [p for i, p in enumerate(points) if i == 0 or p != points[i - 1]]
+    step = max(1, -(-len(deduped) // MAX_PATH_POINTS))
+    kept = deduped[::step]
+    if kept[-1] != deduped[-1]:
+        kept.append(deduped[-1])
+    return kept
+
+
 def variant(
     origin: str, destination: str, cargo: str, spec: tuple[str, list[str], list[str], list[str]]
 ) -> dict[str, Any]:
@@ -111,6 +126,7 @@ def variant(
         "nm": nm,
         "days": round(nm / (KNOTS[cargo] * 24), 1),
         "passages": passages,
+        "path": thin_path(route.geometry["coordinates"]),
     }
 
 

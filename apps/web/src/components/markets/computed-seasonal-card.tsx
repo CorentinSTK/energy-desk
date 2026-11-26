@@ -6,6 +6,7 @@ import { chartInfo } from "@/lib/data/chart-info";
 import { attempt, type PageContext, seriesOf } from "@/lib/data/page-context";
 import { getPointsMany } from "@/lib/data/series";
 import { combineDaily, seasonalFromDaily } from "@/lib/seasonal";
+import { WeatherIcon } from "@/components/markets/weather-icon";
 import { seasonalAbsoluteTakeaway, seasonalLevelTakeaway } from "@/lib/takeaways";
 
 /** First day loaded: the five prior years the norm needs, plus the current year. */
@@ -31,6 +32,8 @@ interface ComputedSeasonalCardProps {
   yMax?: number;
   /** "absolute": gap to the norm in the unit (°C, flows crossing zero); default: percentage. */
   compare?: "percent" | "absolute";
+  /** Small drawing of the latest value beside the chart (wind turbine, sun). */
+  illustration?: "wind" | "sun";
 }
 
 /**
@@ -52,6 +55,7 @@ export async function ComputedSeasonalCard({
   plural = false,
   yMax,
   compare = "percent",
+  illustration,
 }: ComputedSeasonalCardProps) {
   const loaded = await attempt(subject, getPointsMany(codes, historyStart(ctx.year)));
   const points = loaded
@@ -102,24 +106,40 @@ export async function ComputedSeasonalCard({
       status={status}
       height={height}
     >
-      {rows && (
-        <SeasonalChart
-          commodity={commodity}
-          periods={rows.map((r) => r.day)}
-          dailyAxis
-          min={rows.map((r) => r.min)}
-          max={rows.map((r) => r.max)}
-          average={rows.map((r) => r.mean)}
-          current={rows.map((r) => r.current)}
-          currentLabel={String(ctx.year)}
-          rangeLabel={ctx.rangeLabel}
-          unit={unit}
-          decimals={decimals}
-          yMax={yMax}
-          height={height}
-          ariaLabel={`${subject} by day in ${ctx.year} against the ${ctx.rangeLabel} range and average`}
-        />
-      )}
+      <div
+        className={
+          illustration && comparison
+            ? "grid items-center gap-4 md:grid-cols-[140px_minmax(0,1fr)]"
+            : ""
+        }
+      >
+        {illustration && comparison && (
+          <WeatherIcon
+            kind={illustration}
+            current={comparison.current}
+            mean={comparison.mean}
+            unit={unit}
+          />
+        )}
+        {rows && (
+          <SeasonalChart
+            commodity={commodity}
+            periods={rows.map((r) => r.day)}
+            dailyAxis
+            min={rows.map((r) => r.min)}
+            max={rows.map((r) => r.max)}
+            average={rows.map((r) => r.mean)}
+            current={rows.map((r) => r.current)}
+            currentLabel={String(ctx.year)}
+            rangeLabel={ctx.rangeLabel}
+            unit={unit}
+            decimals={decimals}
+            yMax={yMax}
+            height={height}
+            ariaLabel={`${subject} by day in ${ctx.year} against the ${ctx.rangeLabel} range and average`}
+          />
+        )}
+      </div>
     </ChartCard>
   );
 }

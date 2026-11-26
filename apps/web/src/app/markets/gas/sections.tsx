@@ -6,6 +6,7 @@ import { SeasonalChart } from "@/components/charts/seasonal-chart";
 import { TimeSeriesChart } from "@/components/charts/time-series-chart";
 import { DataGapNotice } from "@/components/data-gap-notice";
 import { ComputedSeasonalCard } from "@/components/markets/computed-seasonal-card";
+import { StorageTank } from "@/components/markets/storage-tank";
 import { KpiCard } from "@/components/kpi-card";
 import {
   changeFromPrevious,
@@ -33,6 +34,7 @@ import { attempt, daysAgo, type PageContext, seriesOf } from "@/lib/data/page-co
 
 import { ENTRY_POINTS, gasHref, STORAGE_AREAS, type StorageArea } from "./data";
 import { StorageTargetCard } from "./storage-target";
+import { TARGET_PCT } from "@/lib/gas/storage-target";
 
 const MAIN_HEIGHT = 320;
 const CHART_HEIGHT = 280;
@@ -351,7 +353,10 @@ export async function StorageTab({ ctx, area }: { ctx: PageContext; area: Storag
 
   return (
     <div className="grid gap-4">
-      <nav aria-label="Storage by country" className="flex flex-wrap gap-1.5">
+      <nav
+        aria-label="Storage by country"
+        className="flex w-fit max-w-full flex-wrap gap-0.5 rounded-lg bg-muted p-0.5"
+      >
         {STORAGE_AREAS.map((a) => (
           <Link
             key={a.id}
@@ -359,8 +364,10 @@ export async function StorageTab({ ctx, area }: { ctx: PageContext; area: Storag
             scroll={false}
             aria-current={a.id === area ? "true" : undefined}
             className={cn(
-              "rounded-md border px-2.5 py-1 text-sm transition-colors hover:bg-muted",
-              a.id === area && "border-primary bg-muted font-medium",
+              "rounded-md px-2.5 py-1 text-sm transition-colors",
+              a.id === area
+                ? "bg-surface-raised font-medium text-foreground shadow-sm ring-1 ring-border"
+                : "text-text-secondary hover:text-foreground",
             )}
           >
             {a.label}
@@ -383,19 +390,31 @@ export async function StorageTab({ ctx, area }: { ctx: PageContext; area: Storag
         status={rows === null ? "error" : rows.every((r) => r.current === null) ? "empty" : "ready"}
         height={CHART_HEIGHT}
       >
-        {rows && (
-          <SeasonalChart
-            commodity="natgas"
-            {...seasonalChartProps(rows)}
-            currentLabel={String(ctx.year)}
-            rangeLabel={ctx.rangeLabel}
-            unit="%"
-            decimals={1}
-            yMax={100}
-            height={CHART_HEIGHT}
-            ariaLabel={`${areaLabel} gas storage filling level against the ${ctx.rangeLabel} range`}
-          />
-        )}
+        <div className="grid items-center gap-4 md:grid-cols-[170px_minmax(0,1fr)]">
+          {comparison && day && (
+            <StorageTank
+              pct={comparison.current}
+              normPct={comparison.mean}
+              targetPct={TARGET_PCT}
+              date={day}
+              label={areaLabel}
+              rangeLabel={ctx.rangeLabel}
+            />
+          )}
+          {rows && (
+            <SeasonalChart
+              commodity="natgas"
+              {...seasonalChartProps(rows)}
+              currentLabel={String(ctx.year)}
+              rangeLabel={ctx.rangeLabel}
+              unit="%"
+              decimals={1}
+              yMax={100}
+              height={CHART_HEIGHT}
+              ariaLabel={`${areaLabel} gas storage filling level against the ${ctx.rangeLabel} range`}
+            />
+          )}
+        </div>
       </ChartCard>
 
       <div className="overflow-x-auto rounded-lg border">

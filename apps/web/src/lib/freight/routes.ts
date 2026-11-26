@@ -11,12 +11,16 @@ export interface RouteVariant {
   nm: number;
   days: number;
   passages: string[];
+  /** [lon, lat] points of the searoute path, thinned for drawing (worker/scripts/gen_routes.py). */
+  path: [number, number][];
 }
 
 export interface Port {
   name: string;
   /** The terminal this port stands in for, when the terminal is not in Natural Earth. */
   standsFor: string | null;
+  lon: number;
+  lat: number;
 }
 
 export interface Route {
@@ -28,7 +32,7 @@ export interface Route {
   variants: RouteVariant[];
 }
 
-export const ROUTES = data.routes as Route[];
+export const ROUTES = data.routes as unknown as Route[];
 export const KNOTS = data.knots as Record<Route["cargo"], number>;
 
 /** Extra days at sea of a variant over the route's shortest variant (0 for the shortest). */

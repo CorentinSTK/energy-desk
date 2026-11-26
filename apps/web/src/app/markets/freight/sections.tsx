@@ -5,6 +5,7 @@ import { MultiLineChart } from "@/components/charts/multi-line-chart";
 import { SeasonalChart } from "@/components/charts/seasonal-chart";
 import { DataGapNotice } from "@/components/data-gap-notice";
 import { ErrorState } from "@/components/error-state";
+import { type ChokepointStatus, RouteMap } from "@/components/freight/route-map";
 import { SourceEventNotice } from "@/components/freight/source-event-notice";
 import { KpiCard } from "@/components/kpi-card";
 import { chartInfo } from "@/lib/data/chart-info";
@@ -19,6 +20,7 @@ import {
   PORTWATCH_SOURCE,
   transitCode,
 } from "@/lib/freight/chokepoints";
+import { DISRUPTED_BELOW_NORM_PCT, isDisrupted } from "@/lib/freight/route-map";
 import { everyNthDay, rollingMean, weekVsSeason, WINDOW_DAYS } from "@/lib/freight/rolling";
 import { extraDays, KNOTS, ROUTES } from "@/lib/freight/routes";
 import { chokepointTakeaway } from "@/lib/freight/takeaway";
@@ -331,9 +333,62 @@ export async function ChokepointsTab({ ctx, strait }: { ctx: PageContext; strait
 
 // Routes tab ---------------------------------------------------------------------------------------
 
-export function RoutesTab() {
+export async function RoutesTab({ ctx }: { ctx: PageContext }) {
+  const status: ChokepointStatus[] = await Promise.all(
+    CHOKEPOINTS.map(async (c) => {
+      const code = transitCode(c.id, "tanker_transits");
+      const [points, seasonal] = await Promise.all([
+        attempt(`${c.id} tankers`, getPoints(code, daysAgo(ctx.now, RECENT_DAYS))),
+        attempt(`${c.id} tankers seasonal`, getSeasonal(code, ctx.year)),
+      ]);
+      const week = points && seasonal ? weekVsSeason(points, seasonal) : null;
+      const deviationPct = week?.deviationPct ?? null;
+      return { id: c.id, deviationPct, disrupted: isDisrupted(deviationPct) };
+    }),
+  );
+  const blocked = status.filter((st) => st.disrupted);
+  const label = (id: string) => CHOKEPOINTS.find((c) => c.id === id)?.label ?? id;
   return (
     <div className="grid gap-3">
+      <ChartCard
+        title="Which sea routes are open?"
+        takeaway={
+          blocked.length
+            ? `Tanker traffic is at least ${DISRUPTED_BELOW_NORM_PCT}% below normal through ${blocked
+                .map((b) => `${label(b.id)} (${formatChange(b.deviationPct, 0)}%)`)
+                .join(
+                  " and ",
+                )}: routes through ${blocked.length > 1 ? "them" : "it"} are shown as disrupted.`
+            : `No chokepoint has tanker traffic ${DISRUPTED_BELOW_NORM_PCT}% or more below normal.`
+        }
+        method={
+          <>
+            <p className="font-medium text-foreground">What it shows</p>
+            <p>
+              The six benchmark routes of the table below, drawn along their computed sea paths
+              (searoute on the Eurostat maritime network, Natural Earth ports). For each route, the
+              moving line is the shortest variant that avoids a disrupted chokepoint.
+            </p>
+            <p className="font-medium text-foreground">When a chokepoint is disrupted</p>
+            <p>
+              When its tanker transits over the latest 7 days are at least{" "}
+              {DISRUPTED_BELOW_NORM_PCT}% below the {ctx.rangeLabel} norm for those days (IMF
+              PortWatch). Measured traffic is used rather than disruption events, which can list the
+              detour too. Paths are orders of magnitude for comparing routes, not navigation; marker
+              positions are approximate.
+            </p>
+          </>
+        }
+        info={chartInfo(
+          seriesOf(ctx, ...CHOKEPOINTS.map((c) => transitCode(c.id, "tanker_transits"))),
+          ctx.extractionDates,
+          ctx.now,
+          { source: "IMF PortWatch", unit: "vessels/d" },
+        )}
+        height={0}
+      >
+        <RouteMap status={status} />
+      </ChartCard>
       <div className="overflow-x-auto rounded-lg border">
         <table className="w-full min-w-[640px] text-sm">
           <caption className="sr-only">Sea distances and days at sea on benchmark routes</caption>
