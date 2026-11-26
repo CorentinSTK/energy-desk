@@ -141,3 +141,22 @@ def test_incomplete_recent_days_are_dropped() -> None:
     observations = [Observation(spec.code, ts, 1e7) for ts in days]
     kept = complete_only(observations, spec, date(2026, 11, 25))
     assert [o.ts.day for o in kept] == [22, 23]
+
+
+def test_circuit_breaker_skips_after_repeated_timeouts(monkeypatch: pytest.MonkeyPatch) -> None:
+    from worker.sources import eia
+
+    source = eia.EiaSource(api_key="k", today=lambda: date(2026, 11, 26))
+    calls = []
+
+    def stalled(client, spec, since):  # type: ignore[no-untyped-def]
+        calls.append(spec.code)
+        raise httpx.ReadTimeout("The read operation timed out")
+
+    monkeypatch.setattr(source, "_request", stalled)
+    specs = [s for s in load_catalog("eia").series if not s.source_ref.startswith("derived")][:5]
+    with make_client() as client:
+        for spec in specs:
+            with pytest.raises(Exception):  # noqa: B017 - timeouts, then the breaker
+                source.fetch(client, spec, date(2026, 11, 1))
+    assert len(calls) == eia.MAX_TIMEOUTS_IN_A_ROW
