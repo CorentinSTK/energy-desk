@@ -635,3 +635,14 @@ Still open:
   with the power sources. Power page: "Which way is power flowing?" diverging bars, 7-day average.
 - French nuclear availability: EDF's open daily dataset is gone and RTE's outage API has no stated
   open licence; it stays a declared gap. French nuclear output (RTE) tested as a price-model input.
+
+## 2026-11-26 — Carbon: unofficial proxy; ETS data checked
+
+- Yahoo search: no EUA futures quote in €/t; the closest instrument is the SparkChange Physical Carbon
+  EUA ETC (`CO2.L`, EUR). Ingested as `yahoo.carbon.co2_etc` (plain-quote support with a currency
+  check in the Yahoo source) and shown on the power page as an unofficial proxy (ADR 0003 amendment).
+- EEA: reuse terms confirmed (CC BY, credit the EEA), but its ETS data catalogue does not answer
+  automated requests; TNAC figures are on EUR-Lex, which refuses them. Neither is ingested.
+- French nuclear output tested as a FR price-model input: no gain (ADR 0016), not adopted.
+- ENTSO-E flows backfilled after the owner updated the GitHub secret: 37,488 rows, 13 borders since
+  2019; direction matches RTE éCO2mix, volumes within about 10–30 %.

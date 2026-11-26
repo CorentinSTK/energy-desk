@@ -41,6 +41,10 @@ CONTRACT_HISTORY_START = date(2025, 1, 1)
 # too, so a holiday-shifted expiry is detected rather than missed.
 TENORS = {"TTF": 4, "CL": 12, "BZ": 12, "HO": 6, "RB": 6}
 SPREAD_REF = re.compile(r"^(?P<root>[A-Z]+)\|m1-m(?P<tenor>\d+)$")
+# Plain listed instruments (not futures): "quote|<ticker>|<currency>", e.g. an exchange-traded
+# product; the currency Yahoo reports must match, so a listing change fails loudly.
+QUOTE_REF = re.compile(r"^quote\|(?P<ticker>[A-Z0-9.^=-]+)\|(?P<currency>[A-Z]{3})$")
+QUOTE_HISTORY_START = date(2021, 1, 1)
 
 
 def parse_chart(body: dict[str, Any]) -> list[tuple[date, float]]:
@@ -62,6 +66,11 @@ def parse_chart(body: dict[str, Any]) -> list[tuple[date, float]]:
     return list(points.items())
 
 
+def chart_currency(body: dict[str, Any]) -> str | None:
+    result = (body.get("chart", {}).get("result") or [None])[0]
+    return result["meta"].get("currency") if result else None
+
+
 def at_midnight_utc(day: date) -> datetime:
     return datetime(day.year, day.month, day.day, tzinfo=UTC)
 
@@ -77,14 +86,18 @@ class YahooSource(Source):
         self._settles: dict[str, dict[date, dict[date, float]]] = {}
         self._spreads: dict[str, dict[int, list[tuple[date, float]]]] = {}
 
-    def _chart(self, client: httpx.Client, ticker: str, since: date) -> list[tuple[date, float]]:
+    def _chart(
+        self, client: httpx.Client, ticker: str, since: date, currency: str | None = None
+    ) -> list[tuple[date, float]]:
         params = {
             "period1": int(at_midnight_utc(since).timestamp()),
             "period2": int(at_midnight_utc(self._today() + timedelta(days=1)).timestamp()),
             "interval": "1d",
         }
-        response = get_once(client, URL.format(ticker=ticker), params)
-        return parse_chart(response.json())
+        body = get_once(client, URL.format(ticker=ticker), params).json()
+        if currency is not None and chart_currency(body) != currency:
+            raise ValueError(f"{ticker}: currency {chart_currency(body)!r}, expected {currency!r}")
+        return parse_chart(body)
 
     def _contracts(
         self, client: httpx.Client, root: str, since: date
@@ -121,6 +134,10 @@ class YahooSource(Source):
         ref = spec.source_ref
         if ref.endswith("=F"):
             points = self._chart(client, ref, since or FRONT_MONTH_START)
+        elif match := QUOTE_REF.match(ref):
+            points = self._chart(
+                client, match["ticker"], since or QUOTE_HISTORY_START, match["currency"]
+            )
         elif match := SPREAD_REF.match(ref):
             points = self._spread(client, match["root"], int(match["tenor"]), since)
         else:

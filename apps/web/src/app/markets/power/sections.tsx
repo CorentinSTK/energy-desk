@@ -18,6 +18,7 @@ import { latestLevelTakeaway, seasonalLevelTakeaway } from "@/lib/takeaways";
 import { cn } from "@/lib/utils";
 
 import { FLOWS, type PowerZone, powerHref, type PowerTab, ZONES } from "./data";
+import { CarbonIndicator } from "./carbon";
 import { CouplingMatrix } from "./coupling";
 import { CrossBorderFlows } from "./flows";
 import { EuropeanZones } from "./zones";
@@ -364,6 +365,7 @@ export async function PricesTab({ ctx, zone }: { ctx: PageContext; zone: PowerZo
       {zone.id !== "gb" && <EuropeanZones ctx={ctx} />}
       {zone.id !== "gb" && <CouplingMatrix ctx={ctx} />}
       {zone.id !== "gb" && <CrossBorderFlows ctx={ctx} />}
+      <CarbonIndicator ctx={ctx} />
 
       <DataGapNotice
         title="No forward curve for power"

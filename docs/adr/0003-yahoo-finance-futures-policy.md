@@ -53,3 +53,12 @@ We use Yahoo only for futures, under these rules:
   series, and `web_reader` cannot read the raw table at all.
 - **Coverage.** For TTF only the first two monthly contracts are listed on Yahoo, so there is no full
   curve. Spread history starts at the first ingestion and is labelled as such.
+
+## Amendment — carbon proxy (2026-11-26)
+
+No free, redistributable EUA price exists (EEX terms; BUILD_SPEC). At the owner's request, Yahoo's
+quote of the SparkChange Physical Carbon EUA ETC (`CO2.L`, London Stock Exchange, in euros) is
+ingested as `yahoo.carbon.co2_etc` and shown on the power page as an unofficial proxy, with the same
+label as other Yahoo data. It is the price of one unit of a product backed by EUAs, not a price per
+tonne, and is never combined with power or gas prices. The source checks that Yahoo still reports
+the quote in euros.

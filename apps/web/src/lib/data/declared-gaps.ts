@@ -113,9 +113,9 @@ export const DECLARED_GAPS: DeclaredGap[] = [
     markets: ["power"],
   },
   {
-    title: "EUA carbon price",
+    title: "Official EUA carbon price",
     reason:
-      "EEX publishes EU ETS auction results and Commitments of Traders, but its terms forbid republication without written approval; public display needs a paid Media Usage licence (checked 25 Nov 2026). The European Commission links to EEX and publishes no prices itself.",
+      "EEX publishes EU ETS auction results and Commitments of Traders, but its terms forbid republication without written approval; public display needs a paid Media Usage licence (checked 25 Nov 2026). The European Commission links to EEX and publishes no prices itself. The power page shows an unofficial proxy instead: the price of an exchange-traded product backed by EUAs (Yahoo Finance).",
     markets: ["power"],
   },
   {

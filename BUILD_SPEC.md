@@ -440,7 +440,7 @@ Status (25 Nov 2026): M0–M8, F and P2 done and live. P2: P2a LPG page; P2b pow
 - Whether to add a French/English language toggle.
 - ~~Lab presets (§7)~~ — decided at M7 (2026-10-31): presets on long official series only (see §7 and
   ADR 0010); TTF and Brent M1–M2 presets once the stored futures history is long enough.
-- ~~Carbon (EUA)~~ — checked at P2e (2026-11-25): EEX auction results and CoT reports may not be republished without written approval (eex.com/en/disclaimer); public display needs a paid Media Usage licence. The Commission publishes no prices. EUA stays a declared gap, and so do clean spark and dark spreads. Contact for a licence: datasource@eex-group.com.
+- ~~Carbon (EUA)~~ — checked at P2e (2026-11-25): EEX auction results and CoT reports may not be republished without written approval (eex.com/en/disclaimer); public display needs a paid Media Usage licence. The Commission publishes no prices. EUA stays a declared gap, and so do clean spark and dark spreads. Contact for a licence: datasource@eex-group.com. Update 2026-11-26 (owner's choice): an unofficial proxy is shown on the power page, the SparkChange Physical Carbon EUA ETC (LSE `CO2.L`, € per unit, Yahoo Finance, ADR 0003 labelling), never used in a spread. EEA ETS emissions data is CC BY but not reachable by automated requests; TNAC figures are published yearly on EUR-Lex, which refuses automated requests: neither is ingested.
 - ~~Freight & shipping~~: decided at F (2026-11-20): IMF PortWatch transits and computed voyage times;
   freight rates and bunker prices remain declared gaps (ADR 0013). Pending: the IMF's answer on automated
   access.
